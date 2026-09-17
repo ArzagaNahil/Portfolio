@@ -988,6 +988,14 @@ main {
     position: relative;
     width: 100%;
     margin: 0;
+    border: 2px solid rgba(0, 147, 165, 0.55);
+    box-shadow: 0 12px 35px -18px rgba(0, 147, 165, 0.65);
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.js-tile:hover .tile__fig {
+    border-color: var(--color-accent);
+    box-shadow: 0 14px 45px -16px rgba(0, 147, 165, 0.85);
 }
 
 .tile__fig::before {
@@ -1035,6 +1043,10 @@ main {
 .tile__title__offset {
     display: block;
     margin-left: 18%;
+}
+
+.devtile:first-child .tile__content {
+    bottom: 1.8rem;
 }
 
 /* ---- Gallery (Development -> proyectos) ---- */
