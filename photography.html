@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es" class="no-js">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Photography — Arzaga Nahil</title>
+
+    <meta name="description" content="Fotografía de Arzaga Nahil." />
+    <meta name="keywords" content="fotografía, arzaga nahil, portafolio" />
+    <meta name="author" content="Arzaga Nahil" />
+    <meta property="og:title" content="Photography — Arzaga Nahil" />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://arzaganahil.github.io/photography" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&family=Tulpen+One&family=Bruno+Ace&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://unpkg.com/splitting@1.0.6/dist/splitting.css" />
+    <link rel="stylesheet" href="https://unpkg.com/splitting@1.0.6/dist/splitting-cells.css" />
+    <script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.170.0/build/three.module.js"}}</script>
+    <link rel="stylesheet" href="css/style.css" />
+
+    <style>
+        .page-photography main {
+            grid-template-areas:
+                'side side side frame frame frame'
+                'photography photography photography photography photography photography';
+        }
+        .page-photography .photography {
+            display: grid;
+            place-items: center;
+            padding: 5.5rem 2rem 2rem;
+        }
+        @media screen and (min-width: 54em) {
+            .page-photography main {
+                height: 100vh;
+                overflow: hidden;
+                grid-template-rows: 100%;
+                grid-template-areas: 'side side side photography photography photography';
+            }
+            .page-photography .photography { grid-area: photography; padding: 6.5rem 2rem 2rem; }
+            .page-photography .frame { background:none; backdrop-filter:none; border:none; grid-area:photography; display:grid; align-content:space-between; pointer-events:none; grid-template-columns:50% 50%; grid-template-rows:auto auto auto; grid-template-areas:'... ...' '... ...' 'title links'; padding:1.5rem 2rem; }
+            .page-photography .frame::after { content:''; position:absolute; top:0; left:0; pointer-events:none; width:100%; height:100%; z-index:10; background:#000; opacity:0; transition:opacity .8s ease-in-out .3s; }
+            .page-photography .menu--open ~ .frame::after { opacity:.75; transition-delay:0s; pointer-events:auto; }
+            .page-photography .frame__links { grid-area:links; justify-self:end; align-self:end; pointer-events:auto; }
+            .page-photography .frame__links img { width:36px; height:36px; }
+        }
+    </style>
+    <script>document.documentElement.className="js";</script>
+</head>
+<body class="loading page-photography">
+    <div id="three-canvas" data-ring-pos="10,0,0"></div>
+    <main>
+        <nav class="topnav">
+            <a href="index.html" class="topnav__brand">Arzaga</a>
+            <div class="topnav__links">
+                <a href="index.html">Home</a>
+                <a href="development.html">Development</a>
+                <a href="design.html">Design</a>
+                <a href="photography.html" class="is-current">Photography</a>
+                <a href="about.html">About</a>
+                <a href="contact.html">Contact</a>
+            </div>
+        </nav>
+        <div class="frame">
+            <nav class="frame__links">
+                <a href="#"><img src="assets/IMG/instagram.svg" alt="Instagram (próximamente)"></a>
+                <a href="https://github.com/ArzagaNahil" target="_blank" rel="noopener noreferrer"><img src="assets/IMG/github.svg" alt="GitHub"></a>
+                <a href="https://www.linkedin.com/in/alexis-rivera-miranda-1667a430a/" target="_blank" rel="noopener noreferrer"><img src="assets/IMG/follow-in.svg" alt="LinkedIn"></a>
+            </nav>
+        </div>
+        <section class="photography"></section>
+    </main>
+    <script src="https://unpkg.com/gsap@3.12.5/dist/gsap.min.js"></script>
+    <script src="https://unpkg.com/splitting@1.0.6/dist/splitting.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js"></script>
+    <script src="js/segment.min.js"></script>
+    <script src="js/ease.min.js"></script>
+    <script type="module" src="js/index.js"></script>
+</body>
+</html>
