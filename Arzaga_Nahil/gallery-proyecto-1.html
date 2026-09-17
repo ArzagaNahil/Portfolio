@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es" class="no-js">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Proyecto Uno — Development — Arzaga Nahil</title>
+
+    <meta name="description" content="Proyecto Uno: fotos y enlaces del proyecto de desarrollo web de Arzaga Nahil." />
+    <meta name="author" content="Arzaga Nahil" />
+    <meta property="og:title" content="Proyecto Uno — Arzaga Nahil" />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://arzaganahil.github.io/gallery-proyecto-1" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&family=Tulpen+One&family=Bruno+Ace&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://unpkg.com/splitting@1.0.6/dist/splitting.css" />
+    <link rel="stylesheet" href="https://unpkg.com/splitting@1.0.6/dist/splitting-cells.css" />
+    <script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.170.0/build/three.module.js"}}</script>
+    <link rel="stylesheet" href="css/style.css" />
+
+    <style>
+        .page-gallery main {
+            grid-template-areas:
+                'side side side frame frame frame'
+                'gallery gallery gallery gallery gallery gallery';
+        }
+
+        .page-gallery .gallery {
+            grid-area: gallery;
+        }
+
+        @media screen and (min-width: 54em) {
+            .page-gallery main {
+                height: auto;
+                min-height: 100vh;
+                overflow: visible;
+                grid-template-rows: 1fr;
+                grid-template-areas: 'gallery gallery gallery gallery gallery gallery';
+            }
+
+            .page-gallery .frame {
+                background: none;
+                backdrop-filter: none;
+                border: none;
+                grid-area: gallery;
+                z-index: 3;
+                display: grid;
+                align-content: space-between;
+                pointer-events: none;
+                grid-template-columns: 50% 50%;
+                grid-template-rows: auto auto auto;
+                grid-template-areas:
+                    '... ...'
+                    '... ...'
+                    'title links';
+                padding: 1.5rem 2rem;
+            }
+
+            .page-gallery .frame__links {
+                grid-area: links;
+                justify-self: end;
+                align-self: end;
+                pointer-events: auto;
+            }
+
+            .page-gallery .frame__links img {
+                width: 36px;
+                height: 36px;
+            }
+        }
+    </style>
+    <script>document.documentElement.className="js";</script>
+</head>
+<body class="loading page-gallery">
+    <div id="three-canvas" data-ring-pos="10,0,0"></div>
+    <main>
+        <nav class="topnav">
+            <a href="index.html" class="topnav__brand">Arzaga</a>
+            <div class="topnav__links">
+                <a href="index.html">Home</a>
+                <a href="development.html" class="is-current">Development</a>
+                <a href="design.html">Design</a>
+                <a href="photography.html">Photography</a>
+                <a href="about.html">About</a>
+                <a href="contact.html">Contact</a>
+            </div>
+        </nav>
+
+        <div class="frame">
+            <nav class="frame__links">
+                <a href="#"><img src="assets/IMG/instagram.svg" alt="Instagram (próximamente)"></a>
+                <a href="https://github.com/ArzagaNahil" target="_blank" rel="noopener noreferrer"><img src="assets/IMG/github.svg" alt="GitHub"></a>
+                <a href="https://www.linkedin.com/in/alexis-rivera-miranda-1667a430a/" target="_blank" rel="noopener noreferrer"><img src="assets/IMG/follow-in.svg" alt="LinkedIn"></a>
+            </nav>
+        </div>
+
+        <section class="gallery">
+            <a href="development.html" class="gallery__back">&larr; Development</a>
+
+            <h1 class="gallery__title">Proyecto <span class="gallery__title__offset">Uno</span></h1>
+            <p class="gallery__desc">
+                Descripción placeholder del Proyecto Uno. Aquí irá el resumen real: objetivo, stack
+                y lo que quieras destacar. Sustituye también las imágenes por capturas reales.
+            </p>
+
+            <div class="gallery__grid">
+                <figure class="gallery__item">
+                    <img src="assets/IMG/dev/woods/base.jpg" alt="Proyecto Uno — imagen 1">
+                </figure>
+                <figure class="gallery__item">
+                    <img src="assets/IMG/dev/woods/hover.jpg" alt="Proyecto Uno — imagen 2">
+                </figure>
+                <figure class="gallery__item">
+                    <img src="assets/IMG/dev/woods/base.jpg" alt="Proyecto Uno — imagen 3">
+                </figure>
+            </div>
+
+            <div class="gallery__links">
+                <a href="#" class="gallery__btn" target="_blank" rel="noopener noreferrer">Ver demo</a>
+                <a href="https://github.com/ArzagaNahil" class="gallery__btn" target="_blank" rel="noopener noreferrer">Ver código</a>
+            </div>
+        </section>
+    </main>
+
+    <script src="https://unpkg.com/gsap@3.12.5/dist/gsap.min.js"></script>
+    <script src="https://unpkg.com/splitting@1.0.6/dist/splitting.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js"></script>
+    <script src="js/segment.min.js"></script>
+    <script src="js/ease.min.js"></script>
+    <script type="module" src="js/index.js"></script>
+</body>
+</html>

@@ -37,8 +37,9 @@ export class MenuItem {
 
                 let htmlStr = `<span>${char.innerHTML}</span>`;
                 for (let i = 0; i <= totalRandomChars - 1; ++i) {
+                    const titleChar = menuConfig.displayVerticalTitle[this.itemPosition] ?? '';
                     htmlStr += i === totalRandomChars - 1
-                        ? `<span>${randomCharsArray[i]}</span><span>${menuConfig.displayVerticalTitle.charAt(this.itemPosition)}</span>`
+                        ? `<span>${randomCharsArray[i]}</span><span>${titleChar}</span>`
                         : `<span>${randomCharsArray[i]}</span>`;
                 }
                 this.DOM.slotMachine.innerHTML = htmlStr;

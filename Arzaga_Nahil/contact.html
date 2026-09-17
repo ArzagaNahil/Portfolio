@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="es" class="no-js">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Contacto — Arzaga Nahil</title>
+
+    <!-- SEO Meta -->
+    <meta name="description" content="Contacta con Arzaga Nahil. Estoy abierto a nuevos proyectos, colaboraciones y oportunidades." />
+    <meta name="keywords" content="arzaga nahil, contacto, portafolio, desarrollo web" />
+    <meta name="author" content="Arzaga Nahil" />
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Contacto — Arzaga Nahil" />
+    <meta property="og:description" content="Estoy abierto a nuevos proyectos, colaboraciones y oportunidades." />
+    <meta property="og:type" content="website" />
+
+    <!-- Robots & Canonical -->
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://arzaganahil.github.io/contact" />
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&family=Tulpen+One&family=Bruno+Ace&display=swap" rel="stylesheet" />
+
+    <!-- Splitting CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/splitting@1.0.6/dist/splitting.css" />
+    <link rel="stylesheet" href="https://unpkg.com/splitting@1.0.6/dist/splitting-cells.css" />
+
+    <!-- Three.js importmap -->
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://unpkg.com/three@0.170.0/build/three.module.js"
+        }
+    }
+    </script>
+
+    <!-- Main Styles -->
+    <link rel="stylesheet" href="css/style.css" />
+
+    <!-- Contact page specific styles -->
+    <style>
+        .page-contact main {
+            grid-template-areas:
+                'side side side frame frame frame'
+                'contact contact contact contact contact contact';
+        }
+
+        .page-contact .contact {
+            display: grid;
+            place-items: center;
+            padding: 2rem;
+        }
+
+        .page-contact .contact__card {
+            width: 100%;
+            max-width: 469px;
+        }
+
+        @media screen and (min-width: 54em) {
+            .page-contact main {
+                height: 100vh;
+                overflow: hidden;
+                grid-template-rows: 100%;
+                grid-template-areas: 'side side side contact contact contact';
+            }
+
+            .page-contact .contact {
+                grid-area: contact;
+                padding: 1rem 2rem 11rem;
+            }
+
+            .page-contact .contact__card {
+                margin-right: 220px;
+                margin-top: 50px;
+            }
+
+            .page-contact .frame {
+                background: none;
+                backdrop-filter: none;
+                border: none;
+                grid-area: contact;
+                display: grid;
+                align-content: space-between;
+                pointer-events: none;
+                grid-template-columns: 50% 50%;
+                grid-template-rows: auto auto auto;
+                grid-template-areas:
+                    '... ...'
+                    '... ...'
+                    'title links';
+                padding: 1.5rem 2rem;
+            }
+
+            .page-contact .frame::after {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                pointer-events: none;
+                width: 100%;
+                height: 100%;
+                z-index: 10;
+                background: #000000;
+                opacity: 0;
+                transition: opacity 0.8s ease-in-out 0.3s;
+            }
+
+            .page-contact .menu--open ~ .frame::after {
+                opacity: 0.75;
+                transition-delay: 0s;
+                pointer-events: auto;
+            }
+
+            .page-contact .frame__links {
+                grid-area: links;
+                justify-self: end;
+                align-self: end;
+                pointer-events: auto;
+            }
+
+            .page-contact .frame__links img {
+                width: 36px;
+                height: 36px;
+            }
+        }
+    </style>
+
+    <script>document.documentElement.className="js";</script>
+</head>
+<body class="loading page-contact">
+    <div id="three-canvas" data-ring-pos="10,0,0"></div>
+    <main>
+        <!-- NAV / MENU -->
+        <nav class="menu">
+            <div class="menu__bg"></div>
+            <button class="menu__button unbutton" aria-label="Abrir menú">
+                <div class="menu__icon-wrapper">
+                    <svg width="1000" height="1000" viewBox="0 0 1000 1000">
+                        <path id="pathA" d="M 300 400 L 700 400 C 900 400 900 750 600 850 A 400 400 0 0 1 200 200 L 800 800"/>
+                        <path id="pathB" d="M 300 500 L 700 500"/>
+                        <path id="pathC" d="M 700 600 L 300 600 C 100 600 100 200 400 150 A 400 380 0 1 1 200 800 L 800 200"/>
+                    </svg>
+                </div>
+            </button>
+
+            <div class="menu__items">
+                <a data-splitting href="index.html" class="menu__item">Home</a>
+                <a data-splitting href="development.html" class="menu__item">Development</a>
+                <a data-splitting href="design.html" class="menu__item">Design</a>
+                <a data-splitting href="photography.html" class="menu__item">Photography</a>
+                <a data-splitting href="about.html" class="menu__item">About</a>
+                <a data-splitting href="contact.html" class="menu__item">Contact</a>
+            </div>
+
+            <h3 class="menu__tagline">Nahil</h3>
+        </nav>
+
+        <!-- FRAME / TOP BAR -->
+        <div class="frame">
+            <nav class="frame__links">
+                <a href="#">
+                    <img src="assets/IMG/instagram.svg" alt="Instagram (próximamente)">
+                </a>
+                <a href="https://github.com/ArzagaNahil" target="_blank" rel="noopener noreferrer">
+                    <img src="assets/IMG/github.svg" alt="GitHub">
+                </a>
+                <a href="https://www.linkedin.com/in/alexis-rivera-miranda-1667a430a/" target="_blank" rel="noopener noreferrer">
+                    <img src="assets/IMG/follow-in.svg" alt="LinkedIn">
+                </a>                
+            </nav>
+        </div>
+
+        <!-- CONTACT SECTION -->
+        <section class="contact" id="contact">
+            <div class="contact__card">
+                <span class="contact__overline">Contacto</span>
+                <h2 class="contact__title">Trabajemos juntos</h2>
+                <p class="contact__sub">Estoy abierto a nuevos proyectos, colaboraciones y oportunidades. Cuéntame de tu idea.</p>
+                <form class="contact__form" action="#" method="POST">
+                    <div class="form-group">
+                        <label class="form-label" for="name">Nombre</label>
+                        <input class="form-input" type="text" id="name" name="name" required />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="email">Email</label>
+                        <input class="form-input" type="email" id="email" name="email" required />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="message">Mensaje</label>
+                        <textarea class="form-input form-textarea" id="message" name="message" rows="4" required></textarea>
+                    </div>
+                    <button class="shiny-cta" type="submit"><span>Enviar mensaje</span></button>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <!-- SCRIPTS -->
+    <script src="https://unpkg.com/gsap@3.12.5/dist/gsap.min.js"></script>
+    <script src="https://unpkg.com/splitting@1.0.6/dist/splitting.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js"></script>
+
+    <script src="js/segment.min.js"></script>
+    <script src="js/ease.min.js"></script>
+
+    <script type="module" src="js/index.js"></script>
+</body>
+</html>

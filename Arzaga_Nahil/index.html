@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="es" class="no-js">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Arzaga Nahil — Portafolio</title>
 
     <!-- SEO Meta -->
-    <meta name="description" content="Portafolio profesional de Arzaga Nahil. Diseño moderno, desarrollo web y marketing digital." />
+    <meta name="description"
+        content="Portafolio profesional de Arzaga Nahil. Diseño moderno, desarrollo web y marketing digital." />
     <meta name="keywords" content="arzaga nahil, portafolio, desarrollo web, diseño, marketing" />
     <meta name="author" content="Arzaga Nahil" />
 
@@ -14,11 +16,18 @@
     <meta property="og:title" content="Arzaga Nahil — Portafolio" />
     <meta property="og:description" content="Diseño moderno, desarrollo web y marketing digital." />
     <meta property="og:type" content="website" />
+    <meta property="og:image" content="assets/IMG/Encabezado portfolio.png" />
+
+    <!-- Robots & Canonical -->
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://arzaganahil.github.io" />
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&family=Tulpen+One&family=Bruno+Ace&display=swap"
+        rel="stylesheet" />
 
     <!-- Splitting CSS -->
     <link rel="stylesheet" href="https://unpkg.com/splitting@1.0.6/dist/splitting.css" />
@@ -36,8 +45,9 @@
     <!-- Main Styles -->
     <link rel="stylesheet" href="css/style.css" />
 
-    <script>document.documentElement.className="js";</script>
+    <script>document.documentElement.className = "js";</script>
 </head>
+
 <body class="loading">
     <div id="three-canvas"></div>
     <main>
@@ -45,19 +55,24 @@
         <nav class="menu">
             <div class="menu__bg"></div>
             <button class="menu__button unbutton" aria-label="Abrir menú">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                    <path class="menu__button-lines" d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-                    <path class="menu__button-cross" d="M6 6l12 12M18 6l-12 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-                </svg>
+                <div class="menu__icon-wrapper">
+                    <svg width="1000" height="1000" viewBox="0 0 1000 1000">
+                        <path id="pathA"
+                            d="M 300 400 L 700 400 C 900 400 900 750 600 850 A 400 400 0 0 1 200 200 L 800 800" />
+                        <path id="pathB" d="M 300 500 L 700 500" />
+                        <path id="pathC"
+                            d="M 700 600 L 300 600 C 100 600 100 200 400 150 A 400 380 0 1 1 200 800 L 800 200" />
+                    </svg>
+                </div>
             </button>
 
             <div class="menu__items">
-                <a data-splitting href="#" class="menu__item">Photography</a>
-                <a data-splitting href="#" class="menu__item">Design</a>
-                <a data-splitting href="#" class="menu__item">Development</a>
-                <a data-splitting href="#" class="menu__item">About</a>
-                <a data-splitting href="#" class="menu__item">Partners</a>
-                <a data-splitting href="#" class="menu__item">Contact</a>
+                <a data-splitting href="index.html" class="menu__item">Home</a>
+                <a data-splitting href="development.html" class="menu__item">Development</a>
+                <a data-splitting href="design.html" class="menu__item">Design</a>
+                <a data-splitting href="photography.html" class="menu__item">Photography</a>
+                <a data-splitting href="about.html" class="menu__item">About</a>
+                <a data-splitting href="contact.html" class="menu__item">Contact</a>
             </div>
 
             <h3 class="menu__tagline">Nahil</h3>
@@ -65,7 +80,6 @@
 
         <!-- FRAME / TOP BAR -->
         <div class="frame">
-            <h1 class="frame__title">RIVERA MIRANDA</h1>
             <nav class="frame__links">
                 <a href="#">
                     <img src="assets/IMG/instagram.svg" alt="Instagram (próximamente)">
@@ -73,9 +87,10 @@
                 <a href="https://github.com/ArzagaNahil" target="_blank" rel="noopener noreferrer">
                     <img src="assets/IMG/github.svg" alt="GitHub">
                 </a>
-                <a href="https://www.linkedin.com/in/alexis-rivera-miranda-1667a430a/" target="_blank" rel="noopener noreferrer">
+                <a href="https://www.linkedin.com/in/alexis-rivera-miranda-1667a430a/" target="_blank"
+                    rel="noopener noreferrer">
                     <img src="assets/IMG/follow-in.svg" alt="LinkedIn">
-                </a>                
+                </a>
             </nav>
         </div>
 
@@ -83,31 +98,26 @@
         <section class="content">
             <div class="content__column">
                 <p class="content__greeting">Hola, soy</p>
-                <h2 class="content__headline">Alexis<br/>Rivera Miranda</h2>
+                <h2 class="content__headline">Alexis</h2>
+                <h2 class="content__headline1">Rivera Miranda</h2>
                 <p class="content__sub">
-                    Bienvenidos a mi universo creativo, donde el diseño gráfico, 
-                    la fotografía y el desarrollo web se unen para dar vida a ideas 
-                    con una identidad única. Este espacio refleja mi pasión por la 
-                    comunicación visual, la creación de imágenes con intención y el 
-                    desarrollo de experiencias digitales que conectan de verdad. 
-                    Cada proyecto refleja mi compromiso con la estética, la 
-                    funcionalidad y la narrativa, siempre buscando transformar conceptos 
-                    en soluciones visuales que inspiren y sean efectivas. 
+                    Bienvenidos a mi universo creativo, donde el diseño gráfico,
+                    la fotografía y el desarrollo web se unen para dar vida a ideas
+                    con una identidad única. Este espacio refleja mi pasión por la
+                    comunicación visual, la creación de imágenes con intención y el
+                    desarrollo de experiencias digitales que conectan de verdad.
+                    Cada proyecto refleja mi compromiso con la estética, la
+                    funcionalidad y la narrativa, siempre buscando transformar conceptos
+                    en soluciones visuales que inspiren y sean efectivas.
                     ¡Gracias por estar aquí!
                 </p>
-                <a href="#" class="content__cta hover-line">Ver proyectos →</a>
+                <a href="#" class="content__cta"><span>Ver proyectos</span><span class="content__cta__arrow" aria-hidden="true">&rarr;</span></a>
             </div>
             <div class="content__column">
-                <img class="content__image" src="assets/IMG/Encabezado portfolio.png" alt="Alexis Rivera Miranda — Portfolio" />
+                <img class="content__image" src="assets/IMG/Encabezado portfolio.png"
+                    alt="Alexis Rivera Miranda — Portfolio" />
             </div>
         </section>
-
-        <!-- DECORATIVE NEXT ARROW -->
-        <button class="button-next unbutton" aria-label="Siguiente">
-            <svg width="28" height="14" viewBox="0 0 28 14">
-                <path d="M22 .5c-.6-.6-1.6-.6-2.2 0s-.6 1.6 0 2.2l4 4H1.5C.7 6.7 0 7.4 0 8.3s.7 1.5 1.5 1.5h22.3l-4 4c-.6.6-.6 1.6 0 2.2.3.3.7.5 1.1.5s.8-.2 1.1-.5l5.8-5.8c.6-.6.6-1.6 0-2.2L22 .5z" fill="currentColor"/>
-            </svg>
-        </button>
     </main>
 
     <!-- SCRIPTS -->
@@ -115,6 +125,10 @@
     <script src="https://unpkg.com/splitting@1.0.6/dist/splitting.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js"></script>
 
+    <script src="js/segment.min.js"></script>
+    <script src="js/ease.min.js"></script>
+
     <script type="module" src="js/index.js"></script>
 </body>
+
 </html>
