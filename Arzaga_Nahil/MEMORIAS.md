@@ -416,7 +416,7 @@ Arzaga_Nahil/
 
 ---
 
-## Estado actual del proyecto — 17/09/2026
+## Estado actual del proyecto — 18/09/2026
 
 ###  Árbol de archivos
 ```
@@ -430,16 +430,19 @@ Arzaga/
 ├── gallery-proyecto-2.html     # Galería placeholder Proyecto Dos
 ├── gallery-proyecto-3.html     # Galería placeholder Proyecto Tres
 ├── contact.html                # Formulario + Shiny CTA + LetterShuffleMenu
+├── site.webmanifest            # Manifest PWA (iconos, theme-color)
 ├── css/style.css               # Único CSS (1320 líneas)
 ├── js/
 │   ├── index.js                # Entry point (Splitting, Menu, HoverSound, Particles, Gooey)
 │   ├── menu.js / menuItem.js / menuConfig.js / utils.js   # Menú LetterShuffle
+│   ├── i18n.js                 # Diccionario ES/EN + toggle de idioma
 │   ├── particles.js            # Fondo Three.js: 2000 partículas + 3 anillos
 │   ├── gooey.js                # Efecto gooey (shader snoise3 inline)
 │   ├── hoverSound.js           # Sonido de hover en topnav
 │   └── segment.min.js / ease.min.js  # Morphing del botón de menú
 └── assets/
     ├── IMG/                    # Encabezado portfolio.png + SVGs sociales + dev/{woods,rocks,cities}
+    │                           # + favicon.svg / favicon.ico / favicon-192.png / favicon-512.png / apple-touch-icon.png
     └── audio/hover.mp3
 ```
 
@@ -460,6 +463,15 @@ Arzaga/
 9. Efecto Gooey en Development + galerías (17/09)
 10. About/Design/Photography + topnav + hover sound + anillos (17/09)
 11. Galería Development estilo Codrops + fix scroll (17/09)
+12. Development: sin CTA, títulos grandes, prev/next y wave (18/09)
+13. Fix responsive Development/Design/Photography/Contact (18/09)
+14. Galerías rediseñadas (carrusel infinito) + fix botón zombie (18/09)
+15. Nav alineada con el título + títulos coherentes (18/09)
+16. Extensiones: imágenes y descripciones fijas (18/09)
+17. Descripciones profesionales en las 3 galerías (18/09)
+18. Páginas Web: 5 tarjetas con imágenes reales (18/09)
+19. Sitio bilingüe ES/EN con toggle de idioma (18/09)
+20. Cierre del bloque i18n + CTA real + favicon/manifest (18/09)
 
 ---
 
@@ -710,3 +722,88 @@ Arzaga/
 - [ ] Instagram con `href="#"`.
 - [ ] Favicon/manifest.
 - [ ] Consolidar `<style>` inline repetido en `style.css`.
+
+---
+
+## Sesión 19 — Sitio bilingüe ES/EN (i18n) con toggle de idioma
+
+*Registrado el 18 de septiembre de 2026.*
+
+###  Objetivo
+Que todo el sitio se pueda leer en español o en inglés sin duplicar páginas (MPA ya existente).
+
+###  Decisión técnica
+- **Diccionario plano** en `js/i18n.js`: `SUPPORTED_LANGS = ['es','en']`, `DEFAULT_LANG = 'es'`, exporta `getLang()`, `setLang()`, `initI18n()`.
+- **Marcado declarativo** en el HTML, sin lógica por página:
+  - `data-i18n="clave"` → escribe `textContent`.
+  - `data-i18n-offset="clave"` → títulos partidos en dos: prefijo en el texto del `<h1>`/`<h2>` + `<span class="page-title__offset">` / `.tile__title__offset`.
+  - `data-i18n-attr="attr"` + `data-i18n-key="clave"` → atributos (`alt`, `aria-label`, `content`).
+- **Persistencia**: `localStorage.lang`; se actualiza `document.documentElement.lang`.
+- **Menú LetterShuffle**: `initI18n(cb)` avisa al menú y `Menu.restart()` vuelve a montar los items (`data-label`) con `Splitting` para relanzar el shuffle con las etiquetas nuevas.
+- **Toggle** `.lang__toggle` en el `frame` (index/contact) y en el `topnav` (resto); muestra el idioma destino y expone `aria-label` bilingüe.
+
+###  Archivos
+```
+Arzaga_Nahil/
+├── js/i18n.js          # NUEVO — diccionario ES/EN + apply/setLang/initI18n
+├── js/menu.js          # NUEVO método restart()
+├── js/index.js         # initI18n(() => menu.restart())
+├── css/style.css       # estilos del botón de idioma
+└── 9 páginas HTML      # data-i18n / data-i18n-offset / data-i18n-attr + toggle
+```
+
+###  Verificación (entonces)
+- Cobertura medida con script: **87 claves usadas = 87 en `es` = 87 en `en`** (0 faltantes, 0 sin usar).
+
+###  Pendientes detectados en esa sesión
+- [ ] Traducir `<title>`, `meta description` y Open Graph (el SEO quedaba en español).
+- [ ] El 3er tile de Design ("UI / UX") no tenía clave i18n.
+
+---
+
+## Sesión 20 — Cierre del bloque i18n + navegación real + favicon/manifest
+
+*Registrado el 18 de septiembre de 2026.*
+
+###  Objetivo
+Cerrar todos los pendientes que **no dependen de contenido externo**: SEO bilingüe, CTA real, identidad de pestaña/PWA y limpieza.
+
+###  SEO bilingüe (`<title>` + meta + Open Graph) — sin JS nuevo
+- `<title data-i18n="meta_title_*">`: el `apply()` ya escribía `textContent`, así que basta con marcar la etiqueta.
+- `<meta name="description" data-i18n-attr="content" data-i18n-key="meta_desc_*">`.
+- `og:title` / `og:description` **reutilizan las mismas claves**.
+- 18 claves nuevas por idioma (36 en total): `meta_title_{index,about,contact,design,dev,photo,gal1,gal2,gal3}` y `meta_desc_*`.
+- Se añadieron `og:description` y `og:type` en `design`, `development`, `photography` y las 3 galerías (no existían).
+
+###  Navegación
+- CTA "Ver proyectos" del index: `href="#"` → **`development.html`** (era el último enlace muerto de la home).
+- `<title>` de galerías: se quitó el sobrante "— Development —" (`Páginas Web — Arzaga Nahil`, `Extensiones — Arzaga Nahil`).
+
+###  i18n — huecos cerrados
+- `tile_ui: 'UI / UX'` en ambos idiomas (era la única cadena del sitio sin clave).
+- `apply()`: eliminado el `offset.textContent = dict[key]` que quedaba sobreescrito (código muerto) → `offset.textContent = offsetKey in dict ? dict[offsetKey] : dict[key]`.
+
+###  Favicon + manifest (en las 9 páginas)
+- Assets nuevos en `assets/IMG/` (monograma "A" monoline teal `#0093a5` sobre cuadrado negro redondeado, generado con GDI+):
+  `favicon.svg` · `favicon.ico` (32px) · `favicon-192.png` · `favicon-512.png` · `apple-touch-icon.png` (180px).
+- `site.webmanifest` en la raíz: `name`, `start_url`, `display: standalone`, `background_color #000000`, `theme_color #0093a5` y 4 iconos (SVG + 192 + 512 en `any` y `maskable`).
+- En cada `<head>`: `<link rel="icon">` (svg/png/ico), `apple-touch-icon`, `manifest` y `<meta name="theme-color">`.
+
+###  Verificación (medida, no asumida)
+- **Cobertura i18n: 106 claves usadas = 106 en `es` = 106 en `en`** (0 faltantes / 0 sin usar).
+- `node --check` sobre los 9 módulos JS: **OK**.
+- Chrome headless + `python -m http.server` con sonda que fija `localStorage.lang='en'` y recorre las 9 páginas:
+  - `lang=en`, `<title>`, `description` y `og:title` en inglés en todas.
+  - `icon` y `manifest` presentes en las 9.
+  - **`leaks=NONE` y `pending=NONE`** en las 9 → cero restos de español en modo EN.
+- Render ES por defecto (perfil limpio): `lang="es"`, título y descripción en español, `theme-color #0093a5`, `body.loading` retirada, CTA → `development.html`.
+- Sin errores JS en consola (solo ruido GCM de Chrome); `site.webmanifest` parsea como JSON y `favicon.svg` como XML; PNGs 512×512 / 180×180 verificados.
+- Integridad UTF-8: 0 mojibake en las 9 páginas y en `js/i18n.js` (acentos y guiones largos intactos).
+
+###  Pendientes
+- [ ] **About / Design / Photography**: contenido real (bio, skills, imágenes) — los tiles siguen con `blank.jpg` y `about.html` no tiene sección.
+- [ ] **27 `href="#"`** por reemplazar cuando existan URLs reales (demos de galerías, Instagram, tiles).
+- [ ] Consolidar los `<style>` inline repetidos (~500 líneas en 8 páginas) en `css/style.css`.
+- [ ] `sitemap.xml`: valorar `lastmod` / `<changefreq>`.
+- [ ] (Opcional) Unificar idioma de los `<title>` ES de Design/Photography ("Design/Photography" vs nav "Diseño/Fotografía").
+

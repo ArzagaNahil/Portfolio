@@ -44,6 +44,7 @@ export const I18N = {
         tile_retrato: 'Retrato',
         tile_paisaje: 'Paisaje',
         tile_producto: 'Producto',
+        tile_ui: 'UI / UX',
 
         alt_dev: 'Desarrollo Web',
         alt_pages: 'Páginas Web',
@@ -102,6 +103,25 @@ export const I18N = {
         c_label_email: 'Email',
         c_label_message: 'Mensaje',
         c_submit: 'Enviar mensaje',
+
+        meta_title_index: 'Arzaga Nahil — Portafolio',
+        meta_desc_index: 'Portafolio profesional de Arzaga Nahil. Diseño moderno, desarrollo web y marketing digital.',
+        meta_title_about: 'Sobre mí — Arzaga Nahil',
+        meta_desc_about: 'Conoce más sobre Arzaga Nahil: diseñador gráfico, fotógrafo y desarrollador web.',
+        meta_title_contact: 'Contacto — Arzaga Nahil',
+        meta_desc_contact: 'Contacta con Arzaga Nahil. Estoy abierto a nuevos proyectos, colaboraciones y oportunidades.',
+        meta_title_design: 'Design — Arzaga Nahil',
+        meta_desc_design: 'Proyectos de diseño gráfico de Arzaga Nahil.',
+        meta_title_dev: 'Development — Arzaga Nahil',
+        meta_desc_dev: 'Proyectos de desarrollo web de Arzaga Nahil.',
+        meta_title_photo: 'Photography — Arzaga Nahil',
+        meta_desc_photo: 'Fotografía de Arzaga Nahil.',
+        meta_title_gal1: 'Desarrollo Web — Arzaga Nahil',
+        meta_desc_gal1: 'Desarrollo Web: fotos y enlaces de los proyectos de desarrollo web de Arzaga Nahil.',
+        meta_title_gal2: 'Páginas Web — Arzaga Nahil',
+        meta_desc_gal2: 'Páginas Web: fotos y enlaces de los proyectos de páginas web de Arzaga Nahil.',
+        meta_title_gal3: 'Extensiones — Arzaga Nahil',
+        meta_desc_gal3: 'Extensiones: fotos y enlaces de los proyectos de extensiones de Arzaga Nahil.',
     },
 
     en: {
@@ -146,6 +166,7 @@ export const I18N = {
         tile_retrato: 'Portrait',
         tile_paisaje: 'Landscape',
         tile_producto: 'Product',
+        tile_ui: 'UI / UX',
 
         alt_dev: 'Web Development',
         alt_pages: 'Web Pages',
@@ -204,6 +225,25 @@ export const I18N = {
         c_label_email: 'Email',
         c_label_message: 'Message',
         c_submit: 'Send message',
+
+        meta_title_index: 'Arzaga Nahil — Portfolio',
+        meta_desc_index: 'Professional portfolio of Arzaga Nahil. Modern design, web development and digital marketing.',
+        meta_title_about: 'About — Arzaga Nahil',
+        meta_desc_about: 'Learn more about Arzaga Nahil: graphic designer, photographer and web developer.',
+        meta_title_contact: 'Contact — Arzaga Nahil',
+        meta_desc_contact: 'Get in touch with Arzaga Nahil. Open to new projects, collaborations and opportunities.',
+        meta_title_design: 'Design — Arzaga Nahil',
+        meta_desc_design: 'Graphic design projects by Arzaga Nahil.',
+        meta_title_dev: 'Development — Arzaga Nahil',
+        meta_desc_dev: 'Web development projects by Arzaga Nahil.',
+        meta_title_photo: 'Photography — Arzaga Nahil',
+        meta_desc_photo: 'Photography by Arzaga Nahil.',
+        meta_title_gal1: 'Web Development — Arzaga Nahil',
+        meta_desc_gal1: 'Web Development: photos and links to Arzaga Nahil web development projects.',
+        meta_title_gal2: 'Web Pages — Arzaga Nahil',
+        meta_desc_gal2: 'Web Pages: photos and links to Arzaga Nahil web page projects.',
+        meta_title_gal3: 'Extensions — Arzaga Nahil',
+        meta_desc_gal3: 'Extensions: photos and links to Arzaga Nahil browser extension projects.',
     },
 };
 
@@ -220,14 +260,12 @@ function apply() {
         const offset = el.querySelector(':scope > .page-title__offset, :scope > .tile__title__offset');
 
         if (offset && el.dataset.i18nOffset) {
+            const offsetKey = el.dataset.i18nOffset;
             el.childNodes.forEach((node) => {
                 if (node.nodeType === 3) node.data = '';
             });
-            offset.textContent = dict[key];
+            offset.textContent = offsetKey in dict ? dict[offsetKey] : dict[key];
             el.insertBefore(document.createTextNode(dict[key]), offset);
-            if (el.dataset.i18nOffset in dict) {
-                offset.textContent = dict[el.dataset.i18nOffset];
-            }
             return;
         }
 
