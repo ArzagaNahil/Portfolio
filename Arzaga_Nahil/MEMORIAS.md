@@ -579,3 +579,35 @@ Arzaga/
 
 ###  Pendientes (sin cambios)
 - [ ] Same pendientes de sesiones anteriores.
+
+---
+
+## Sesión 14 — Galerías rediseñadas estilo Development + fix botón zombie
+
+*Registrado el 18 de septiembre de 2026.*
+
+###  Galerías (`gallery-proyecto-1/2/3.html`)
+- Layout horizontal en desktop (≥54em): `main` `100vh/overflow:hidden`, `.gallery` en grid de 2 columnas `minmax(280px,2fr) minmax(0,5fr)` con áreas `'text carousel'`.
+- Columna izquierda `.gallery__text` centrada (vertical + horizontal), `gap:3rem`: botón de volver + descripción + links.
+- Botón de volver con texto circular giratorio (patrón Codrops): anillo "· IR A DESARROLLO · IR A DESARROLLO" (textPath, viewBox 130, radio 48, rotación 40s) + flecha `←` centrada.
+- Título gigante transparente `.page-title` arriba (una sola línea en galerías, `display:inline` en el offset).
+- Carrusel infinito: `.gallery__track` marquee `translateX(-50%)` 40s, pausa al hover, descripción fade-in por tarjeta, fallback `prefers-reduced-motion` (scroll nativo).
+- `initGalleryCarousel()` en `js/index.js`: clona el set base hasta `2×` del ancho del carrusel (set par para loop seamless).
+- Tarjetas = links clicables a la demo: `<a class="gallery__item__link" href="#" target="_blank" rel="noopener">` (placeholder; URLs reales pendientes). Hover: `translateY(-4px)` + borde acento. JS `initGalleryCarousel` el clonado maneja los `<a>`.
+- `data-rings="off"` en `#three-canvas` (sin anillos wireframe).
+
+###  Botones
+- Se eliminó "Ver demo" (redundante: toda la tarjeta ya abre la demo); queda solo **"Ver código"** (repo GitHub).
+- "Ver código" ahora usa el estilo del `.content__cta` del index: pill teal translucent (borde `rgba(0,147,165,.45)`, fondo `.06` + blur), texto `#7fd4dd`, hover con glow `box-shadow` y flecha `→` que se desplaza (`translateX(4px)`).
+
+###  Fix: botón "Ver código" zombi en Chrome
+- **Síntoma**: al volver a la pestaña de la galería tras abrir GitHub (`target=_blank`), el botón quedaba invisible hasta pasar el mouse por encima.
+- **Causa**: Chrome no re-rastrea la capa del botón al restaurar la pestaña (paint obsoleto del compositor); un simple reflow no alcanzaba.
+- **Fix** (`js/index.js`): en `visibilitychange` (tab visible) se fuerza re-composite de `.gallery__btn`/`.gallery__links` togglando `visibility:hidden` en doble `requestAnimationFrame` + `void offsetWidth`.
+
+###  Pendientes
+- [ ] Reemplazar `href="#"` de las tarjetas de demo por URLs reales (pestaña nueva).
+- [ ] CTA "Ver proyectos" del index apunta a `#`.
+- [ ] Instagram con `href="#"`.
+- [ ] Favicon/manifest.
+- [ ] Consolidar `<style>` inline repetido en `style.css`.

@@ -42,6 +42,25 @@ const showRings = container.dataset.rings !== 'off';
 const cleanup = initScene(container, ringPos, showRings);
 const cleanupGooey = initGooey();
 
+function initGalleryCarousel() {
+    const carousel = document.querySelector('.gallery__carousel');
+    if (!carousel) return;
+    const track = carousel.querySelector('.gallery__track');
+    if (!track || track.children.length === 0) return;
+
+    const baseItems = Array.from(track.children);
+    const baseCount = baseItems.length;
+    let guard = 0;
+    while (track.scrollWidth < carousel.clientWidth * 2 && guard < 8) {
+        baseItems.forEach((el) => track.appendChild(el.cloneNode(true)));
+        guard++;
+    }
+    if ((track.children.length / baseCount) % 2 !== 0) {
+        baseItems.forEach((el) => track.appendChild(el.cloneNode(true)));
+    }
+}
+initGalleryCarousel();
+
 const tiles = document.querySelector('.devtiles');
 if (tiles && window.matchMedia('(min-width: 54em)').matches) {
     tiles.addEventListener('wheel', (e) => {
@@ -159,6 +178,22 @@ preloadFonts('Inter:300,400,600,700').then(() => {
 
 window.addEventListener('beforeunload', cleanup);
 window.addEventListener('beforeunload', cleanupGooey);
+document.addEventListener('visibilitychange', () => {
+    if (document.hidden) return;
+
+    const recompose = () => {
+        const targets = Array.from(document.querySelectorAll('.gallery__btn, .gallery__links'));
+        targets.forEach((el) => { el.style.visibility = 'hidden'; });
+        void document.body.offsetWidth;
+        requestAnimationFrame(() => {
+            targets.forEach((el) => { el.style.visibility = ''; });
+        });
+    };
+
+    void document.body.offsetWidth;
+    requestAnimationFrame(recompose);
+});
+
 window.addEventListener('pageshow', (e) => {
     if (e.persisted) window.location.reload();
 });
