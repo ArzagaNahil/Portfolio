@@ -81,80 +81,82 @@
     <main>
         <nav class="topnav">
             <a href="index.html" class="topnav__brand">Arzaga</a>
-            <button type="button" class="topnav__toggle" aria-label="Abrir menú" aria-expanded="false" aria-controls="topnav-links"><span class="topnav__toggle-inner"></span></button>
+            <button type="button" class="topnav__toggle" aria-label="Abrir menú" aria-expanded="false" aria-controls="topnav-links" data-i18n-attr="aria-label" data-i18n-key="nav_open"><span class="topnav__toggle-inner"></span></button>
             <div class="topnav__links" id="topnav-links">
-                <a href="index.html">Home</a>
-                <a href="development.html" class="is-current">Development</a>
-                <a href="design.html">Design</a>
-                <a href="photography.html">Photography</a>
-                <a href="about.html">About</a>
-                <a href="contact.html">Contact</a>
+                <a href="index.html" data-i18n="nav_home">Home</a>
+                <a href="development.html" class="is-current" data-i18n="nav_dev">Development</a>
+                <a href="design.html" data-i18n="nav_design">Design</a>
+                <a href="photography.html" data-i18n="nav_photo">Photography</a>
+                <a href="about.html" data-i18n="nav_about">About</a>
+                <a href="contact.html" data-i18n="nav_contact">Contact</a>
+                <button type="button" class="lang__toggle" data-i18n-toggle>EN</button>
             </div>
         </nav>
 
         <div class="frame">
             <nav class="frame__links">
-                <a href="#"><img src="assets/IMG/instagram.svg" alt="Instagram (próximamente)"></a>
+                <a href="#"><img src="assets/IMG/instagram.svg" alt="Instagram (próximamente)" data-i18n-attr="alt" data-i18n-key="instagram_soon"></a>
                 <a href="https://github.com/ArzagaNahil" target="_blank" rel="noopener noreferrer"><img src="assets/IMG/github.svg" alt="GitHub"></a>
                 <a href="https://www.linkedin.com/in/alexis-rivera-miranda-1667a430a/" target="_blank" rel="noopener noreferrer"><img src="assets/IMG/follow-in.svg" alt="LinkedIn"></a>
             </nav>
         </div>
 
-        <h1 class="page-title">Páginas <span class="page-title__offset">Web</span></h1>
+        <h1 class="page-title" data-i18n="pt_gal2_pre" data-i18n-offset="pt_gal2_off">Páginas <span class="page-title__offset">Web</span></h1>
 
         <section class="gallery">
             <div class="gallery__text">
-                <a href="development.html" class="gallery__back" aria-label="Volver a Development">
+                <a href="development.html" class="gallery__back" aria-label="Volver a Development" data-i18n-attr="aria-label" data-i18n-key="g_back">
                     <svg class="gallery__back__ring" viewBox="0 0 130 130" aria-hidden="true">
                         <defs>
                             <path id="gallery-back-circle" d="M 65 65 m 0 -48 a 48 48 0 1 1 0 96 a 48 48 0 1 1 0 -96" />
                         </defs>
                         <text>
-                            <textPath href="#gallery-back-circle">· IR A DESARROLLO · IR A DESARROLLO</textPath>
+                            <textPath href="#gallery-back-circle" data-i18n="g_ring">· IR A DESARROLLO · IR A DESARROLLO</textPath>
                         </text>
                     </svg>
                     <span class="gallery__back__arrow" aria-hidden="true">&larr;</span>
                 </a>
 
-                <p class="gallery__desc">
+                <p class="gallery__desc" data-i18n="g_desc_pages">
                     Sitios web de negocio e institucionales pensados para transmitir identidad,
-                    generar confianza y convertir visitas en clientes.
+                    generar confianza y convertir visitas en clientes. Diseño a medida,
+                    responsive, SEO y carga rápida.
                 </p>
 
                 <div class="gallery__links">
-                    <a href="https://github.com/ArzagaNahil" class="gallery__btn" target="_blank" rel="noopener noreferrer"><span>Ver código</span><span class="gallery__btn__arrow" aria-hidden="true">&rarr;</span></a>
+                    <a href="https://github.com/ArzagaNahil" class="gallery__btn" target="_blank" rel="noopener noreferrer"><span data-i18n="g_code">Ver código</span><span class="gallery__btn__arrow" aria-hidden="true">&rarr;</span></a>
                 </div>
             </div>
 
             <div class="gallery__carousel">
                 <div class="gallery__track">
-                    <a href="#" target="_blank" rel="noopener noreferrer" class="gallery__item__link" aria-label="Ver demo — Páginas Web — imagen 1">
+                    <a href="#" target="_blank" rel="noopener noreferrer" class="gallery__item__link" aria-label="Ver demo — Páginas Web — imagen 1" data-i18n-attr="aria-label" data-i18n-key="g2_demo_1">
                         <figure class="gallery__item">
-                            <img src="assets/IMG/Pw/at.jpg" alt="Páginas Web — imagen 1">
-                            <figcaption class="gallery__item__desc"><strong>Aurora Travel</strong>Página web de viajes: destinos, inspiración y planes para organizar tu próximo viaje.</figcaption>
+                            <img src="assets/IMG/Pw/at.jpg" alt="Páginas Web — imagen 1" data-i18n-attr="alt" data-i18n-key="g2_img_1">
+                            <figcaption class="gallery__item__desc"><strong>Aurora Travel</strong><span data-i18n="g2_card1">Página web de viajes: destinos, inspiración y planes para organizar tu próximo viaje.</span></figcaption>
                         </figure>
                     </a>
-                    <a href="#" target="_blank" rel="noopener noreferrer" class="gallery__item__link" aria-label="Ver demo — Páginas Web — imagen 2">
+                    <a href="#" target="_blank" rel="noopener noreferrer" class="gallery__item__link" aria-label="Ver demo — Páginas Web — imagen 2" data-i18n-attr="aria-label" data-i18n-key="g2_demo_2">
                         <figure class="gallery__item">
-                            <img src="assets/IMG/Pw/DR.jpg" alt="Páginas Web — imagen 2">
-                            <figcaption class="gallery__item__desc"><strong>Distrito-R</strong>Ranking tracker local: tu posición real en Google por distrito y ciudad, con IPs residenciales, desktop y móvil.</figcaption>
+                            <img src="assets/IMG/Pw/DR.jpg" alt="Páginas Web — imagen 2" data-i18n-attr="alt" data-i18n-key="g2_img_2">
+                            <figcaption class="gallery__item__desc"><strong>Distrito-R</strong><span data-i18n="g2_card2">Ranking tracker local: tu posición real en Google por distrito y ciudad, con IPs residenciales, desktop y móvil.</span></figcaption>
                         </figure>
                     </a>
-                    <a href="#" target="_blank" rel="noopener noreferrer" class="gallery__item__link" aria-label="Ver demo — Páginas Web — imagen 3">
+                    <a href="#" target="_blank" rel="noopener noreferrer" class="gallery__item__link" aria-label="Ver demo — Páginas Web — imagen 3" data-i18n-attr="aria-label" data-i18n-key="g2_demo_3">
                         <figure class="gallery__item">
-                            <img src="assets/IMG/Pw/ps.jpg" alt="Páginas Web — imagen 3">
-                            <figcaption class="gallery__item__desc"><strong>Property Scraper</strong>Web de la extensión que extrae propiedades de los portales de inmobiliarias de España.</figcaption>
+                            <img src="assets/IMG/Pw/ps.jpg" alt="Páginas Web — imagen 3" data-i18n-attr="alt" data-i18n-key="g2_img_3">
+                            <figcaption class="gallery__item__desc"><strong>Property Scraper</strong><span data-i18n="g2_card3">Web de la extensión que extrae propiedades de los portales de inmobiliarias de España.</span></figcaption>
                         </figure>
                     </a>
-                    <a href="#" target="_blank" rel="noopener noreferrer" class="gallery__item__link" aria-label="Ver demo — Páginas Web — imagen 4">
+                    <a href="#" target="_blank" rel="noopener noreferrer" class="gallery__item__link" aria-label="Ver demo — Páginas Web — imagen 4" data-i18n-attr="aria-label" data-i18n-key="g2_demo_4">
                         <figure class="gallery__item">
-                            <img src="assets/IMG/Pw/qh1.jpg" alt="Páginas Web — imagen 4">
-                            <figcaption class="gallery__item__desc"><strong>¿Qué Harías?</strong>Podcast de historias cotidianas: anécdotas reales de la vida diaria contadas con humor y cercanía.</figcaption>
+                            <img src="assets/IMG/Pw/qh1.jpg" alt="Páginas Web — imagen 4" data-i18n-attr="alt" data-i18n-key="g2_img_4">
+                            <figcaption class="gallery__item__desc"><strong>¿Qué Harías?</strong><span data-i18n="g2_card4">Podcast de historias cotidianas: anécdotas reales de la vida diaria contadas con humor y cercanía.</span></figcaption>
                         </figure>
                     </a>
-                    <a href="#" target="_blank" rel="noopener noreferrer" class="gallery__item__link" aria-label="Ver demo — Páginas Web — imagen 5">
+                    <a href="#" target="_blank" rel="noopener noreferrer" class="gallery__item__link" aria-label="Ver demo — Páginas Web — imagen 5" data-i18n-attr="aria-label" data-i18n-key="g2_demo_5">
                         <figure class="gallery__item">
-                            <img src="assets/IMG/dev/rocks/base.jpg" alt="Páginas Web — imagen 5">
+                            <img src="assets/IMG/dev/rocks/base.jpg" alt="Páginas Web — imagen 5" data-i18n-attr="alt" data-i18n-key="g2_img_5">
                             <figcaption class="gallery__item__desc">Próximo proyecto — en desarrollo (placeholder).</figcaption>
                         </figure>
                     </a>

@@ -54,7 +54,7 @@
         <!-- NAV / MENU -->
         <nav class="menu">
             <div class="menu__bg"></div>
-            <button class="menu__button unbutton" aria-label="Abrir menú">
+            <button class="menu__button unbutton" aria-label="Abrir menú" data-i18n-attr="aria-label" data-i18n-key="nav_open">
                 <div class="menu__icon-wrapper">
                     <svg width="1000" height="1000" viewBox="0 0 1000 1000">
                         <path id="pathA"
@@ -67,12 +67,12 @@
             </button>
 
             <div class="menu__items">
-                <a data-splitting href="index.html" class="menu__item">Home</a>
-                <a data-splitting href="development.html" class="menu__item">Development</a>
-                <a data-splitting href="design.html" class="menu__item">Design</a>
-                <a data-splitting href="photography.html" class="menu__item">Photography</a>
-                <a data-splitting href="about.html" class="menu__item">About</a>
-                <a data-splitting href="contact.html" class="menu__item">Contact</a>
+                <a data-splitting href="index.html" class="menu__item" data-i18n="nav_home">Home</a>
+                <a data-splitting href="development.html" class="menu__item" data-i18n="nav_dev">Development</a>
+                <a data-splitting href="design.html" class="menu__item" data-i18n="nav_design">Design</a>
+                <a data-splitting href="photography.html" class="menu__item" data-i18n="nav_photo">Photography</a>
+                <a data-splitting href="about.html" class="menu__item" data-i18n="nav_about">About</a>
+                <a data-splitting href="contact.html" class="menu__item" data-i18n="nav_contact">Contact</a>
             </div>
 
             <h3 class="menu__tagline">Nahil</h3>
@@ -82,7 +82,7 @@
         <div class="frame">
             <nav class="frame__links">
                 <a href="#">
-                    <img src="assets/IMG/instagram.svg" alt="Instagram (próximamente)">
+                    <img src="assets/IMG/instagram.svg" alt="Instagram (próximamente)" data-i18n-attr="alt" data-i18n-key="instagram_soon">
                 </a>
                 <a href="https://github.com/ArzagaNahil" target="_blank" rel="noopener noreferrer">
                     <img src="assets/IMG/github.svg" alt="GitHub">
@@ -91,16 +91,17 @@
                     rel="noopener noreferrer">
                     <img src="assets/IMG/follow-in.svg" alt="LinkedIn">
                 </a>
+                <button type="button" class="lang__toggle" data-i18n-toggle>EN</button>
             </nav>
         </div>
 
         <!-- HERO CONTENT -->
         <section class="content">
             <div class="content__column">
-                <p class="content__greeting">Hola, soy</p>
+                <p class="content__greeting" data-i18n="greeting">Hola, soy</p>
                 <h2 class="content__headline">Alexis</h2>
                 <h2 class="content__headline1">Rivera Miranda</h2>
-                <p class="content__sub">
+                <p class="content__sub" data-i18n="hero_sub">
                     Bienvenidos a mi universo creativo, donde el diseño gráfico,
                     la fotografía y el desarrollo web se unen para dar vida a ideas
                     con una identidad única. Este espacio refleja mi pasión por la
@@ -111,7 +112,7 @@
                     en soluciones visuales que inspiren y sean efectivas.
                     ¡Gracias por estar aquí!
                 </p>
-                <a href="#" class="content__cta"><span>Ver proyectos</span><span class="content__cta__arrow" aria-hidden="true">&rarr;</span></a>
+                <a href="#" class="content__cta"><span data-i18n="cta_projects">Ver proyectos</span><span class="content__cta__arrow" aria-hidden="true">&rarr;</span></a>
             </div>
             <div class="content__column">
                 <img class="content__image" src="assets/IMG/Encabezado portfolio.png"

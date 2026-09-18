@@ -25,6 +25,32 @@ export class Menu {
         this.initEvents();
     }
 
+    restart() {
+        if (this.menuTimeline) this.menuTimeline.kill();
+        this.menuStatus.isAnimating = false;
+
+        if (this.DOM.el.parentNode) {
+            this.DOM.items.forEach((item) => {
+                if (item.dataset.label === undefined) return;
+                const fresh = item.cloneNode(false);
+                fresh.dataset.label = item.dataset.label;
+                fresh.textContent = item.dataset.label;
+                item.replaceWith(fresh);
+            });
+        }
+
+        this.DOM.items = [...this.DOM.el.querySelectorAll('.menu__item')];
+        this.DOM.items.forEach((item) => {
+            item.setAttribute('data-splitting', '');
+            item.classList.add('splitting');
+        });
+
+        Splitting({ target: this.DOM.items });
+
+        this.menuItems = [];
+        this.DOM.items.forEach((item) => this.menuItems.push(new MenuItem(item)));
+    }
+
     initSegments() {
         const pathA = document.getElementById('pathA');
         const pathB = document.getElementById('pathB');

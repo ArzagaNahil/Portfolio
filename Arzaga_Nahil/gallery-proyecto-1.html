@@ -81,68 +81,69 @@
     <main>
         <nav class="topnav">
             <a href="index.html" class="topnav__brand">Arzaga</a>
-            <button type="button" class="topnav__toggle" aria-label="Abrir menú" aria-expanded="false" aria-controls="topnav-links"><span class="topnav__toggle-inner"></span></button>
+            <button type="button" class="topnav__toggle" aria-label="Abrir menú" aria-expanded="false" aria-controls="topnav-links" data-i18n-attr="aria-label" data-i18n-key="nav_open"><span class="topnav__toggle-inner"></span></button>
             <div class="topnav__links" id="topnav-links">
-                <a href="index.html">Home</a>
-                <a href="development.html" class="is-current">Development</a>
-                <a href="design.html">Design</a>
-                <a href="photography.html">Photography</a>
-                <a href="about.html">About</a>
-                <a href="contact.html">Contact</a>
+                <a href="index.html" data-i18n="nav_home">Home</a>
+                <a href="development.html" class="is-current" data-i18n="nav_dev">Development</a>
+                <a href="design.html" data-i18n="nav_design">Design</a>
+                <a href="photography.html" data-i18n="nav_photo">Photography</a>
+                <a href="about.html" data-i18n="nav_about">About</a>
+                <a href="contact.html" data-i18n="nav_contact">Contact</a>
+                <button type="button" class="lang__toggle" data-i18n-toggle>EN</button>
             </div>
         </nav>
 
         <div class="frame">
             <nav class="frame__links">
-                <a href="#"><img src="assets/IMG/instagram.svg" alt="Instagram (próximamente)"></a>
+                <a href="#"><img src="assets/IMG/instagram.svg" alt="Instagram (próximamente)" data-i18n-attr="alt" data-i18n-key="instagram_soon"></a>
                 <a href="https://github.com/ArzagaNahil" target="_blank" rel="noopener noreferrer"><img src="assets/IMG/github.svg" alt="GitHub"></a>
                 <a href="https://www.linkedin.com/in/alexis-rivera-miranda-1667a430a/" target="_blank" rel="noopener noreferrer"><img src="assets/IMG/follow-in.svg" alt="LinkedIn"></a>
             </nav>
         </div>
 
-        <h1 class="page-title">Desarrollo <span class="page-title__offset">Web</span></h1>
+        <h1 class="page-title" data-i18n="pt_gal1_pre" data-i18n-offset="pt_gal1_off">Desarrollo <span class="page-title__offset">Web</span></h1>
 
         <section class="gallery">
             <div class="gallery__text">
-                <a href="development.html" class="gallery__back" aria-label="Volver a Development">
+                <a href="development.html" class="gallery__back" aria-label="Volver a Development" data-i18n-attr="aria-label" data-i18n-key="g_back">
                     <svg class="gallery__back__ring" viewBox="0 0 130 130" aria-hidden="true">
                         <defs>
                             <path id="gallery-back-circle" d="M 65 65 m 0 -48 a 48 48 0 1 1 0 96 a 48 48 0 1 1 0 -96" />
                         </defs>
                         <text>
-                            <textPath href="#gallery-back-circle">· IR A DESARROLLO · IR A DESARROLLO</textPath>
+                            <textPath href="#gallery-back-circle" data-i18n="g_ring">· IR A DESARROLLO · IR A DESARROLLO</textPath>
                         </text>
                     </svg>
                     <span class="gallery__back__arrow" aria-hidden="true">&larr;</span>
                 </a>
 
-                <p class="gallery__desc">
+                <p class="gallery__desc" data-i18n="g_desc_dev">
                     Proyectos de desarrollo web construidos de cero: sitios, aplicaciones y
                     experiencias digitales con foco en rendimiento, diseño limpio y automatización.
                 </p>
 
                 <div class="gallery__links">
-                    <a href="https://github.com/ArzagaNahil" class="gallery__btn" target="_blank" rel="noopener noreferrer"><span>Ver código</span><span class="gallery__btn__arrow" aria-hidden="true">&rarr;</span></a>
+                    <a href="https://github.com/ArzagaNahil" class="gallery__btn" target="_blank" rel="noopener noreferrer"><span data-i18n="g_code">Ver código</span><span class="gallery__btn__arrow" aria-hidden="true">&rarr;</span></a>
                 </div>
             </div>
 
             <div class="gallery__carousel">
                 <div class="gallery__track">
-                    <a href="#" target="_blank" rel="noopener noreferrer" class="gallery__item__link" aria-label="Ver demo — Desarrollo Web — imagen 1">
+                    <a href="#" target="_blank" rel="noopener noreferrer" class="gallery__item__link" aria-label="Ver demo — Desarrollo Web — imagen 1" data-i18n-attr="aria-label" data-i18n-key="g1_demo_1">
                         <figure class="gallery__item">
-                            <img src="assets/IMG/Dw/holographic_web_hud.jpg" alt="Desarrollo Web — imagen 1">
-                            <figcaption class="gallery__item__desc"><strong>Distrito-R</strong>Ranking tracker local observacional: mide tu posición real en Google por distrito y ciudad, con IPs residenciales reales, desktop y móvil, sin manipulación.</figcaption>
+                            <img src="assets/IMG/Dw/holographic_web_hud.jpg" alt="Desarrollo Web — imagen 1" data-i18n-attr="alt" data-i18n-key="g1_img_1">
+                            <figcaption class="gallery__item__desc"><strong>Distrito-R</strong><span data-i18n="g1_card1">Ranking tracker local observacional: mide tu posición real en Google por distrito y ciudad, con IPs residenciales reales, desktop y móvil, sin manipulación.</span></figcaption>
                         </figure>
                     </a>
-                    <a href="#" target="_blank" rel="noopener noreferrer" class="gallery__item__link" aria-label="Ver demo — Desarrollo Web — imagen 2">
+                    <a href="#" target="_blank" rel="noopener noreferrer" class="gallery__item__link" aria-label="Ver demo — Desarrollo Web — imagen 2" data-i18n-attr="aria-label" data-i18n-key="g1_demo_2">
                         <figure class="gallery__item">
-                            <img src="assets/IMG/dev/woods/hover.jpg" alt="Desarrollo Web — imagen 2">
+                            <img src="assets/IMG/dev/woods/hover.jpg" alt="Desarrollo Web — imagen 2" data-i18n-attr="alt" data-i18n-key="g1_img_2">
                             <figcaption class="gallery__item__desc">Aplicación interactiva — experiencia en tiempo real (placeholder).</figcaption>
                         </figure>
                     </a>
-                    <a href="#" target="_blank" rel="noopener noreferrer" class="gallery__item__link" aria-label="Ver demo — Desarrollo Web — imagen 3">
+                    <a href="#" target="_blank" rel="noopener noreferrer" class="gallery__item__link" aria-label="Ver demo — Desarrollo Web — imagen 3" data-i18n-attr="aria-label" data-i18n-key="g1_demo_3">
                         <figure class="gallery__item">
-                            <img src="assets/IMG/dev/woods/base.jpg" alt="Desarrollo Web — imagen 3">
+                            <img src="assets/IMG/dev/woods/base.jpg" alt="Desarrollo Web — imagen 3" data-i18n-attr="alt" data-i18n-key="g1_img_3">
                             <figcaption class="gallery__item__desc">Landing de producto — conversión y SEO (placeholder).</figcaption>
                         </figure>
                     </a>

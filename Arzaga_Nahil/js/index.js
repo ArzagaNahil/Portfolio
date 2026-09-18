@@ -3,11 +3,18 @@ import { Menu } from './menu.js';
 import { initScene } from './particles.js';
 import { initHoverSound } from './hoverSound.js';
 import { initGooey } from './gooey.js';
+import { initI18n } from './i18n.js';
+
+let menu = null;
+
+initI18n(() => {
+    if (menu) menu.restart();
+});
 
 Splitting();
 
 const menuEl = document.querySelector('.menu');
-if (menuEl) new Menu(menuEl);
+if (menuEl) menu = new Menu(menuEl);
 
 initHoverSound('.topnav__links a');
 

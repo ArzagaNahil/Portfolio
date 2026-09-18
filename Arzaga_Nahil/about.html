@@ -126,14 +126,15 @@
         <!-- NAV / TOP MINIMAL BAR -->
         <nav class="topnav">
             <a href="index.html" class="topnav__brand">Arzaga</a>
-            <button type="button" class="topnav__toggle" aria-label="Abrir menú" aria-expanded="false" aria-controls="topnav-links"><span class="topnav__toggle-inner"></span></button>
+            <button type="button" class="topnav__toggle" aria-label="Abrir menú" aria-expanded="false" aria-controls="topnav-links" data-i18n-attr="aria-label" data-i18n-key="nav_open"><span class="topnav__toggle-inner"></span></button>
             <div class="topnav__links" id="topnav-links">
-                <a href="index.html">Home</a>
-                <a href="development.html">Development</a>
-                <a href="design.html">Design</a>
-                <a href="photography.html">Photography</a>
-                <a href="about.html" class="is-current">About</a>
-                <a href="contact.html">Contact</a>
+                <a href="index.html" data-i18n="nav_home">Home</a>
+                <a href="development.html" data-i18n="nav_dev">Development</a>
+                <a href="design.html" data-i18n="nav_design">Design</a>
+                <a href="photography.html" data-i18n="nav_photo">Photography</a>
+                <a href="about.html" class="is-current" data-i18n="nav_about">About</a>
+                <a href="contact.html" data-i18n="nav_contact">Contact</a>
+                <button type="button" class="lang__toggle" data-i18n-toggle>EN</button>
             </div>
         </nav>
 
@@ -141,7 +142,7 @@
         <div class="frame">
             <nav class="frame__links">
                 <a href="#">
-                    <img src="assets/IMG/instagram.svg" alt="Instagram (próximamente)">
+                    <img src="assets/IMG/instagram.svg" alt="Instagram (próximamente)" data-i18n-attr="alt" data-i18n-key="instagram_soon">
                 </a>
                 <a href="https://github.com/ArzagaNahil" target="_blank" rel="noopener noreferrer">
                     <img src="assets/IMG/github.svg" alt="GitHub">

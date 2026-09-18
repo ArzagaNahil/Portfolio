@@ -85,26 +85,27 @@
     <main>
         <nav class="topnav">
             <a href="index.html" class="topnav__brand">Arzaga</a>
-            <button type="button" class="topnav__toggle" aria-label="Abrir menú" aria-expanded="false" aria-controls="topnav-links"><span class="topnav__toggle-inner"></span></button>
+            <button type="button" class="topnav__toggle" aria-label="Abrir menú" aria-expanded="false" aria-controls="topnav-links" data-i18n-attr="aria-label" data-i18n-key="nav_open"><span class="topnav__toggle-inner"></span></button>
             <div class="topnav__links" id="topnav-links">
-                <a href="index.html">Home</a>
-                <a href="development.html">Development</a>
-                <a href="design.html" class="is-current">Design</a>
-                <a href="photography.html">Photography</a>
-                <a href="about.html">About</a>
-                <a href="contact.html">Contact</a>
+                <a href="index.html" data-i18n="nav_home">Home</a>
+                <a href="development.html" data-i18n="nav_dev">Development</a>
+                <a href="design.html" class="is-current" data-i18n="nav_design">Design</a>
+                <a href="photography.html" data-i18n="nav_photo">Photography</a>
+                <a href="about.html" data-i18n="nav_about">About</a>
+                <a href="contact.html" data-i18n="nav_contact">Contact</a>
+                <button type="button" class="lang__toggle" data-i18n-toggle>EN</button>
             </div>
         </nav>
 
         <div class="frame">
             <nav class="frame__links">
-                <a href="#"><img src="assets/IMG/instagram.svg" alt="Instagram (próximamente)"></a>
+                <a href="#"><img src="assets/IMG/instagram.svg" alt="Instagram (próximamente)" data-i18n-attr="alt" data-i18n-key="instagram_soon"></a>
                 <a href="https://github.com/ArzagaNahil" target="_blank" rel="noopener noreferrer"><img src="assets/IMG/github.svg" alt="GitHub"></a>
                 <a href="https://www.linkedin.com/in/alexis-rivera-miranda-1667a430a/" target="_blank" rel="noopener noreferrer"><img src="assets/IMG/follow-in.svg" alt="LinkedIn"></a>
             </nav>
         </div>
 
-        <h1 class="page-title">¿Cuál es tu próximo <span class="page-title__offset">diseño?</span></h1>
+        <h1 class="page-title" data-i18n="pt_design_pre" data-i18n-offset="pt_design_off">¿Cuál es tu próximo <span class="page-title__offset">diseño?</span></h1>
 
         <section class="design">
             <ul class="devtiles">
@@ -112,10 +113,10 @@
                     <article class="tile js-tile">
                         <a href="#" class="tile__link">
                             <figure class="tile__fig">
-                                <img src="assets/IMG/blank.jpg" data-hover="assets/IMG/blank.jpg" alt="Diseño Uno" class="tile__img">
+                                <img src="assets/IMG/blank.jpg" data-hover="assets/IMG/blank.jpg" alt="Diseño Uno" class="tile__img" data-i18n-attr="alt" data-i18n-key="alt_design_1">
                             </figure>
                             <div class="tile__content">
-                                <h2 class="tile__title">Identidad <span class="tile__title__offset">Visual</span></h2>
+                                <h2 class="tile__title" data-i18n="tile_id_pre" data-i18n-offset="tile_id_off">Identidad <span class="tile__title__offset">Visual</span></h2>
                             </div>
                         </a>
                     </article>
@@ -124,10 +125,10 @@
                     <article class="tile js-tile">
                         <a href="#" class="tile__link">
                             <figure class="tile__fig">
-                                <img src="assets/IMG/blank.jpg" data-hover="assets/IMG/blank.jpg" alt="Diseño Dos" class="tile__img">
+                                <img src="assets/IMG/blank.jpg" data-hover="assets/IMG/blank.jpg" alt="Diseño Dos" class="tile__img" data-i18n-attr="alt" data-i18n-key="alt_design_2">
                             </figure>
                             <div class="tile__content">
-                                <h2 class="tile__title">Diseño <span class="tile__title__offset">Editorial</span></h2>
+                                <h2 class="tile__title" data-i18n="tile_ed_pre" data-i18n-offset="tile_ed_off">Diseño <span class="tile__title__offset">Editorial</span></h2>
                             </div>
                         </a>
                     </article>
@@ -136,7 +137,7 @@
                     <article class="tile js-tile">
                         <a href="#" class="tile__link">
                             <figure class="tile__fig">
-                                <img src="assets/IMG/blank.jpg" data-hover="assets/IMG/blank.jpg" alt="Diseño Tres" class="tile__img">
+                                <img src="assets/IMG/blank.jpg" data-hover="assets/IMG/blank.jpg" alt="Diseño Tres" class="tile__img" data-i18n-attr="alt" data-i18n-key="alt_design_3">
                             </figure>
                             <div class="tile__content">
                                 <h2 class="tile__title">UI / UX</h2>
@@ -147,8 +148,8 @@
             </ul>
 
             <div class="dev-nav">
-                <button type="button" class="dev-nav__arrow dev-nav__arrow--prev" aria-label="Proyecto anterior">&#8249;</button>
-                <button type="button" class="dev-nav__arrow dev-nav__arrow--next" aria-label="Proyecto siguiente">&#8250;</button>
+                <button type="button" class="dev-nav__arrow dev-nav__arrow--prev" aria-label="Proyecto anterior" data-i18n-attr="aria-label" data-i18n-key="nav_prev">&#8249;</button>
+                <button type="button" class="dev-nav__arrow dev-nav__arrow--next" aria-label="Proyecto siguiente" data-i18n-attr="aria-label" data-i18n-key="nav_next">&#8250;</button>
             </div>
         </section>
     </main>

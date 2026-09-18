@@ -136,7 +136,7 @@
         <!-- NAV / MENU -->
         <nav class="menu">
             <div class="menu__bg"></div>
-            <button class="menu__button unbutton" aria-label="Abrir menú">
+            <button class="menu__button unbutton" aria-label="Abrir menú" data-i18n-attr="aria-label" data-i18n-key="nav_open">
                 <div class="menu__icon-wrapper">
                     <svg width="1000" height="1000" viewBox="0 0 1000 1000">
                         <path id="pathA" d="M 300 400 L 700 400 C 900 400 900 750 600 850 A 400 400 0 0 1 200 200 L 800 800"/>
@@ -147,52 +147,54 @@
             </button>
 
             <div class="menu__items">
-                <a data-splitting href="index.html" class="menu__item">Home</a>
-                <a data-splitting href="development.html" class="menu__item">Development</a>
-                <a data-splitting href="design.html" class="menu__item">Design</a>
-                <a data-splitting href="photography.html" class="menu__item">Photography</a>
-                <a data-splitting href="about.html" class="menu__item">About</a>
-                <a data-splitting href="contact.html" class="menu__item">Contact</a>
+                <a data-splitting href="index.html" class="menu__item" data-i18n="nav_home">Home</a>
+                <a data-splitting href="development.html" class="menu__item" data-i18n="nav_dev">Development</a>
+                <a data-splitting href="design.html" class="menu__item" data-i18n="nav_design">Design</a>
+                <a data-splitting href="photography.html" class="menu__item" data-i18n="nav_photo">Photography</a>
+                <a data-splitting href="about.html" class="menu__item" data-i18n="nav_about">About</a>
+                <a data-splitting href="contact.html" class="menu__item" data-i18n="nav_contact">Contact</a>
             </div>
 
             <h3 class="menu__tagline">Nahil</h3>
+
         </nav>
 
         <!-- FRAME / TOP BAR -->
         <div class="frame">
             <nav class="frame__links">
                 <a href="#">
-                    <img src="assets/IMG/instagram.svg" alt="Instagram (próximamente)">
+                    <img src="assets/IMG/instagram.svg" alt="Instagram (próximamente)" data-i18n-attr="alt" data-i18n-key="instagram_soon">
                 </a>
                 <a href="https://github.com/ArzagaNahil" target="_blank" rel="noopener noreferrer">
                     <img src="assets/IMG/github.svg" alt="GitHub">
                 </a>
                 <a href="https://www.linkedin.com/in/alexis-rivera-miranda-1667a430a/" target="_blank" rel="noopener noreferrer">
                     <img src="assets/IMG/follow-in.svg" alt="LinkedIn">
-                </a>                
+                </a>
+                <button type="button" class="lang__toggle" data-i18n-toggle>EN</button>
             </nav>
         </div>
 
         <!-- CONTACT SECTION -->
         <section class="contact" id="contact">
             <div class="contact__card">
-                <span class="contact__overline">Contacto</span>
-                <h2 class="contact__title">Trabajemos juntos</h2>
-                <p class="contact__sub">Estoy abierto a nuevos proyectos, colaboraciones y oportunidades. Cuéntame de tu idea.</p>
+                <span class="contact__overline" data-i18n="c_over">Contacto</span>
+                <h2 class="contact__title" data-i18n="c_title">Trabajemos juntos</h2>
+                <p class="contact__sub" data-i18n="c_sub">Estoy abierto a nuevos proyectos, colaboraciones y oportunidades. Cuéntame de tu idea.</p>
                 <form class="contact__form" action="#" method="POST">
                     <div class="form-group">
-                        <label class="form-label" for="name">Nombre</label>
+                        <label class="form-label" for="name" data-i18n="c_label_name">Nombre</label>
                         <input class="form-input" type="text" id="name" name="name" required />
                     </div>
                     <div class="form-group">
-                        <label class="form-label" for="email">Email</label>
+                        <label class="form-label" for="email" data-i18n="c_label_email">Email</label>
                         <input class="form-input" type="email" id="email" name="email" required />
                     </div>
                     <div class="form-group">
-                        <label class="form-label" for="message">Mensaje</label>
+                        <label class="form-label" for="message" data-i18n="c_label_message">Mensaje</label>
                         <textarea class="form-input form-textarea" id="message" name="message" rows="4" required></textarea>
                     </div>
-                    <button class="shiny-cta" type="submit"><span>Enviar mensaje</span></button>
+                    <button class="shiny-cta" type="submit"><span data-i18n="c_submit">Enviar mensaje</span></button>
                 </form>
             </div>
         </section>
