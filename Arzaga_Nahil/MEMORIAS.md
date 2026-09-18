@@ -606,7 +606,33 @@ Arzaga/
 - **Fix** (`js/index.js`): en `visibilitychange` (tab visible) se fuerza re-composite de `.gallery__btn`/`.gallery__links` togglando `visibility:hidden` en doble `requestAnimationFrame` + `void offsetWidth`.
 
 ###  Pendientes
-- [ ] Reemplazar `href="#"` de las tarjetas de demo por URLs reales (pestaña nueva).
+- [ ] Recibir links reales de páginas/proyectos/extensiones y reemplazar `href="#"` de las tarjetas de demo.
+- [ ] CTA "Ver proyectos" del index apunta a `#`.
+- [ ] Instagram con `href="#"`.
+- [ ] Favicon/manifest.
+- [ ] Consolidar `<style>` inline repetido en `style.css`.
+
+---
+
+## Sesión 17 — Descripciones profesionales en las 3 galerías
+
+*Registrado el 18 de septiembre de 2026.*
+
+###  Parrafos `.gallery__desc` (bajo la flecha)
+- Reemplazados los placeholders por descripciones profesionales generales (mismo tamaño):
+  - **Desarrollo Web**: "Proyectos de desarrollo web construidos de cero: sitios, aplicaciones y experiencias digitales con foco en rendimiento, diseño limpio y automatización."
+  - **Páginas Web**: "Sitios web de negocio e institucionales pensados para transmitir identidad, generar confianza y convertir visitas en clientes."
+  - **Extensiones**: "Extensiones de navegador publicadas en la Chrome Web Store y en Edge Add-ons: herramientas propias de uso diario que automatizan tareas y optimizan el trabajo digital."
+
+###  Desarrollo Web (`gallery-proyecto-1.html`)
+- Tarjeta 1 → imagen **`assets/IMG/Dw/holographic_web_hud.jpg`** + descripción fija con formato título (strong) + cuerpo:
+  - **Distrito-R** — "Ranking tracker local observacional: mide tu posición real en Google por distrito y ciudad, con IPs residenciales reales, desktop y móvil, sin manipulación."
+
+###  Tipografía
+- `.gallery__desc`: `1.3rem → 1.5rem`.
+
+###  Pendientes
+- [ ] Recibir links reales de páginas/proyectos/extensiones y reemplazar `href="#"` de las tarjetas de demo.
 - [ ] CTA "Ver proyectos" del index apunta a `#`.
 - [ ] Instagram con `href="#"`.
 - [ ] Favicon/manifest.

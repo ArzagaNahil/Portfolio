@@ -1141,7 +1141,7 @@ main {
     max-width: 46ch;
     margin: 0;
     font-family: var(--font-para);
-    font-size: 1.3rem;
+    font-size: 1.5rem;
     line-height: 1.45;
     color: var(--color-text-alt);
 }
