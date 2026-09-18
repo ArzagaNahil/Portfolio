@@ -727,7 +727,7 @@ main {
 
 .menu__icon-wrapper svg path {
     stroke: currentColor;
-    stroke-width: 60px;
+    stroke-width: 48px;
     stroke-linecap: round;
     stroke-linejoin: round;
     fill: transparent;

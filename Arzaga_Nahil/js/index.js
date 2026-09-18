@@ -159,3 +159,6 @@ preloadFonts('Inter:300,400,600,700').then(() => {
 
 window.addEventListener('beforeunload', cleanup);
 window.addEventListener('beforeunload', cleanupGooey);
+window.addEventListener('pageshow', (e) => {
+    if (e.persisted) window.location.reload();
+});
