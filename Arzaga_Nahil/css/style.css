@@ -1071,17 +1071,45 @@ main {
 }
 
 .gallery__back {
-    display: inline-block;
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    color: var(--color-link);
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 96px;
+    height: 96px;
+    color: var(--color-accent);
     transition: color 0.2s ease;
 }
 
+.gallery__back__ring {
+    grid-area: 1 / 1;
+    width: 100%;
+    height: 100%;
+    animation: gallery-rotate 40s linear infinite;
+}
+
+.gallery__back__ring text {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    fill: currentColor;
+    opacity: 0.55;
+}
+
+.gallery__back__arrow {
+    grid-area: 1 / 1;
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 2.2rem;
+    line-height: 1;
+}
+
 .gallery__back:hover {
-    color: var(--color-accent);
+    color: #ffffff;
+}
+
+@keyframes gallery-rotate {
+    to {
+        transform: rotate(1turn);
+    }
 }
 
 .gallery__title {
@@ -1095,7 +1123,7 @@ main {
 }
 
 .gallery__title__offset {
-    margin-left: 10%;
+    margin-left: 0;
 }
 
 .gallery__desc {

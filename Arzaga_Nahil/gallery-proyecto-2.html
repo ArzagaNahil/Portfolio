@@ -73,7 +73,7 @@
     <script>document.documentElement.className="js";</script>
 </head>
 <body class="loading page-gallery">
-    <div id="three-canvas" data-ring-pos="10,0,0"></div>
+    <div id="three-canvas" data-ring-pos="10,0,0" data-rings="off"></div>
     <main>
         <nav class="topnav">
             <a href="index.html" class="topnav__brand">Arzaga</a>
@@ -97,7 +97,17 @@
         </div>
 
         <section class="gallery">
-            <a href="development.html" class="gallery__back">&larr; Development</a>
+            <a href="development.html" class="gallery__back" aria-label="Volver a Development">
+                <svg class="gallery__back__ring" viewBox="0 0 130 130" aria-hidden="true">
+                    <defs>
+                        <path id="gallery-back-circle" d="M 65 65 m 0 -48 a 48 48 0 1 1 0 96 a 48 48 0 1 1 0 -96" />
+                    </defs>
+                    <text>
+                        <textPath href="#gallery-back-circle">IR A DESARROLLO · IR A DESARROLLO</textPath>
+                    </text>
+                </svg>
+                <span class="gallery__back__arrow" aria-hidden="true">&larr;</span>
+            </a>
 
             <h1 class="gallery__title">Proyecto <span class="gallery__title__offset">Dos</span></h1>
             <p class="gallery__desc">

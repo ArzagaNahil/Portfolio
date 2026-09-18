@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Proyecto Uno — Development — Arzaga Nahil</title>
+    <title>Desarrollo Web — Arzaga Nahil</title>
 
-    <meta name="description" content="Proyecto Uno: fotos y enlaces del proyecto de desarrollo web de Arzaga Nahil." />
+    <meta name="description" content="Desarrollo Web: fotos y enlaces de los proyectos de desarrollo web de Arzaga Nahil." />
     <meta name="author" content="Arzaga Nahil" />
-    <meta property="og:title" content="Proyecto Uno — Arzaga Nahil" />
+    <meta property="og:title" content="Desarrollo Web — Arzaga Nahil" />
     <meta name="robots" content="index, follow" />
     <link rel="canonical" href="https://arzaganahil.github.io/gallery-proyecto-1" />
 
@@ -73,7 +73,7 @@
     <script>document.documentElement.className="js";</script>
 </head>
 <body class="loading page-gallery">
-    <div id="three-canvas" data-ring-pos="10,0,0"></div>
+    <div id="three-canvas" data-ring-pos="10,0,0" data-rings="off"></div>
     <main>
         <nav class="topnav">
             <a href="index.html" class="topnav__brand">Arzaga</a>
@@ -97,23 +97,34 @@
         </div>
 
         <section class="gallery">
-            <a href="development.html" class="gallery__back">&larr; Development</a>
+            <a href="development.html" class="gallery__back" aria-label="Volver a Development">
+                <svg class="gallery__back__ring" viewBox="0 0 130 130" aria-hidden="true">
+                    <defs>
+                        <path id="gallery-back-circle" d="M 65 65 m 0 -48 a 48 48 0 1 1 0 96 a 48 48 0 1 1 0 -96" />
+                    </defs>
+                    <text>
+                        <textPath href="#gallery-back-circle">IR A DESARROLLO · IR A DESARROLLO</textPath>
+                    </text>
+                </svg>
+                <span class="gallery__back__arrow" aria-hidden="true">&larr;</span>
+            </a>
 
-            <h1 class="gallery__title">Proyecto <span class="gallery__title__offset">Uno</span></h1>
+            <h1 class="gallery__title">Desarrollo <span class="gallery__title__offset">Web</span></h1>
             <p class="gallery__desc">
-                Descripción placeholder del Proyecto Uno. Aquí irá el resumen real: objetivo, stack
-                y lo que quieras destacar. Sustituye también las imágenes por capturas reales.
+                Proyectos de desarrollo web: sitios, aplicaciones y experiencias digitales
+                construidas de cero. Aquí irá el resumen real: objetivo, stack y lo que
+                quieras destacar de cada trabajo.
             </p>
 
             <div class="gallery__grid">
                 <figure class="gallery__item">
-                    <img src="assets/IMG/dev/woods/base.jpg" alt="Proyecto Uno — imagen 1">
+                    <img src="assets/IMG/dev/woods/base.jpg" alt="Desarrollo Web — imagen 1">
                 </figure>
                 <figure class="gallery__item">
-                    <img src="assets/IMG/dev/woods/hover.jpg" alt="Proyecto Uno — imagen 2">
+                    <img src="assets/IMG/dev/woods/hover.jpg" alt="Desarrollo Web — imagen 2">
                 </figure>
                 <figure class="gallery__item">
-                    <img src="assets/IMG/dev/woods/base.jpg" alt="Proyecto Uno — imagen 3">
+                    <img src="assets/IMG/dev/woods/base.jpg" alt="Desarrollo Web — imagen 3">
                 </figure>
             </div>
 
