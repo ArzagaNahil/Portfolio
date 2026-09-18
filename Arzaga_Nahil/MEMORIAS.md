@@ -640,6 +640,30 @@ Arzaga/
 
 ---
 
+## Sesión 18 — Páginas Web: 5 tarjetas con imágenes y descripciones
+
+*Registrado el 18 de septiembre de 2026.*
+
+###  `gallery-proyecto-2.html` (Páginas Web)
+- Se amplía de 3 a **5 tarjetas**.
+- Imágenes reales nuevas en `assets/IMG/Pw/`: `at.jpg`, `DR.jpg`, `ps.jpg`, `qh1.jpg` (y `qh.jpg`) + una placeholder (`rocks/base.jpg`).
+- Descripciones con formato título (strong) + cuerpo:
+  - **Aurora Travel** — página de viajes: destinos, inspiración y planes.
+  - **Distrito-R** — ranking tracker local: posición real en Google por distrito y ciudad (versión resumida).
+  - **Property Scraper** — web de la extensión inmobiliaria.
+  - **¿Qué Harías?** — podcast de historias cotidianas con humor y cercanía.
+  - Tarjeta 5 → placeholder (próximo proyecto).
+- La versión larga de Distrito-R se mantiene en `gallery-proyecto-1.html` (Desarrollo Web), por decisión del autor.
+
+###  Pendientes
+- [ ] Recibir links reales de páginas/proyectos/extensiones y reemplazar `href="#"` de las tarjetas de demo.
+- [ ] CTA "Ver proyectos" del index apunta a `#`.
+- [ ] Instagram con `href="#"`.
+- [ ] Favicon/manifest.
+- [ ] Consolidar `<style>` inline repetido en `style.css`.
+
+---
+
 ## Sesión 15 — Nav alineada con el título + títulos coherentes de galerías
 
 *Registrado el 18 de septiembre de 2026.*
