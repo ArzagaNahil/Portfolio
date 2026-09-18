@@ -14,6 +14,12 @@
     <meta property="og:title" content="Contacto — Arzaga Nahil" data-i18n-attr="content" data-i18n-key="meta_title_contact" />
     <meta property="og:description" content="Estoy abierto a nuevos proyectos, colaboraciones y oportunidades." data-i18n-attr="content" data-i18n-key="meta_desc_contact" />
     <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://arzaganahil.github.io/contact" />
+    <meta property="og:image" content="https://arzaganahil.github.io/assets/IMG/Encabezado%20portfolio.png" />
+    <meta property="og:image:width" content="1510" />
+    <meta property="og:image:height" content="634" />
+    <meta property="og:image:alt" content="Portafolio profesional de Arzaga Nahil. Diseño moderno, desarrollo web y marketing digital." data-i18n-attr="content" data-i18n-key="meta_desc_index" />
+    <meta name="twitter:card" content="summary_large_image" />
 
     <!-- Robots & Canonical -->
     <meta name="robots" content="index, follow" />
@@ -47,94 +53,6 @@
 
     <!-- Main Styles -->
     <link rel="stylesheet" href="css/style.css" />
-
-    <!-- Contact page specific styles -->
-    <style>
-        .page-contact main {
-            grid-template-areas:
-                'side side side frame frame frame'
-                'contact contact contact contact contact contact';
-        }
-
-        .page-contact .contact {
-            display: grid;
-            place-items: center;
-            padding: 2rem;
-        }
-
-        .page-contact .contact__card {
-            width: 100%;
-            max-width: 469px;
-        }
-
-        @media screen and (min-width: 54em) {
-            .page-contact main {
-                height: 100vh;
-                overflow: hidden;
-                grid-template-rows: 100%;
-                grid-template-areas: 'side side side contact contact contact';
-            }
-
-            .page-contact .contact {
-                grid-area: contact;
-                padding: 1rem 2rem 11rem;
-            }
-
-            .page-contact .contact__card {
-                margin-right: 220px;
-                margin-top: 50px;
-            }
-
-            .page-contact .frame {
-                background: none;
-                backdrop-filter: none;
-                border: none;
-                grid-area: contact;
-                display: grid;
-                align-content: space-between;
-                pointer-events: none;
-                grid-template-columns: 50% 50%;
-                grid-template-rows: auto auto auto;
-                grid-template-areas:
-                    '... ...'
-                    '... ...'
-                    'title links';
-                padding: 1.5rem 2rem;
-            }
-
-            .page-contact .frame::after {
-                content: '';
-                position: absolute;
-                top: 0;
-                left: 0;
-                pointer-events: none;
-                width: 100%;
-                height: 100%;
-                z-index: 10;
-                background: #000000;
-                opacity: 0;
-                transition: opacity 0.8s ease-in-out 0.3s;
-            }
-
-            .page-contact .menu--open ~ .frame::after {
-                opacity: 0.75;
-                transition-delay: 0s;
-                pointer-events: auto;
-            }
-
-            .page-contact .frame__links {
-                grid-area: links;
-                justify-self: end;
-                align-self: end;
-                pointer-events: auto;
-            }
-
-            .page-contact .frame__links img {
-                width: 36px;
-                height: 36px;
-            }
-        }
-    </style>
 
     <script>document.documentElement.className="js";</script>
 </head>

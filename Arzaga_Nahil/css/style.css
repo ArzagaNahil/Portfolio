@@ -1693,3 +1693,213 @@ main {
     }
 }
 
+/* ============================================================================
+   LAYOUT POR PÁGINA — consolidado (sesión 21)
+   ----------------------------------------------------------------------------
+   Estos bloques vivían en un <style> dentro del <head> de cada página, es
+   decir DESPUÉS de esta hoja. Por eso se mantienen al FINAL de style.css:
+   así conservan exactamente la misma prioridad de cascada que tenían.
+   Se pasó de ~500 líneas repetidas en 8 páginas a un único bloque.
+   ============================================================================ */
+
+/* ---- 1. Rejilla de `main` (móvil): dos filas, la sección en la segunda ---- */
+.page-about main {
+    grid-template-areas:
+        'side side side frame frame frame'
+        'about about about about about about';
+}
+
+.page-contact main {
+    grid-template-areas:
+        'side side side frame frame frame'
+        'contact contact contact contact contact contact';
+}
+
+.page-development main {
+    grid-template-areas:
+        'side side side frame frame frame'
+        'development development development development development development';
+}
+
+.page-design main {
+    grid-template-areas:
+        'side side side frame frame frame'
+        'design design design design design design';
+}
+
+.page-photography main {
+    grid-template-areas:
+        'side side side frame frame frame'
+        'photography photography photography photography photography photography';
+}
+
+.page-gallery main {
+    grid-template-areas:
+        'side side side frame frame frame'
+        'gallery gallery gallery gallery gallery gallery';
+}
+
+/* ---- 2. Sección contenedora de cada página ---- */
+.page-about .about {
+    display: grid;
+    place-items: center;
+    padding: 5.5rem 2rem 2rem;
+}
+
+.page-contact .contact {
+    display: grid;
+    place-items: center;
+    padding: 2rem;
+}
+
+.page-development .development,
+.page-design .design,
+.page-photography .photography {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    place-items: center;
+    padding: 6.5rem 2rem 4rem;
+}
+
+.page-contact .contact__card {
+    width: 100%;
+    max-width: 469px;
+}
+
+.page-gallery .gallery {
+    grid-area: gallery;
+}
+
+/* ---- 3. Escritorio (>= 54em) ---- */
+@media screen and (min-width: 54em) {
+
+    /* Una sola fila a pantalla completa en las páginas con topnav */
+    .page-about main,
+    .page-contact main,
+    .page-development main,
+    .page-design main,
+    .page-photography main,
+    .page-gallery main {
+        height: 100vh;
+        overflow: hidden;
+        grid-template-rows: 100%;
+    }
+
+    /* Área de la sección, por página */
+    .page-about main { grid-template-areas: 'side side side about about about'; }
+    .page-contact main { grid-template-areas: 'side side side contact contact contact'; }
+    .page-development main { grid-template-areas: 'development development development development development development'; }
+    .page-design main { grid-template-areas: 'design design design design design design'; }
+    .page-photography main { grid-template-areas: 'photography photography photography photography photography photography'; }
+    .page-gallery main { grid-template-areas: 'gallery gallery gallery gallery gallery gallery'; }
+
+    /* Sección: colocación en la rejilla + padding de escritorio */
+    .page-about .about {
+        grid-area: about;
+        padding: 6.5rem 2rem 2rem;
+    }
+
+    .page-contact .contact {
+        grid-area: contact;
+        padding: 1rem 2rem 11rem;
+    }
+
+    .page-contact .contact__card {
+        margin-right: 220px;
+        margin-top: 50px;
+    }
+
+    .page-development .development { grid-area: development; }
+    .page-design .design { grid-area: design; }
+    .page-photography .photography { grid-area: photography; }
+
+    .page-gallery .gallery {
+        grid-template-columns: minmax(280px, 2fr) minmax(0, 5fr);
+        grid-template-areas: 'text carousel';
+    }
+
+    /* La barra superior (frame) se vuelve overlay transparente */
+    .page-about .frame,
+    .page-contact .frame,
+    .page-development .frame,
+    .page-design .frame,
+    .page-photography .frame,
+    .page-gallery .frame {
+        background: none;
+        backdrop-filter: none;
+        border: none;
+        display: grid;
+        align-content: space-between;
+        pointer-events: none;
+        grid-template-columns: 50% 50%;
+        grid-template-rows: auto auto auto;
+        grid-template-areas:
+            '... ...'
+            '... ...'
+            'title links';
+        padding: 1.5rem 2rem;
+    }
+
+    /* Solo estas páginas necesitan contexto de apilado propio */
+    .page-development .frame,
+    .page-design .frame,
+    .page-photography .frame,
+    .page-gallery .frame {
+        z-index: 3;
+    }
+
+    .page-about .frame { grid-area: about; }
+    .page-contact .frame { grid-area: contact; }
+    .page-development .frame { grid-area: development; }
+    .page-design .frame { grid-area: design; }
+    .page-photography .frame { grid-area: photography; }
+    .page-gallery .frame { grid-area: gallery; }
+
+    /* Velo negro al abrir el menú LetterShuffle (páginas con menú) */
+    .page-about .frame::after,
+    .page-contact .frame::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        pointer-events: none;
+        width: 100%;
+        height: 100%;
+        z-index: 10;
+        background: #000000;
+        opacity: 0;
+        transition: opacity 0.8s ease-in-out 0.3s;
+    }
+
+    .page-about .menu--open ~ .frame::after,
+    .page-contact .menu--open ~ .frame::after {
+        opacity: 0.75;
+        transition-delay: 0s;
+        pointer-events: auto;
+    }
+
+    /* Redes sociales y botón de idioma dentro del frame */
+    .page-about .frame__links,
+    .page-contact .frame__links,
+    .page-development .frame__links,
+    .page-design .frame__links,
+    .page-photography .frame__links,
+    .page-gallery .frame__links {
+        grid-area: links;
+        justify-self: end;
+        align-self: end;
+        pointer-events: auto;
+    }
+
+    .page-about .frame__links img,
+    .page-contact .frame__links img,
+    .page-development .frame__links img,
+    .page-design .frame__links img,
+    .page-photography .frame__links img,
+    .page-gallery .frame__links img {
+        width: 36px;
+        height: 36px;
+    }
+}
+

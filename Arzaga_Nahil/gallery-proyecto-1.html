@@ -10,6 +10,12 @@
     <meta property="og:title" content="Desarrollo Web — Arzaga Nahil" data-i18n-attr="content" data-i18n-key="meta_title_gal1" />
     <meta property="og:description" content="Desarrollo Web: fotos y enlaces de los proyectos de desarrollo web de Arzaga Nahil." data-i18n-attr="content" data-i18n-key="meta_desc_gal1" />
     <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://arzaganahil.github.io/gallery-proyecto-1" />
+    <meta property="og:image" content="https://arzaganahil.github.io/assets/IMG/Encabezado%20portfolio.png" />
+    <meta property="og:image:width" content="1510" />
+    <meta property="og:image:height" content="634" />
+    <meta property="og:image:alt" content="Portafolio profesional de Arzaga Nahil. Diseño moderno, desarrollo web y marketing digital." data-i18n-attr="content" data-i18n-key="meta_desc_index" />
+    <meta name="twitter:card" content="summary_large_image" />
     <meta name="robots" content="index, follow" />
     <link rel="canonical" href="https://arzaganahil.github.io/gallery-proyecto-1" />
 
@@ -29,61 +35,6 @@
     <script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.170.0/build/three.module.js"}}</script>
     <link rel="stylesheet" href="css/style.css" />
 
-    <style>
-        .page-gallery main {
-            grid-template-areas:
-                'side side side frame frame frame'
-                'gallery gallery gallery gallery gallery gallery';
-        }
-
-        .page-gallery .gallery {
-            grid-area: gallery;
-        }
-
-        @media screen and (min-width: 54em) {
-            .page-gallery main {
-                height: 100vh;
-                overflow: hidden;
-                grid-template-rows: 100%;
-                grid-template-areas: 'gallery gallery gallery gallery gallery gallery';
-            }
-
-            .page-gallery .gallery {
-                grid-template-columns: minmax(280px, 2fr) minmax(0, 5fr);
-                grid-template-areas: 'text carousel';
-            }
-
-            .page-gallery .frame {
-                background: none;
-                backdrop-filter: none;
-                border: none;
-                grid-area: gallery;
-                z-index: 3;
-                display: grid;
-                align-content: space-between;
-                pointer-events: none;
-                grid-template-columns: 50% 50%;
-                grid-template-rows: auto auto auto;
-                grid-template-areas:
-                    '... ...'
-                    '... ...'
-                    'title links';
-                padding: 1.5rem 2rem;
-            }
-
-            .page-gallery .frame__links {
-                grid-area: links;
-                justify-self: end;
-                align-self: end;
-                pointer-events: auto;
-            }
-
-            .page-gallery .frame__links img {
-                width: 36px;
-                height: 36px;
-            }
-        }
-    </style>
     <script>document.documentElement.className="js";</script>
 </head>
 <body class="loading page-gallery">

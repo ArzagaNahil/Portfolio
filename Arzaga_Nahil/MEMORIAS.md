@@ -431,7 +431,7 @@ Arzaga/
 ├── gallery-proyecto-3.html     # Galería placeholder Proyecto Tres
 ├── contact.html                # Formulario + Shiny CTA + LetterShuffleMenu
 ├── site.webmanifest            # Manifest PWA (iconos, theme-color)
-├── css/style.css               # Único CSS (1320 líneas)
+├── css/style.css               # Único CSS (1906 líneas; incluye el layout por página consolidado)
 ├── js/
 │   ├── index.js                # Entry point (Splitting, Menu, HoverSound, Particles, Gooey)
 │   ├── menu.js / menuItem.js / menuConfig.js / utils.js   # Menú LetterShuffle
@@ -472,6 +472,7 @@ Arzaga/
 18. Páginas Web: 5 tarjetas con imágenes reales (18/09)
 19. Sitio bilingüe ES/EN con toggle de idioma (18/09)
 20. Cierre del bloque i18n + CTA real + favicon/manifest (18/09)
+21. Refactor del CSS inline (501→210 líneas) + Open Graph completo (18/09)
 
 ---
 
@@ -802,8 +803,50 @@ Cerrar todos los pendientes que **no dependen de contenido externo**: SEO biling
 
 ###  Pendientes
 - [ ] **About / Design / Photography**: contenido real (bio, skills, imágenes) — los tiles siguen con `blank.jpg` y `about.html` no tiene sección.
-- [ ] **27 `href="#"`** por reemplazar cuando existan URLs reales (demos de galerías, Instagram, tiles).
+- [ ] **26 `href="#"`** por reemplazar cuando existan URLs reales (eran 27; el CTA del index ya quedó resuelto): design 4, photography 4, gallery-1 4, gallery-2 6, gallery-3 4 (tarjetas demo) + Instagram en about/contact/development.
 - [ ] Consolidar los `<style>` inline repetidos (~500 líneas en 8 páginas) en `css/style.css`.
 - [ ] `sitemap.xml`: valorar `lastmod` / `<changefreq>`.
+- [ ] `og:image`: solo la tiene `index.html`; las otras 8 páginas comparten sin imagen de preview.
 - [ ] (Opcional) Unificar idioma de los `<title>` ES de Design/Photography ("Design/Photography" vs nav "Diseño/Fotografía").
+
+---
+
+## Sesión 21 — Refactor del CSS inline + Open Graph completo
+
+*Registrado el 18 de septiembre de 2026.*
+
+###  Objetivo
+Eliminar la duplicación de estilos entre páginas (deuda técnica pendiente desde la sesión 10) y completar las previews al compartir.
+
+###  Refactor: ~500 líneas de `<style>` inline → un bloque único en `style.css`
+- **8 páginas** llevaban su propio `<style>` en el `<head>`: about (76), contact (86), design (58), development (58), photography (58) y las 3 galerías (55 c/u). `index.html` no tenía.
+- Se extrajeron con un script (`node`) y se consolidaron **al final de `css/style.css`**, por una razón de cascada: esos bloques se cargaban **después** de la hoja, así que al final conservan exactamente la misma prioridad.
+- Selectores agrupados: lo que era idéntico entre páginas (secciones, `.frame`, `.frame::after`, `.frame__links`, `.frame__links img`) es ahora **una sola regla**.
+- **Diferencias que se respetaron** (no se unificó a ciegas):
+  - `z-index: 3` en `.frame` **solo** en development / design / photography / galerías; about y contact lo tenían en `auto`.
+  - `grid-area` es único por página y se mantiene separado.
+- Resultado: **505 líneas borradas** de los HTML y **+210** en `style.css` (77 declaraciones únicas frente a 251 con repetidos).
+
+###  Open Graph / Twitter (las 9 páginas)
+- `og:image` en **URL absoluta**: `https://arzaganahil.github.io/assets/IMG/Encabezado%20portfolio.png`. Antes solo la tenía el index y en ruta relativa (muchos scrapers la ignoran).
+- Añadidos `og:image:width` (1510), `og:image:height` (634), `og:image:alt` (**bilingüe**, reutilizando la clave `meta_desc_index`), `og:url` (canonical de cada página) y `twitter:card = summary_large_image`.
+- Se eligió `Encabezado portfolio.png` (1510×634, apaisada) porque el resto de imágenes son verticales (1152×1571) y se recortarían mal en las previews.
+
+###  Verificación (con red de seguridad de regresión visual)
+1. **Baseline** de estilos computados antes del refactor: 9 páginas × 2 anchos (390px y 1200px) × 38 selectores = **684 líneas**.
+2. Después: **dos corridas** del mismo probe.
+3. **Integridad estructural**: 251 declaraciones originales → 77 consolidadas; **0 perdidas, 0 inventadas**; llaves balanceadas 274/274.
+4. **Regresión visual**: baseline vs después excluyendo las flechas prev/next → **648 vs 648 líneas, 0 diferencias**.
+   - Las 4 discrepancias iniciales eran `.dev-nav__arrow--prev` (`opacity` 1 vs 0.2): estado `is-disabled` que alterna el JS según el scroll. Se comprobó que **dos corridas del mismo código** divergen en esos mismos selectores → flakiness de la medición, no regresión.
+5. **Extracción**: 0 bloques `<style>` restantes, 0 comentarios huérfanos y diffs de HTML de **solo borrado**.
+6. Probe final end-to-end en EN: `inline_styles=0` en las 9, `leaks=NONE` en las 9, `og:image` y `og:image:alt` presentes y traducidos.
+7. `og:image` con `%20`: **HTTP 200**, `image/png`, 75 KB.
+8. Cobertura i18n intacta: **106 claves usadas = 106 es = 106 en**, 0 faltantes.
+
+###  Pendientes
+- [ ] **About / Design / Photography**: contenido real (bio, skills, imágenes) — el mayor hueco que queda.
+- [ ] **26 `href="#"`**: demos de galerías, Instagram y tiles.
+- [ ] `sitemap.xml`: valorar `lastmod` / `<changefreq>`.
+- [ ] (Opcional) Unificar idioma de los `<title>` ES de Design/Photography.
+- [ ] (Opcional) `og:locale` / `og:locale:alternate` para previews bilingües.
 

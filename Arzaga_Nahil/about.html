@@ -14,6 +14,12 @@
     <meta property="og:title" content="Sobre mí — Arzaga Nahil" data-i18n-attr="content" data-i18n-key="meta_title_about" />
     <meta property="og:description" content="Diseño gráfico, fotografía y desarrollo web." data-i18n-attr="content" data-i18n-key="meta_desc_about" />
     <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://arzaganahil.github.io/about" />
+    <meta property="og:image" content="https://arzaganahil.github.io/assets/IMG/Encabezado%20portfolio.png" />
+    <meta property="og:image:width" content="1510" />
+    <meta property="og:image:height" content="634" />
+    <meta property="og:image:alt" content="Portafolio profesional de Arzaga Nahil. Diseño moderno, desarrollo web y marketing digital." data-i18n-attr="content" data-i18n-key="meta_desc_index" />
+    <meta name="twitter:card" content="summary_large_image" />
 
     <!-- Robots & Canonical -->
     <meta name="robots" content="index, follow" />
@@ -47,84 +53,6 @@
 
     <!-- Main Styles -->
     <link rel="stylesheet" href="css/style.css" />
-
-    <!-- About page specific styles -->
-    <style>
-        .page-about main {
-            grid-template-areas:
-                'side side side frame frame frame'
-                'about about about about about about';
-        }
-
-        .page-about .about {
-            display: grid;
-            place-items: center;
-            padding: 5.5rem 2rem 2rem;
-        }
-
-        @media screen and (min-width: 54em) {
-            .page-about main {
-                height: 100vh;
-                overflow: hidden;
-                grid-template-rows: 100%;
-                grid-template-areas: 'side side side about about about';
-            }
-
-            .page-about .about {
-                grid-area: about;
-                padding: 6.5rem 2rem 2rem;
-            }
-
-            .page-about .frame {
-                background: none;
-                backdrop-filter: none;
-                border: none;
-                grid-area: about;
-                display: grid;
-                align-content: space-between;
-                pointer-events: none;
-                grid-template-columns: 50% 50%;
-                grid-template-rows: auto auto auto;
-                grid-template-areas:
-                    '... ...'
-                    '... ...'
-                    'title links';
-                padding: 1.5rem 2rem;
-            }
-
-            .page-about .frame::after {
-                content: '';
-                position: absolute;
-                top: 0;
-                left: 0;
-                pointer-events: none;
-                width: 100%;
-                height: 100%;
-                z-index: 10;
-                background: #000000;
-                opacity: 0;
-                transition: opacity 0.8s ease-in-out 0.3s;
-            }
-
-            .page-about .menu--open ~ .frame::after {
-                opacity: 0.75;
-                transition-delay: 0s;
-                pointer-events: auto;
-            }
-
-            .page-about .frame__links {
-                grid-area: links;
-                justify-self: end;
-                align-self: end;
-                pointer-events: auto;
-            }
-
-            .page-about .frame__links img {
-                width: 36px;
-                height: 36px;
-            }
-        }
-    </style>
 
     <script>document.documentElement.className="js";</script>
 </head>
