@@ -542,3 +542,40 @@ Arzaga/
 - [ ] Instagram con `href="#"`.
 - [ ] Favicon/manifest.
 - [ ] Consolidar `<style>` inline repetido en `style.css`.
+
+---
+
+## Sesión 13 — Fix responsive: Development / Design / Photography / Contact
+
+*Registrado el 18 de septiembre de 2026.*
+
+###  Diagnóstico (medido con Chrome headless a 390px)
+- **Causa raíz**: las secciones (`.development`, `.design`, `.photography`, `.about`, `.contact`) solo recibían `grid-area` dentro del media query `≥54em` de cada página. En móvil se auto-ubicaban en una celda de ~64px → las tiles y el formulario quedaban fuera de lugar.
+- **`.topnav__links`**: desbordaba 266px (los 6 links no cabían en móvil).
+- **`.page-title`**: fijo, `white-space:nowrap` y `calc(2vw+3.25rem)` → desbordaba hasta 330px a la derecha.
+
+###  Cambios
+**`css/style.css`**
+- `#three-canvas`: `100vw → 100%` (evita 15px de scroll horizontal con scrollbar vertical).
+- Regla base **`grid-area`** para las secciones en móvil: `.page-development .development`, `.page-design .design`, `.page-photography .photography`, `.page-about .about`, `.page-contact .contact` (ahora siempre ocupan su fila nombrada, no solo en desktop).
+- Nuevo bloque `@media (max-width: 53.99em)`:
+  - **Topnav móvil**: botón hamburguesa (`.topnav__toggle`, base `display:none` en desktop) que despliega los links como panel absoluto bajo la barra; morph hamburguesa→X con `.is-open`.
+  - `.topnav__links` en móvil: columna, fondo blur oscuro, `opacity/visibility/transform` animados.
+  - `.frame` oculto en móvil para páginas con topnav (`page-development/design/photography/about/gallery`) — la barra duplicada quedaba tapa da por el topnav fijo.
+  - `.page-title`: tamaño `clamp(1.5–2.3rem)`, `white-space:normal`, acotado a `1.25rem` de los bordes.
+  - Secciones de tiles: `padding: 7rem 0 6.5rem` (espacio para flechas prev/next).
+  - Contact: paddings compactos en móvil.
+
+**HTML (6 páginas)** — `about`, `design`, `photography`, `development`, `gallery-proyecto-1/2/3`:
+- Se agrega `<button class="topnav__toggle">` (con `aria-expanded`) y `id="topnav-links"` en `.topnav__links`.
+
+**`js/index.js`**
+- Nuevo `initTopnav()`: toggle `.is-open`, cierre al hacer click fuera, `Escape`, o al volver a desktop (`matchMedia`). Actualiza `aria-expanded`.
+- Parallax del `.page-title` limitado a desktop (`≥54em`).
+
+###  Verificación
+- Probe headless a 390px: secciones a **ancho completo** (`.development w=390`), `.contact w=375` + card centrada (`w=311`, form `w=261`), `.page-title w=350` sin overflow, dropdown topnav mide `h=288` con `is-open=true`.
+- Desktop 1200px sin cambios de layout.
+
+###  Pendientes (sin cambios)
+- [ ] Same pendientes de sesiones anteriores.

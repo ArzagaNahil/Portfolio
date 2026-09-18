@@ -51,7 +51,7 @@ body {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100vw;
+    width: 100%;
     height: 100vh;
     z-index: -1;
     pointer-events: none;
@@ -885,6 +885,10 @@ main {
     color: var(--color-accent);
 }
 
+.topnav__toggle {
+    display: none;
+}
+
 .topnav__links {
     display: flex;
     gap: 1.5rem;
@@ -907,6 +911,13 @@ main {
 .topnav__links a.is-current {
     color: var(--color-accent);
 }
+
+/* ---- Sections: named grid rows on mobile ---- */
+.page-development .development { grid-area: development; width: 100%; }
+.page-design .design { grid-area: design; width: 100%; }
+.page-photography .photography { grid-area: photography; width: 100%; }
+.page-about .about { grid-area: about; width: 100%; }
+.page-contact .contact { grid-area: contact; width: 100%; }
 
 /* ---- Gooey slideshow (Development / portfolio) ---- */
 #gooey-scene {
@@ -1367,6 +1378,121 @@ main {
     .dev-nav__arrow {
         width: 54px;
         height: 54px;
+    }
+}
+
+/* ---- Responsive: Mobile (≤ 53.99em) ---- */
+@media screen and (max-width: 53.99em) {
+
+    /* --- Topnav: collapse links behind a hamburger --- */
+    .topnav__toggle {
+        display: flex;
+        width: 44px;
+        height: 44px;
+        align-items: center;
+        justify-content: center;
+        background: none;
+        border: 0;
+        padding: 0;
+        cursor: pointer;
+        z-index: 202;
+    }
+
+    .topnav__toggle-inner,
+    .topnav__toggle-inner::before,
+    .topnav__toggle-inner::after {
+        content: '';
+        display: block;
+        position: absolute;
+        left: 0;
+        width: 24px;
+        height: 2px;
+        border-radius: 2px;
+        background: var(--color-heading);
+        transition: transform 0.25s ease, top 0.25s ease, background 0.25s ease;
+    }
+
+    .topnav__toggle-inner {
+        position: relative;
+    }
+
+    .topnav__toggle-inner::before { top: -7px; }
+    .topnav__toggle-inner::after { top: 7px; }
+
+    .topnav.is-open .topnav__toggle-inner { background: transparent; }
+    .topnav.is-open .topnav__toggle-inner::before { top: 0; transform: rotate(45deg); }
+    .topnav.is-open .topnav__toggle-inner::after { top: 0; transform: rotate(-45deg); }
+
+    .topnav__links {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        flex-direction: column;
+        gap: 0;
+        padding: 0.5rem 0;
+        background: rgba(15, 15, 26, 0.97);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-8px);
+        pointer-events: none;
+        transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+    }
+
+    .topnav.is-open .topnav__links {
+        opacity: 1;
+        visibility: visible;
+        transform: none;
+        pointer-events: auto;
+    }
+
+    .topnav__links a {
+        padding: 0.85rem 2rem;
+        font-size: 0.85rem;
+    }
+
+    /* --- Duplicated frame bar is covered by the fixed topnav: hide it --- */
+    body.page-development .frame,
+    body.page-design .frame,
+    body.page-photography .frame,
+    body.page-about .frame,
+    body.page-gallery .frame {
+        display: none;
+    }
+
+    /* --- Page title: fit the screen, wrap, clear the topnav --- */
+    .page-title {
+        top: 4.75rem;
+        left: 1.25rem;
+        right: 1.25rem;
+        width: auto;
+        white-space: normal;
+        font-size: clamp(1.5rem, 4.5vw + 0.6rem, 2.3rem);
+        line-height: 1.12;
+        opacity: 0.22;
+    }
+
+    .page-title__offset {
+        margin-left: 8%;
+    }
+
+    /* --- Tiles sections: full-width row with room for the nav arrows --- */
+    .page-development .development,
+    .page-design .design,
+    .page-photography .photography {
+        padding: 7rem 0 6.5rem;
+    }
+
+    /* --- Contact: compact paddings on small screens --- */
+    .page-contact .contact {
+        padding: 1.5rem 1.25rem 3rem;
+    }
+
+    .page-contact .contact__card {
+        padding: 1.5rem;
     }
 }
 

@@ -11,6 +11,30 @@ if (menuEl) new Menu(menuEl);
 
 initHoverSound('.topnav__links a');
 
+function initTopnav() {
+    const toggle = document.querySelector('.topnav__toggle');
+    const nav = document.querySelector('.topnav');
+    if (!toggle || !nav) return;
+    const close = () => nav.classList.remove('is-open');
+
+    toggle.addEventListener('click', () => {
+        nav.classList.toggle('is-open');
+        toggle.setAttribute('aria-expanded', String(nav.classList.contains('is-open')));
+    });
+
+    document.addEventListener('click', (e) => {
+        if (nav.classList.contains('is-open') && !nav.contains(e.target)) close();
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') close();
+    });
+
+    window.matchMedia('(min-width: 54em)')
+        .addEventListener('change', (e) => { if (e.matches) close(); });
+}
+initTopnav();
+
 const container = document.getElementById('three-canvas');
 const ringAttr = container.dataset.ringPos;
 const ringPos = ringAttr ? (() => { const [x, y, z] = ringAttr.split(',').map(Number); return { x, y, z }; })() : null;
@@ -28,7 +52,7 @@ if (tiles && window.matchMedia('(min-width: 54em)').matches) {
 }
 
 const pageTitle = document.querySelector('.page-title');
-if (pageTitle && tiles) {
+if (pageTitle && tiles && window.matchMedia('(min-width: 54em)').matches) {
     tiles.addEventListener('scroll', () => {
         pageTitle.style.transform = `translate3d(${tiles.scrollLeft * 0.2}px, 0, 0)`;
     });
