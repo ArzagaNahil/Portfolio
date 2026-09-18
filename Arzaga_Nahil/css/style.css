@@ -1212,20 +1212,23 @@ main {
     position: absolute;
     inset: 0;
     display: flex;
-    align-items: flex-end;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: stretch;
     padding: 1.25rem;
     font-family: var(--font-para);
-    font-size: 0.95rem;
+    font-size: 1.35rem;
     line-height: 1.45;
     color: #ffffff;
     background: linear-gradient(rgba(4, 4, 10, 0) 30%, rgba(4, 4, 10, 0.85) 100%);
-    opacity: 0;
-    transition: opacity 0.3s ease;
     pointer-events: none;
 }
 
-.gallery__item:hover .gallery__item__desc {
-    opacity: 1;
+.gallery__item__desc strong {
+    display: block;
+    font-weight: 700;
+    font-size: 1.2em;
+    margin-bottom: 0.2rem;
 }
 
 @keyframes gallery-marquee {

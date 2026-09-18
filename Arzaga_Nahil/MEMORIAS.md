@@ -634,3 +634,29 @@ Arzaga/
 - [ ] Instagram con `href="#"`.
 - [ ] Favicon/manifest.
 - [ ] Consolidar `<style>` inline repetido en `style.css`.
+
+---
+
+## Sesión 16 — Extensiones: imágenes y descripciones fijas
+
+*Registrado el 18 de septiembre de 2026.*
+
+###  Galería `gallery-proyecto-3.html` (Extensiones)
+- **Nuevas imágenes** en `assets/IMG/ext/` (`ps.jpg`, `Vir.jpg`):
+  - Tarjeta 1 → `ps.jpg` — **Property Scraper**: "Extensión de Chrome que extrae propiedades de los portales de inmobiliarias de España".
+  - Tarjeta 2 → `Vir.jpg` — **Viralizer**: "Extensión de Chrome para creadores de YouTube: analiza el rendimiento del canal y optimiza títulos SEO anti-clickbait sin spoilers".
+  - Tarjeta 3 → sin texto (placeholder `cities/base.jpg`).
+- Descripciones con `<strong>Propiedad/Viralizer</strong>` como título en su línea y el cuerpo debajo.
+
+###  `css/style.css` — descripciones de tarjetas
+- `.gallery__item__desc`: texto **fijo** (se sacó del hover; `opacity`/`transition` y regla `:hover` removidas).
+- Layout en columna: `.gallery__item__desc` `flex-direction: column; justify-content: flex-end; align-items: stretch` (título arriba, descripción debajo, al pie de la tarjeta).
+- `.gallery__item__desc strong`: bloque, `font-weight:700`, `font-size:1.2em`, `margin-bottom`.
+- Fuente de la descripción: `1.35rem`.
+
+###  Pendientes
+- [ ] Recibir links reales de páginas/proyectos/extensiones y reemplazar `href="#"` de las tarjetas de demo.
+- [ ] CTA "Ver proyectos" del index apunta a `#`.
+- [ ] Instagram con `href="#"`.
+- [ ] Favicon/manifest.
+- [ ] Consolidar `<style>` inline repetido en `style.css`.
