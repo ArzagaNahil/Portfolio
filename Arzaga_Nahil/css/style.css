@@ -758,6 +758,9 @@ main {
     color: var(--color-menu);
     position: relative;
     cursor: pointer;
+    /* Una sola línea siempre: si un item parte en dos, descuadra la columna
+       vertical de letras (ARZAGA), que va atada a la altura de cada item. */
+    white-space: nowrap;
 }
 
 .menu__item span {
@@ -919,9 +922,9 @@ main {
     font-weight: 400;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: var(--color-link);
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.14);
+    color: var(--color-accent);
+    background: rgba(0, 147, 165, 0.10);
+    border: 1px solid rgba(0, 147, 165, 0.45);
     border-radius: 999px;
     padding: 0.45rem 0.9rem;
     cursor: pointer;
@@ -933,9 +936,9 @@ main {
 
 .lang__toggle:hover,
 .lang__toggle:focus-visible {
-    color: var(--color-accent);
+    color: #ffffff;
     border-color: var(--color-accent);
-    background: rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.10);
 }
 
 /* ---- Sections: named grid rows on mobile ---- */
@@ -1367,6 +1370,11 @@ main {
         padding-left: 4vw;
     }
 
+    /* Enlaces y botón de idioma centrados verticalmente entre sí */
+    .topnav__links {
+        align-items: center;
+    }
+
     main {
         height: 100vh;
         overflow: hidden;
@@ -1402,6 +1410,14 @@ main {
             '... ...'
             'title links';
         padding: 1.5rem 2rem;
+    }
+
+    /* Selector de idioma: arriba a la derecha, al mismo alto y borde que el topnav.
+       Absoluto para no alterar el layout móvil (donde va dentro de .frame__links). */
+    .frame .lang__toggle {
+        position: absolute;
+        top: 1rem;
+        right: 2rem;
     }
 
     .frame::after {
@@ -1658,6 +1674,11 @@ main {
     body.page-about .frame,
     body.page-gallery .frame {
         display: none;
+    }
+
+    /* --- Home / Contact: el botón de idioma queda al mismo borde que el topnav --- */
+    .frame {
+        padding-right: 2rem;
     }
 
     /* --- Page title: fit the screen, wrap, clear the topnav --- */

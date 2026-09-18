@@ -845,8 +845,48 @@ Eliminar la duplicación de estilos entre páginas (deuda técnica pendiente des
 
 ###  Pendientes
 - [ ] **About / Design / Photography**: contenido real (bio, skills, imágenes) — el mayor hueco que queda.
-- [ ] **26 `href="#"`**: demos de galerías, Instagram y tiles.
-- [ ] `sitemap.xml`: valorar `lastmod` / `<changefreq>`.
-- [ ] (Opcional) Unificar idioma de los `<title>` ES de Design/Photography.
+- [ ] **26 `href="#"`:** demos de galerías, Instagram y tiles.
 - [ ] (Opcional) `og:locale` / `og:locale:alternate` para previews bilingües.
+
+---
+
+## Sesión 22 — Sitemap enriquecido, lazy-loading + dimensiones intrínsecas + titles en ES
+
+*Registrado el 18 de septiembre de 2026.*
+
+###  sitemap.xml — `lastmod` y `changefreq`
+- Añadido a las **9 URLs**:
+  - `<lastmod>2026-09-18</lastmod>` en todas (fecha de la última actualización significativa).
+  - `<changefreq>`: `weekly` para el homepage (nuevos proyectos, toggle de idioma); `monthly` para el resto (contenido más estable: galerías, páginas estáticas).
+- Validado con parser XML: **9 urls ✓ / 9 lastmod ✓ / 9 changefreq ✓**.
+
+###  Lazy-loading + dimensiones intrínsecas (49 imágenes)
+- **`loading="lazy"`** añadido a **todas** las 49 imágenes `<img>` en las 9 páginas.
+- **`width` y `height` intrínsecos** definidos para evitar CLS:
+  - SVG del frame (instagram/github/linkedin): 32×32.
+  - Imágenes de tiles/galería: 400×300 (placeholder `blank.jpg` y fotos reales).
+  - Hero del index (`Encabezado portfolio.png`): 1510×634 (nativo).
+- **Cobertura final**: 9/9 páginas con `lazy attrs` = `total imgs` ✓.
+- No se rompe el layout: el CSS `.tile__img` (absolute, width 100%) y `.gallery__item img` (width 100%) los absorben; los atributos sirven para *layout stability*, no para dimensionar visualmente.
+
+###  Titles en español
+- `design.html`: "Design — Arzaga Nahil" → **"Diseño — Arzaga Nahil"** ✓
+- `photography.html`: "Photography — Arzaga Nahil" → **"Fotografía — Arzaga Nahil"** ✓
+
+###  Verificación final
+| Archivo | imgs | lazy | width/height |
+|---|---|---|---|
+| index.html | 4 | 4 | 4 (3× SVG 32×32, hero 1510×634) |
+| about.html | 3 | 3 | 3 (SVG 32×32) |
+| contact.html | 3 | 3 | 3 (SVG 32×32) |
+| development.html | 6 | 6 | 6 (3× SVG + 3× 400×300) |
+| design.html | 6 | 6 | 6 (3× SVG + 3× 400×300) |
+| photography.html | 6 | 6 | 6 (3× SVG + 3× 400×300) |
+| gallery-proyecto-1.html | 6 | 6 | 6 (3× SVG + 3× 400×300) |
+| gallery-proyecto-2.html | 8 | 8 | 8 (3× SVG + 5× 400×300) |
+| gallery-proyecto-3.html | 6 | 6 | 6 (3× SVG + 3× 400×300) |
+
+###  Pendientes actualizados
+- [ ] **About / Design / Photography**: contenido real (bio, skills, imágenes).
+- [ ] **26 `href="#"`:** demos de galerías, Instagram y tiles.
 

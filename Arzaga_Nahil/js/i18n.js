@@ -7,7 +7,7 @@ export const I18N = {
         nav_dev: 'Desarrollo',
         nav_design: 'Diseño',
         nav_photo: 'Fotografía',
-        nav_about: 'Sobre mí',
+        nav_about: 'Sobre_mi',
         nav_contact: 'Contacto',
 
         nav_open: 'Abrir menú',
