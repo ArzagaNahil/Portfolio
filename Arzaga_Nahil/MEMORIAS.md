@@ -611,3 +611,26 @@ Arzaga/
 - [ ] Instagram con `href="#"`.
 - [ ] Favicon/manifest.
 - [ ] Consolidar `<style>` inline repetido en `style.css`.
+
+---
+
+## Sesión 15 — Nav alineada con el título + títulos coherentes de galerías
+
+*Registrado el 18 de septiembre de 2026.*
+
+###  Nav alineada con el título
+- `.topnav__brand` ("Arzaga") queda con su borde izquierdo alineado al `.page-title`:
+  - Desktop (≥54em): `.topnav { padding-left: 4vw }` (igual al `left` del título).
+  - Móvil (≤53.99em): `.topnav { padding-left: 1.25rem }` (igual al `left: 1.25rem` del título móvil).
+
+###  Títulos coherentes
+- `gallery-proyecto-2.html` → **"Páginas Web"** (title, og:title, h1, description, desc placeholder, aria-labels y alts de las tarjetas).
+- `gallery-proyecto-3.html` → **"Extensiones"** (ídem).
+- `development.html`: alts de los tiles → "Desarrollo Web" / "Páginas Web" / "Extensiones" (los `h2` ya coincidían).
+
+###  Pendientes
+- [ ] Recibir links reales de páginas/proyectos/extensiones y reemplazar `href="#"` de las tarjetas de demo.
+- [ ] CTA "Ver proyectos" del index apunta a `#`.
+- [ ] Instagram con `href="#"`.
+- [ ] Favicon/manifest.
+- [ ] Consolidar `<style>` inline repetido en `style.css`.

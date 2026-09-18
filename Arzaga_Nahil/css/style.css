@@ -1334,6 +1334,10 @@ main {
         --size-menu: 11.25vh;
     }
 
+    .topnav {
+        padding-left: 4vw;
+    }
+
     main {
         height: 100vh;
         overflow: hidden;
@@ -1537,6 +1541,11 @@ main {
 
 /* ---- Responsive: Mobile (≤ 53.99em) ---- */
 @media screen and (max-width: 53.99em) {
+
+    /* --- Topnav aligned with the page title --- */
+    .topnav {
+        padding-left: 1.25rem;
+    }
 
     /* --- Topnav: collapse links behind a hamburger --- */
     .topnav__toggle {
