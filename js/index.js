@@ -77,6 +77,15 @@ if (tiles && window.matchMedia('(min-width: 54em)').matches) {
     }, { passive: false });
 }
 
+const scrollHint = document.querySelector('.scroll-hint');
+if (scrollHint && tiles.scrollWidth > tiles.clientWidth) {
+    tiles.addEventListener('scroll', () => {
+        if (tiles.scrollLeft > 8) scrollHint.classList.add('is-hidden');
+    });
+} else if (scrollHint) {
+    scrollHint.classList.add('is-hidden');
+}
+
 const pageTitle = document.querySelector('.page-title');
 if (pageTitle && tiles && window.matchMedia('(min-width: 54em)').matches) {
     tiles.addEventListener('scroll', () => {

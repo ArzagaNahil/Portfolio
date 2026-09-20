@@ -59,6 +59,7 @@ export const I18N = {
         g_back: 'Volver a Development',
         g_ring: '· IR A DESARROLLO · IR A DESARROLLO',
         g_code: 'Ver código',
+        g_soon: 'Proyecto — En desarrollo. (Publicación Próximamente)',
 
         g_desc_dev: 'Proyectos de desarrollo web construidos de cero: sitios, aplicaciones y experiencias digitales con foco en rendimiento, diseño limpio y automatización.',
         g_desc_pages: 'Sitios web de negocio e institucionales pensados para transmitir identidad, generar confianza y convertir visitas en clientes. Diseño a medida, responsive, SEO y carga rápida.',
@@ -181,6 +182,7 @@ export const I18N = {
         g_back: 'Back to Development',
         g_ring: '· GO TO DEVELOPMENT · GO TO DEVELOPMENT',
         g_code: 'View code',
+        g_soon: 'Project — In development. (Coming Soon)',
 
         g_desc_dev: 'Web development projects built from scratch: sites, apps and digital experiences focused on performance, clean design and automation.',
         g_desc_pages: 'Business and institutional websites designed to convey identity, build trust and turn visits into clients. Custom design, responsive, SEO and fast loading.',

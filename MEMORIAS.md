@@ -890,3 +890,38 @@ Eliminar la duplicación de estilos entre páginas (deuda técnica pendiente des
 - [ ] **About / Design / Photography**: contenido real (bio, skills, imágenes).
 - [ ] **26 `href="#"`:** demos de galerías, Instagram y tiles.
 
+---
+
+## Sesión 23 — Indicador de scroll (Development / Design / Photography)
+
+*Registrado el 19 de septiembre de 2026.*
+
+###  Objetivo
+Ayudar al visitante a entender que las páginas de la galería (development, design, photography) se desplazan: el usuario veía *"¿cuál es tu próximo proyecto?"* y no tenía una señal visual de que el carrusel horizontal de tiles scrollea.
+
+###  Qué se hizo
+- **Indicador tipo "scroll down"** (patrón clásico de scroll indicator, adaptado del de nudaui.dev / demos de Codrops): un **mini mouse SVG** con **ruedita animada** que se desliza hacia abajo (fade loop 1.6s) + texto chiquito **"scroll"** en `--font-mono`, mayúsculas con `letter-spacing`.
+- Todo el conjunto hace un **bob** suave (translateY, 2s) para llamar la atención.
+- Estilo coherente con el sitio: color `#7fd4dd`, sin fondo (solo líneas), respeta `prefers-reduced-motion` (se congela la animación).
+- **Posición**: esquina **inferior izquierda** (`left: 1.5rem; bottom: 1.5rem`), `position: fixed`, `z-index: 4`. Se eligió la izquierda porque la esquina derecha ya la ocupan los iconos sociales (`.frame__links`).
+- **Compuerta de aparición**: la lógica en `js/index.js` solo lo muestra si hay overflow horizontal (`tiles.scrollWidth > tiles.clientWidth`); si no hay overflow, queda oculto con `.is-hidden`.
+- **Desaparición**: al primer scroll horizontal (`tiles.scrollLeft > 8`) se agrega `.is-hidden` (fade out 0.5s) de forma permanente: invita a scrollear y desaparece una vez que el usuario "lo experimentó".
+
+###  Archivos modificados
+```
+Arzaga/
+├── development.html        # + <div class="scroll-hint"> con SVG mouse
+├── design.html             # ídem
+├── photography.html        # ídem
+├── css/style.css           # bloque .scroll-hint + keyframes (bob / wheel)
+└── js/index.js             # lógica de aparición/ocultamiento al scrollear
+```
+
+###  Nota de proceso
+- Se intentó primero una versión *pill* de vidrio con chevron `»` animado, pero el usuario la descartó por dos motivos: chocaba con los iconos sociales (esquina derecha) y prefería la animación de mouse/scroll clásica. Se pivotó a la posición izquierda + mouse SVG.
+- Importante: hubo un error de edición en `index.js` que borró de paso el bloque del `page-title` y las declaraciones `prevBtn`/`nextBtn`; se detectó leyendo el diff y se restauró íntegro. Siempre verificar con `node --check` + `git diff` tras editar bloques grandes.
+
+###  Pendientes (sin cambios)
+- [ ] **About / Design / Photography**: contenido real (bio, skills, imágenes).
+- [ ] **26 `href="#"`:** demos de galerías, Instagram y tiles.
+

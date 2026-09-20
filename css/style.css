@@ -221,7 +221,7 @@ main {
 
 .content__headline {
     font-family: var(--font-name);
-    font-size: clamp(1.5rem, 3vw, 2.8rem);
+    font-size: clamp(1.4rem, 2.6vw, 2.4rem);
     font-weight: 200;
     line-height: 1.05;
     color: var(--color-heading);
@@ -231,7 +231,7 @@ main {
 
 .content__headline1 {
     font-family: var(--font-name);
-    font-size: clamp(1.5rem, 3vw, 2.8rem);
+    font-size: clamp(1.4rem, 2.6vw, 2.4rem);
     font-weight: 200;
     line-height: 1.05;
     color: var(--color-heading);
@@ -250,15 +250,15 @@ main {
 .content__cta {
     display: inline-flex;
     align-items: center;
-    gap: 0.6rem;
-    padding: 0.7rem 1.5rem;
+    gap: 0.5rem;
+    padding: 0.5rem 1.1rem;
     border: 1px solid rgba(0, 147, 165, 0.45);
     border-radius: 100px;
     background: rgba(0, 147, 165, 0.06);
     backdrop-filter: blur(6px);
     -webkit-backdrop-filter: blur(6px);
     font-family: var(--font-mono);
-    font-size: 0.85rem;
+    font-size: 0.72rem;
     font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.12em;
@@ -842,19 +842,19 @@ main {
 
 .menu__tagline {
     display: none;
-    font-family: var(--font-sans);
-    font-weight: 300;
-    font-size: 2rem;
     grid-area: 1 / 4 / 2 / 6;
-    text-transform: none;
-    margin: 6vh;
-    text-align:  center;
-    -webkit-writing-mode: vertical-rl;
-    writing-mode: vertical-rl;
-    transform: rotate(180deg);
-    color: var(--color-menu);
-    letter-spacing: 0.90em;
+    align-self: center;
+    justify-self: center;
+    margin: 0;
+    height: 33vh;
+    width: auto;
+    object-fit: cover;
+    filter: saturate(1.05);
+    transform: translateX(-290px);
+}
 
+.menu--open .menu__tagline {
+    display: none;
 }
 
 /* ---- Topnav (minimal pages) ---- */
@@ -1092,6 +1092,10 @@ main {
 
 .devtile:first-child .tile__content {
     bottom: 1.8rem;
+}
+
+.devtile:nth-child(2) .tile__content {
+    bottom: 2.6rem;
 }
 
 /* ---- Gallery (Development -> proyectos) ---- */
@@ -1581,6 +1585,77 @@ main {
     .dev-nav__arrow {
         width: 54px;
         height: 54px;
+    }
+}
+
+/* ---- Scroll hint (dev / design / photography) ---- */
+.scroll-hint {
+    position: fixed;
+    left: 2rem;
+    bottom: 2rem;
+    z-index: 4;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    color: #7fd4dd;
+    opacity: 1;
+    transition: opacity 0.5s ease;
+    pointer-events: none;
+    animation: scroll-hint-bob 2s ease-in-out infinite;
+}
+
+.scroll-hint.is-hidden {
+    opacity: 0;
+}
+
+.scroll-hint__mouse {
+    display: block;
+    width: 20px;
+    height: 31px;
+}
+
+.scroll-hint__wheel {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: scroll-hint-wheel 1.6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+.scroll-hint__label {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+}
+
+@keyframes scroll-hint-bob {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-6px);
+    }
+}
+
+@keyframes scroll-hint-wheel {
+    0% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+    50% {
+        transform: translateY(10px);
+        opacity: 0.3;
+    }
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .scroll-hint,
+    .scroll-hint__wheel {
+        animation: none;
     }
 }
 
