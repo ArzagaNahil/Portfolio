@@ -18,6 +18,55 @@ if (menuEl) menu = new Menu(menuEl);
 
 initHoverSound('.topnav__links a');
 
+function initCustomCursor() {
+    const cursor = document.createElement('div');
+    cursor.className = 'custom-cursor';
+    cursor.innerHTML = '<span class="cursor-ring"></span><span class="cursor-dot"></span>';
+    document.body.appendChild(cursor);
+
+    const ring = cursor.querySelector('.cursor-ring');
+    const dot = cursor.querySelector('.cursor-dot');
+
+    let mouseX = 0, mouseY = 0;
+    let ringX = 0, ringY = 0;
+    let dotX = 0, dotY = 0;
+    let rafId = null;
+
+    function animate() {
+        ringX += (mouseX - ringX) * 0.15;
+        ringY += (mouseY - ringY) * 0.15;
+        dotX += (mouseX - dotX) * 0.3;
+        dotY += (mouseY - dotY) * 0.3;
+
+        ring.style.left = `${ringX}px`;
+        ring.style.top = `${ringY}px`;
+        dot.style.left = `${dotX}px`;
+        dot.style.top = `${dotY}px`;
+
+        rafId = requestAnimationFrame(animate);
+    }
+
+    document.addEventListener('mousemove', (e) => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+        if (!rafId) animate();
+    });
+
+    const interactive = 'a, button, .menu__item, .tile__link, .gallery__item__link, .dev-nav__arrow, .lang__toggle, .topnav__toggle, .shiny-cta, input, textarea, select';
+    document.addEventListener('mouseover', (e) => {
+        if (e.target.closest(interactive)) cursor.classList.add('cursor-hover');
+    });
+    document.addEventListener('mouseout', (e) => {
+        if (e.target.closest(interactive)) cursor.classList.remove('cursor-hover');
+    });
+    document.addEventListener('mousedown', () => cursor.classList.add('cursor-click'));
+    document.addEventListener('mouseup', () => cursor.classList.remove('cursor-click'));
+
+    document.addEventListener('mouseleave', () => cursor.style.opacity = '0');
+    document.addEventListener('mouseenter', () => cursor.style.opacity = '1');
+}
+initCustomCursor();
+
 function initTopnav() {
     const toggle = document.querySelector('.topnav__toggle');
     const nav = document.querySelector('.topnav');

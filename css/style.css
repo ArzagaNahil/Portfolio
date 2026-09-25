@@ -752,7 +752,6 @@ main {
 .menu__item {
     font-family: var(--font-mono);
     font-weight: 400;
-    text-transform: uppercase;
     font-size: var(--size-menu);
     line-height: 0.9;
     color: var(--color-menu);
@@ -1226,7 +1225,7 @@ main {
     border-radius: 12px;
     overflow: hidden;
     border: 1px solid rgba(255, 255, 255, 0.06);
-    background: rgba(15, 15, 26, 0.5);
+    background: rgba(15, 15, 26, 0.25);
     transition: border-color 0.25s ease;
 }
 
@@ -1996,6 +1995,62 @@ main {
     .page-gallery .frame__links img {
         width: 36px;
         height: 36px;
+    }
+}
+
+/* ============================================
+   Custom Cursor
+   ============================================ */
+.custom-cursor {
+    position: fixed;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    z-index: 9999;
+    mix-blend-mode: difference;
+    transition: opacity 0.2s ease;
+}
+
+.custom-cursor .cursor-ring {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.3s ease, height 0.3s ease, border-color 0.3s ease, background 0.3s ease;
+}
+
+.custom-cursor .cursor-dot {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: #fff;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.custom-cursor.cursor-hover .cursor-ring {
+    width: 60px;
+    height: 60px;
+    border-color: var(--color-accent);
+    background: rgba(0, 147, 165, 0.15);
+}
+
+.custom-cursor.cursor-hover .cursor-dot {
+    background: var(--color-accent);
+    width: 8px;
+    height: 8px;
+}
+
+.custom-cursor.cursor-click .cursor-ring {
+    width: 30px;
+    height: 30px;
+}
+
+@media (pointer: coarse) {
+    .custom-cursor {
+        display: none;
     }
 }
 

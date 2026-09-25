@@ -329,6 +329,8 @@ export function initGooey() {
     const renderer = new THREE.WebGLRenderer({ canvas, alpha: true })
     renderer.setSize(W, H)
     renderer.setPixelRatio(window.devicePixelRatio)
+    renderer.toneMapping = THREE.NoToneMapping
+    renderer.outputColorSpace = THREE.SRGBColorSpace
 
     const tiles = Array.from(els).map(($el) => new GooeyTile($el, scene, 0.5))
 
