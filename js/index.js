@@ -4,6 +4,7 @@ import { initScene } from './particles.js';
 import { initHoverSound } from './hoverSound.js';
 import { initGooey } from './gooey.js';
 import { initI18n } from './i18n.js';
+import { initLightbox } from './lightbox.js';
 
 let menu = null;
 
@@ -116,6 +117,7 @@ function initGalleryCarousel() {
     }
 }
 initGalleryCarousel();
+initLightbox();
 
 const tiles = document.querySelector('.devtiles');
 if (tiles && window.matchMedia('(min-width: 54em)').matches) {

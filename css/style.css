@@ -1279,6 +1279,208 @@ main {
     }
 }
 
+/* ---- Galería de mosaico: tarjetas sin descripción ---- */
+
+/* Solo la galería con visor: el carrusel se sangra por la derecha sin invadir la columna de texto */
+.page-gallery:has(.lightbox) .gallery__carousel {
+    margin-right: -2rem;
+}
+
+/* Las 18 fotos tienen 13 proporciones distintas (de 0.71 a 2.04), así que la
+   tarjeta no puede fijar ancho: fija ALTURA y deja que el ancho salga de la
+   proporción natural de cada miniatura. Así ninguna se recorta ni se estira.
+   Los <img> llevan width/height con su tamaño real, que es lo que el navegador
+   usa como relación de aspecto mientras carga y evita saltos de maquetación.
+   Las miniaturas están generadas a 506px de alto, el tope de este clamp, para
+   que en pantallas grandes no haya que escalarlas hacia arriba. */
+.gallery__card {
+    flex: 0 0 auto;
+    height: clamp(250px, 41vh, 506px);
+    width: auto;
+    margin: 0;
+    padding: 0;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 12px;
+    background: rgba(15, 15, 26, 0.25);
+    overflow: hidden;
+    cursor: pointer;
+    font: inherit;
+    color: inherit;
+    text-align: inherit;
+    transition: transform 0.25s ease, border-color 0.25s ease;
+}
+
+.gallery__card:hover {
+    transform: translateY(-4px);
+    border-color: var(--color-accent);
+}
+
+.gallery__card:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+}
+
+.gallery__card img {
+    display: block;
+    height: 100%;
+    width: auto;
+    max-width: none;
+    transition: transform 0.45s ease;
+}
+
+.gallery__card:hover img {
+    transform: scale(1.05);
+}
+
+/* ---- Visor de imagen ---- */
+
+body.is-lightbox-open {
+    overflow: hidden;
+}
+
+body.is-lightbox-open .gallery__track {
+    animation-play-state: paused;
+}
+
+body.is-lightbox-open #three-canvas {
+    opacity: 0;
+}
+
+.lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    display: grid;
+    place-items: center;
+    padding: clamp(3.5rem, 7vw, 5rem) clamp(1rem, 5vw, 5rem);
+    visibility: hidden;
+    opacity: 0;
+}
+
+.lightbox.is-open {
+    visibility: visible;
+    opacity: 1;
+}
+
+.lightbox__backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(4, 4, 10, 0.94);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    border: 0;
+    padding: 0;
+}
+
+.lightbox__stage {
+    position: relative;
+    z-index: 1;
+    display: inline-block;
+    line-height: 0;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 30px 80px -30px rgba(0, 0, 0, 0.9);
+}
+
+/* La foto se muestra entera y ampliada hasta que quepa en la ventana: sin
+   object-fit, sin recortes y sin transiciones. */
+.lightbox__img {
+    display: block;
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: calc(100vh - 11rem);
+    max-height: calc(100dvh - 11rem);
+}
+
+.lightbox__btn {
+    position: absolute;
+    z-index: 2;
+    display: grid;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    padding: 0;
+    border: 1px solid rgba(0, 147, 165, 0.45);
+    border-radius: 50%;
+    background: rgba(15, 15, 26, 0.7);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+    color: var(--color-heading);
+    font-family: var(--font-mono);
+    font-size: 1.1rem;
+    line-height: 1;
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.lightbox__btn:hover {
+    background: rgba(0, 147, 165, 0.22);
+    border-color: var(--color-accent);
+    color: #ffffff;
+}
+
+.lightbox__btn:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+}
+
+.lightbox__btn--prev {
+    left: clamp(0.5rem, 2vw, 1.5rem);
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.lightbox__btn--next {
+    right: clamp(0.5rem, 2vw, 1.5rem);
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.lightbox__btn--close {
+    top: clamp(0.75rem, 2vw, 1.5rem);
+    right: clamp(0.75rem, 2vw, 1.5rem);
+    font-size: 1.4rem;
+}
+
+.lightbox__counter {
+    position: absolute;
+    left: 50%;
+    bottom: clamp(0.75rem, 2vw, 1.5rem);
+    transform: translateX(-50%);
+    z-index: 2;
+    margin: 0;
+    padding: 0.5rem 1.1rem;
+    border: 1px solid rgba(0, 147, 165, 0.35);
+    border-radius: 100px;
+    background: rgba(15, 15, 26, 0.7);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    color: var(--color-text-alt);
+}
+
+@media screen and (max-width: 40em) {
+    .lightbox__btn {
+        width: 2.5rem;
+        height: 2.5rem;
+        font-size: 0.95rem;
+    }
+
+    .lightbox__btn--prev,
+    .lightbox__btn--next {
+        top: auto;
+        bottom: clamp(0.75rem, 2vw, 1.5rem);
+        transform: none;
+    }
+
+    .lightbox__counter {
+        bottom: 1.35rem;
+    }
+}
+
 .gallery__links {
     display: flex;
     flex-wrap: wrap;
@@ -1339,6 +1541,11 @@ main {
 
     .page-gallery .gallery__desc {
         text-align: center;
+    }
+
+    /* Sangrado del carrusel solo en escritorio */
+    .page-gallery:has(.lightbox) .gallery__carousel {
+        margin-right: -3rem;
     }
 }
 
