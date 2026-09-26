@@ -1137,16 +1137,6 @@ main {
     color: var(--color-text-alt);
 }
 
-.gallery__slogan::after {
-    content: '';
-    display: block;
-    width: 3.5rem;
-    height: 1px;
-    margin-top: 1.1rem;
-    background: var(--color-accent);
-    opacity: 0.55;
-}
-
 .gallery__back {
     position: relative;
     display: grid;
@@ -2161,12 +2151,26 @@ body.is-lightbox-open #three-canvas {
         grid-template-areas: 'text carousel';
     }
 
-    /* Con la frase de cierre la rejilla pasa a dos filas: texto y carrusel
-        arriba, la frase ocupando todo el ancho debajo. */
+    /* La frase no puede robarle sitio a la fila de texto y carrusel: en
+       escritorio se vuelve a las dos areas de siempre y el lema se superpone
+       al hueco que ya queda libre bajo el carrusel. Al salir de flujo no
+       genera ninguna fila ni columna implicita. */
     .page-gallery .gallery--slogan {
-        grid-template-areas:
-            'text carousel'
-            'slogan slogan';
+        grid-template-areas: 'text carousel';
+    }
+
+    /* Los links sociales viven en .frame, superpuesto al area gallery y abajo a
+       la derecha ('title links' con align-self: end). El lema se ancla al
+       borde inferior de la galeria y se centra en el viewport, de modo que
+       queda en el hueco entre el carrusel y esos links. */
+    .page-gallery .gallery__slogan {
+        position: absolute;
+        left: 50%;
+        bottom: 4.5rem;
+        transform: translateX(-50%);
+        width: auto;
+        max-width: min(46ch, 60vw);
+        margin: 0;
     }
 
     /* La barra superior (frame) se vuelve overlay transparente */
