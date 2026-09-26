@@ -64,7 +64,7 @@
 
         <h1 class="page-title" data-i18n="pt_galdesign1_pre" data-i18n-offset="pt_galdesign1_off">Identidad <span class="page-title__offset">Visual</span></h1>
 
-        <section class="gallery">
+        <section class="gallery gallery--slogan">
             <div class="gallery__text">
                 <a href="design.html" class="gallery__back" aria-label="Volver a Diseño" data-i18n-attr="aria-label" data-i18n-key="g_back_design">
                     <svg class="gallery__back__ring" viewBox="0 0 130 130" aria-hidden="true">
@@ -87,28 +87,21 @@
                 </div>
             </div>
 
-            <div class="gallery__carousel">
+            <div class="gallery__carousel" data-lightbox>
                 <div class="gallery__track">
-                    <a href="#" target="_blank" rel="noopener noreferrer" class="gallery__item__link" aria-label="Ver demo — Identidad Visual — proyecto 1" data-i18n-attr="aria-label" data-i18n-key="galdesign1_demo_1">
-                        <figure class="gallery__item">
-                            <img src="assets/IMG/design/branding/base.jpg" alt="Identidad Visual — proyecto 1" data-i18n-attr="alt" data-i18n-key="galdesign1_img_1" width="400" height="300" loading="lazy">
-                            <figcaption class="gallery__item__desc"><strong>Branding Completo</strong><span data-i18n="galdesign1_card1">Sistema de identidad visual integral: logotipo, paleta cromática, tipografía, iconografía y aplicaciones de papelería.</span></figcaption>
-                        </figure>
-                    </a>
-                    <a href="#" target="_blank" rel="noopener noreferrer" class="gallery__item__link" aria-label="Ver demo — Identidad Visual — proyecto 2" data-i18n-attr="aria-label" data-i18n-key="galdesign1_demo_2">
-                        <figure class="gallery__item">
-                            <img src="assets/IMG/design/branding/hover.jpg" alt="Identidad Visual — proyecto 2" data-i18n-attr="alt" data-i18n-key="galdesign1_img_2" width="400" height="300" loading="lazy">
-                            <figcaption class="gallery__item__desc" data-i18n="g_soon">Proyecto — En desarrollo, publicación próximamente</figcaption>
-                        </figure>
-                    </a>
-                    <a href="#" target="_blank" rel="noopener noreferrer" class="gallery__item__link" aria-label="Ver demo — Identidad Visual — proyecto 3" data-i18n-attr="aria-label" data-i18n-key="galdesign1_demo_3">
-                        <figure class="gallery__item">
-                            <img src="assets/IMG/design/branding/base.jpg" alt="Identidad Visual — proyecto 3" data-i18n-attr="alt" data-i18n-key="galdesign1_img_3" width="400" height="300" loading="lazy">
-                            <figcaption class="gallery__item__desc" data-i18n="g_soon">Proyecto — En desarrollo, publicación próximamente</figcaption>
-                        </figure>
-                    </a>
+                    <button type="button" class="gallery__card" data-index="0" data-full="assets/IMG/design/branding/base.jpg" aria-haspopup="dialog" aria-label="Identidad Visual — proyecto 1" data-i18n-attr="aria-label" data-i18n-key="galdesign1_img_1">
+                        <img src="assets/IMG/design/branding/base.jpg" alt="Identidad Visual — proyecto 1" data-i18n-attr="alt" data-i18n-key="galdesign1_img_1" width="400" height="300" decoding="async">
+                    </button>
+                    <button type="button" class="gallery__card" data-index="1" data-full="assets/IMG/design/branding/hover.jpg" aria-haspopup="dialog" aria-label="Identidad Visual — proyecto 2" data-i18n-attr="aria-label" data-i18n-key="galdesign1_img_2">
+                        <img src="assets/IMG/design/branding/hover.jpg" alt="Identidad Visual — proyecto 2" data-i18n-attr="alt" data-i18n-key="galdesign1_img_2" width="400" height="300" decoding="async">
+                    </button>
+                    <button type="button" class="gallery__card" data-index="2" data-full="assets/IMG/design/branding/base.jpg" aria-haspopup="dialog" aria-label="Identidad Visual — proyecto 3" data-i18n-attr="aria-label" data-i18n-key="galdesign1_img_3">
+                        <img src="assets/IMG/design/branding/base.jpg" alt="Identidad Visual — proyecto 3" data-i18n-attr="alt" data-i18n-key="galdesign1_img_3" width="400" height="300" decoding="async">
+                    </button>
                 </div>
             </div>
+
+            <p class="gallery__slogan"><span data-i18n="g_slogan_design">Únete a esta causa, ellos aún te necesitan!</span></p>
         </section>
     </main>
 
@@ -118,5 +111,15 @@
     <script src="js/segment.min.js"></script>
     <script src="js/ease.min.js"></script>
     <script type="module" src="js/index.js"></script>
+
+    <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Galería de imágenes de Identidad Visual" data-i18n-attr="aria-label" data-i18n-key="lb_gallery_1" aria-hidden="true">
+        <div class="lightbox__backdrop" data-lb-close aria-hidden="true"></div>
+        <figure class="lightbox__stage">
+            <img class="lightbox__img" alt="">
+        </figure>
+        <button type="button" class="lightbox__btn lightbox__btn--prev" data-lb-prev aria-label="Imagen anterior" data-i18n-attr="aria-label" data-i18n-key="lb_prev">&#8249;</button>
+        <button type="button" class="lightbox__btn lightbox__btn--next" data-lb-next aria-label="Imagen siguiente" data-i18n-attr="aria-label" data-i18n-key="lb_next">&#8250;</button>
+        <button type="button" class="lightbox__btn lightbox__btn--close" data-lb-close aria-label="Cerrar" data-i18n-attr="aria-label" data-i18n-key="lb_close">&times;</button>
+        <p class="lightbox__counter" data-lb-counter aria-live="polite"></p>
 </body>
 </html>

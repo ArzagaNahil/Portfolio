@@ -27,15 +27,19 @@ export function initLightbox() {
     const closeBtn = lightbox.querySelector('button[data-lb-close]');
     if (!imgEl) return;
 
-    /* El carrusel clona tarjetas para que el bucle sea continuo, así que los
-       índices llegan repetidos: nos quedamos solo con la lista original. */
-    const seen = new Set();
-    const triggers = Array.from(root.querySelectorAll('[data-full]')).filter((el) => {
-        const src = el.dataset.full;
-        if (seen.has(src)) return false;
-        seen.add(src);
-        return true;
+    /* El carrusel clona tarjetas para que el bucle sea continuo, así que cada
+       foto aparece repetida. La lista de navegación se saca por data-index y no
+       por data-full: dos tarjetas distintas pueden apuntar a la misma imagen (los
+       placeholders se repiten) y si se filtrara por src la segunda se quedaría
+       sin listener, es decir, un botón muerto. Si el marcado no trae data-index se
+       cae al src, que es lo que se usaba antes. */
+    const cards = Array.from(root.querySelectorAll('[data-full]'));
+    const byKey = new Map();
+    cards.forEach((el) => {
+        const key = el.dataset.index ?? el.dataset.full;
+        if (!byKey.has(key)) byKey.set(key, el);
     });
+    const triggers = Array.from(byKey.values());
     if (triggers.length === 0) return;
 
     const sources = triggers.map((el) => el.dataset.full);
@@ -134,8 +138,12 @@ export function initLightbox() {
         }
     }
 
-    triggers.forEach((el, i) => {
-        el.addEventListener('click', () => open(i));
+    /* Se escucha en todas las tarjetas, copias del carrusel incluidas. Si solo
+       se escuchara en la original, en el tramo del bucle que se repite no abriría
+       ninguna. */
+    cards.forEach((el) => {
+        const key = el.dataset.index ?? el.dataset.full;
+        el.addEventListener('click', () => open(triggers.indexOf(byKey.get(key))));
     });
 
     closeEls.forEach((el) => el.addEventListener('click', close));
