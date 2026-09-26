@@ -1126,7 +1126,12 @@ main {
    Bruno Ace) pero bastante más pequeña: es una frase larga y esa fuente es
    ancha, así que a tamaño de título se desbordaría. Comparte el color del
    título y sube algo su opacidad (0.18 en .page-title): al ser más pequeña,
-   necesita algo más de cuerpo para no perderse del todo. */
+   necesita algo más de cuerpo para no perderse del todo.
+
+   La opacidad va en el <span> interior y no aquí a propósito. En CSS la
+   opacidad del elemento se multiplica sobre sus pseudo-elementos, así que
+   ponerla en el <p> atenuaría también la raya de abajo. Alvivarla en el span
+   el texto queda al 0.25 y la raya va a opacidad plena. */
 .gallery__slogan {
     grid-area: slogan;
     max-width: 46ch;
@@ -1137,17 +1142,18 @@ main {
     line-height: 1.35;
     text-wrap: balance;
     color: var(--color-heading);
+}
+
+.gallery__slogan > span {
     opacity: 0.25;
 }
 
-/* Raya de acento bajo la frase. Va con opacity 1 a proposito: la del padre
-   (0.25) se le multiplica igual que al texto, asi que es el techo que tiene
-   disponible. Con 0.55 aqui quedaria en 0.14 y no se veria. */
+/* Raya de acento bajo la frase, a opacidad plena. */
 .gallery__slogan::after {
     content: '';
     display: block;
     width: 3.5rem;
-    height: 5px;
+    height: 3px;
     margin-top: 1.1rem;
     background: var(--color-accent);
 }
