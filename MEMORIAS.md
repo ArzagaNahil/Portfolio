@@ -1198,11 +1198,13 @@ La galería queda en 41 tarjetas, con `data-index` 0..40 y claves `galdesign2_im
 - [ ] **Nombres reales de los proyectos**: los textos alternativos de las 41 tarjetas de Editorial y las 21 de Identidad Visual son provisionales. "NH 1" dice cliente y número de pieza, no qué es la pieza. Sin esta información no se pueden escribir bien.
 - [ ] **MOTO de baja resolución**: 3 de las 41 imágenes de Editorial son menores que la tarjeta (606×462, 812×456, 805×260) y quedan sin ampliar. Se ven blandas. Arreglarlo exige el original a mayor resolución.
 - [ ] **T3 del calendario T**: en la carpeta de origen solo hay T1, T2, T4 y T5. Se respetó la numeración original en lugar de renumerar para tapar el hueco.
-- [ ] **Lema de Editorial**: se puso "Cada página, una decisión de diseño." para que dejara de mostrar el de Rescate, pero es un texto provisional igual que los otros dos. Si hay un lema propio de la disciplina, debe sustituirlo.
+- [ ] **Lemas de Identidad Visual y Editorial**: los dos son provisionales. Se escribieron solo para que dejaran de mostrar el de Rescate Animal, que es el único real. "Cada página, una decisión de diseño." en Editorial y "Marcas que se reconocen de un vistazo." en Identidad Visual. Con la retirada de UI/UX solo quedan estos dos por decidir.
 - [ ] **`thumbs/` de Rescate Animal a q76**: darían unos 300 KB menos, pero es bajar calidad de fotos sin medir el efecto.
-- [ ] **25 claves i18n huérfanas**: restos de las galerías de maqueta y de interruptores de vista previa. Sin impacto visible.
+- [ ] **Medidas de las tiles de `design.html`**: los tres `<img>` de Diseño declaran `width="400" height="300"` y los ficheros reales son verticales de 1296×1571. No se deforman porque el CSS los recorta con `object-fit: cover`, así que el atributo es inerte, pero sigue siendo markup incorrecto.
+- [ ] **Nombres y descripciones de las 38 fotos de Producto**: los 27 ficheros que solo se nombran por número (`1.jpg`, `DSC04236.jpg`, `IMG_*.jpg`) y las piezas con código de referencia (`es3246-gallery-ext-platform2`, `jlg 600aj1`) están como "Pieza 01" a "Pieza 37" con descripción genérica. No dicen qué es cada fotografía. Los originales no se tocan y el manifiesto queda en `producto_manifest.json`, así que corregirlo no obliga a reprocesar las imágenes.
+- [ ] **5 fotos de producto demasiado pequeñas, y una límite**: quedaron fuera por decisión del usuario `images.png` (225×225), `gorra.png` (466×374), `metros-flexibles-con-llavero-baratos.jpg` (476×392), `LIBRETA.jpg` (474×480) y `MUGS BL.jpg` (512×512). Entran si aparecen originales. `jlg 600aj1.jpg` se quedó dentro con 558×429, del mismo orden de magnitud pero todavía cabe en el visor.
+- [ ] **20 claves i18n huérfanas**: se quedaron en 25 al quitar la galería de UI/UX, que se llevó por delante cuatro de ellas. Antes de borrarlas hay que buscar si algún sitio las construye por cadena, porque hay llaves que se arman en JavaScript y no salen en un `grep` de `data-i18n`.: restos de las galerías de maqueta y de interruptores de vista previa. Sin impacto visible.
 - [ ] **About / Design / Photography**: contenido real (bio, skills, imágenes).
-- [ ] **URLs del `sitemap.xml` y de `og:url` sin `/Portfolio`**: todas apuntan a `arzaganahil.github.io/...` cuando el repositorio se llama `Portfolio`. Es el mismo error que ya se cometió al darle una URL al usuario. Afecta a las 16 páginas, no solo a las galerías.
 
 ---
 
@@ -1224,3 +1226,40 @@ La galería queda en 41 tarjetas, con `data-index` 0..40 y claves `galdesign2_im
 
 **Error propio**: el primer intento de quitar la tile usó `<li class="devtile">.*?gallery-design-3\.html.*?</li>` con `re.S`. Como `.*?` salta líneas, el patrón arrancaba en el primer `<li class="devtile">` y terminaba en el `</li>` de UI/UX, así que borró tres tiles de golpe y dejó la página con una sola disciplina. Lo detectó la comprobación que exigía 3 tiles y encontraba 1. Se restauró con `git checkout HEAD -- design.html` y se repitió troceando en bloques, quitando solo el que contenía la galería 3. **Lección**: para quitar un elemento de una lista hay que aislar primero el bloque y comprobar después cuántos quedan. Un `.*?` con `re.S` puede cruzar varios elementos sin avisar.
 
+---
+
+## Sesión 33 - El /Portfolio que faltaba en 62 URLs
+
+**El error**: el repositorio se llama `Portfolio`, así que la URL pública es `arzaganahil.github.io/Portfolio/`. Pero 15 páginas declaraban `https://arzaganahil.github.io` en `og:url`, en `canonical` y en `og:image`, el `robots.txt` apuntaba al sitemap sin la carpeta, y las 15 entradas del `sitemap.xml` idénticas. Todo eso daba 404, y en SEO es justo lo que más pesa: canónica al 404 y sin indexar.
+
+**Alcance**: 62 URLs en 17 ficheros, las 15 págiras más `sitemap.xml` y `robots.txt`. Por página son 3 (og:url, canonical, og:image), y `index.html` lleva además el enlace al sitemap. **Los enlaces relativos no se tocaron**: `design.html`, `assets/IMG/...` etc. siguen igual, que es lo correcto y lo que evita romper la navegación al cambiar de base.
+
+**El error que se repitió**: el script de sustitución no era idempotente. Al reejecutarlo cambió `.../Portfolio/` por `.../Portfolio/Portfolio/` en los 62 sitios. Se normalizó después, pero un script de reemplazo de URLs tiene que ser idempotente o el segundo fallo es peor que el primero. La comprobación final compara cada `og:url` y cada `canonical` contra la base, y detecta el duplicado.
+
+**Lección operativa**: la primera comprobación por HTTP se hizo **antes** de commitear y por eso seguía viendo la versión vieja. Concluir "no funciona" sobre lo que sirve el servidor, sin comprobar si lo cambio está subido, es el error de lectura más fácil de cometer. La secuencia que funciona es: verificar en local, commit, push, esperar, y **entonces** pedir por HTTP.
+
+**Verificación**: las 15 entradas del sitemap responden 200, y `og:url` y `canonical` de las páginas comprobadas dan 200. El `og:image` correcto ya existía en el repo y responde 200.
+
+---
+
+## Sesión 34 - La galería de Producto, de 3 placeholders a 38 fotos
+
+**Origen**: 43 ficheros en la carpeta de producto, 114,47 MB. El usuario confirmó que las 17 de nombre `DSC*` e `IMG_*` también son de producto y entran todas, y decidió dejar fuera las demasiado pequeñas. Quedan **38**.
+
+**Decisiones que tomó el usuario**: las 38 entran; tarjeta con descripción **y** visor de imagen; fuera las que son demasiado pequeñas para el visor. Los nombres y textos los decide él, así que se montó con la estructura completa y los textos provisionales colocados en un solo sitio.
+
+**Peso**: 114,10 MB de origen a **9,67 MB** de WebP, el 8,5 %. Miniatura con caja 1000×1000 y grande con 2000×2000, calidad 80 y 82. Los PNG con canal alfa se aplanan sobre blanco porque el visor va sobre fondo oscuro. Los originales no se tocan.
+
+**Por qué un `<button>` y no un `<a>`**: las tarjetas de foto eran `<a href="#" target="_blank">` con el texto "Ver demo". Estas fotos no van a ninguna demo, abren el visor, y **`lightbox.js` no llama a `preventDefault()` en el click**: con un enlace el navegador naviga y el visor no llega a abrirse. Se reutiliza la utilidad `.unbutton` que ya había en el CSS, así que el botón hereda el aspecto de la tarjeta sin CSS nuevo.
+
+**El `focus-visible` que faltaba**: `.unbutton` pone `outline: none`, y la regla `a:focus-visible` del proyecto no aplica a un `button`. Con 38 tarjetas, el teclado se quedaba sin ninguna guía. Añadida una regla propia para la tarjeta.
+
+**Error propio, el más grave de la sesión, casi sube**: el generador añadió las claves nuevas de i18n con dos `replace(..., 1)` seguidos sobre el mismo texto de búsqueda. El primero escribía las 76 claves en el bloque ES, y el segundo volviía a encontrar la **misma** primera coincidencia, así que las 76 claves inglesas quedaron también dentro del bloque ES. El bloque EN se quedaba sin ninguna. Peor: como las dos escrituras iban al mismo objeto, la segunda **pisaba** a la primera, así que la galería habría funcionado en español y habría mostrado texto en inglís al cambiar de idioma, sin que nada pareciera roto. Lo detectó al comprobar **en qué bloque** había caído cada clave, no solo si existía. Arreglado partiendo el fichero por dónde empieza `en: {` y tratando cada mitad por separado.
+
+**Error propio, y anunció al revés**: el parche del CSS usaba como ancla `.gallery__item__link:hover .gallery__item { ... }` en una sola línea, pero en `css/style.css` el selector y la llave están en líneas distintas. El `replace` no hizo nada y el script **imprimió "añadido"** porque solo comprobaba que la cadena no estuviera antes, no que el cambio se hubiera escrito. Se rehizo localizando la regla y saltando hasta su llave de cierre. Es el mismo fallo que se japan en las sesiones 31 y 32: un script que dice que ha hecho algo sin verificar el resultado.
+
+**Error propio, del verificador**: dos comprobaciones daban un OK falso. Una contaba `loading="lazy"` en toda la página y salía 41 en vez de 38, porque el logo y el pie también lo llevan; la otra aceptaba que quedara un `href="#"` en la página, cuando el que queda es el del logo. Un `chk` que pasa en vacío es peor que no comprobar: en la verificación por HTTP llegó a decir "las 76 imágenes responden 200" habiendo comprobado solo 3, porque la página servida aún era la vieja. Ahora se comprueba también **cuántas** se han comprobado.
+
+**Verificación en local**: 38 tarjetas, `data-index` 0..37 sin huecos, las 76 rutas existen, no queda ninguna WebP sin usar, las 38 medidas declaradas coinciden con las reales, i18n ES 327 y EN 327 sin diferencia, `node --check` limpio en los tres módulos, CSS con las llaves equilibradas y `gallery-photo-1` y `gallery-photo-2` sin tocar.
+
+**Verificación en producción**: despué de esperar a la reconstrucción de Pages, la página servida ya tiene las 38 tarjetas, el `data-lightbox`, el visor, y las 38 miniaturas y las 38 imagenes grandes responden 200. Retrato y Paisaje siguen intactas y sin visor.
