@@ -54,7 +54,8 @@ export const I18N = {
         tile_paisaje: 'Paisaje',
         tile_producto: 'Producto',
         tile_ui: 'UI / UX',
-        tile_rescate: 'Rescate Animal',
+        tile_res_pre: 'Rescate ',
+        tile_res_off: 'Animal',
 
         alt_dev: 'Desarrollo Web',
         alt_pages: 'Páginas Web',
@@ -290,7 +291,8 @@ export const I18N = {
         tile_paisaje: 'Landscape',
         tile_producto: 'Product',
         tile_ui: 'UI / UX',
-        tile_rescate: 'Animal Rescue',
+        tile_res_pre: 'Animal ',
+        tile_res_off: 'Rescue',
 
         alt_dev: 'Web Development',
         alt_pages: 'Web Pages',
