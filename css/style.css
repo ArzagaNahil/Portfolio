@@ -1124,9 +1124,9 @@ main {
 
 /* Misma tipografía que el título de la página (.page-title usa --font-name,
    Bruno Ace) pero bastante más pequeña: es una frase larga y esa fuente es
-   ancha, así que a tamaño de título se desbordaría. Comparte también su
-   color y su opacidad, para que el lema lea como una segunda firma del
-   título y no como un texto de lectura. */
+   ancha, así que a tamaño de título se desbordaría. Comparte el color del
+   título y baja algo su opacidad (0.18 en .page-title) para que el lema lea
+   como una segunda firma, apenas un punto más discreta. */
 .gallery__slogan {
     grid-area: slogan;
     max-width: 46ch;
@@ -1137,7 +1137,7 @@ main {
     line-height: 1.35;
     text-wrap: balance;
     color: var(--color-heading);
-    opacity: 0.18;
+    opacity: 0.14;
 }
 
 .gallery__back {
