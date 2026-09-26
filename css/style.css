@@ -1290,14 +1290,6 @@ main {
     border-color: var(--color-accent);
 }
 
-    /* .unbutton pone outline: none, y la regla de a:focus-visible no llega a un
-   button. Con 38 tarjetas, sin esto el teclado se queda sin ninguna guia. */
-    .gallery__item__link:focus-visible {
-        outline: 2px solid var(--color-accent);
-        outline-offset: 3px;
-        border-radius: 12px;
-    }
-
 .gallery__item img {
     display: block;
     width: 100%;

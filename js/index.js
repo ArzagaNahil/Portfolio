@@ -131,13 +131,21 @@ function initGalleryCarousel() {
     };
     fijarDuracion();
 
+
+    /* La primera medicion sale al construir el DOM, y si el navegador aun no
+       ha resuelto el ancho de cada <img> a partir de su width/height, el track
+       mide menos y la velocidad queda mas alta. Remedir al cargar deja los ocho
+       carruseles al mismo ritmo desde el primer segundo. */
+    window.addEventListener('load', fijarDuracion, { once: true });
     // La tarjeta es height: clamp(250px, 41vh, 506px) con width: auto, asi que
     // el ancho de cada una depende de la ALTURA de la ventana y el del track
     // entero depende de cuantas haya. Sin recalcular al cambiar la altura, el
     // ritmo se desvia justo como antes, solo que ahora depende del gesto.
+    let ultimoAncho = window.innerWidth;
     let ultimoAlto = window.innerHeight;
     window.addEventListener('resize', () => {
-        if (window.innerHeight === ultimoAlto) return;
+        if (window.innerHeight === ultimoAlto && window.innerWidth === ultimoAncho) return;
+        ultimoAncho = window.innerWidth;
         ultimoAlto = window.innerHeight;
         requestAnimationFrame(fijarDuracion);
     });
