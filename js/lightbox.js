@@ -1,7 +1,7 @@
 /**
  * lightbox.js
  * ---------------------------------------------------------------------------
- * Visor de imagen de las galerías de "Design".
+ * Visor de imagen de las galerías de "Design" y de "Fotografía".
  *
  * A propósito no hace nada más que ampliar la foto: sin shader, sin
  * desintegración, sin transiciones. Al pulsar una miniatura la imagen se carga
