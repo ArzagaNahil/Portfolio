@@ -1201,7 +1201,7 @@ La galería queda en 41 tarjetas, con `data-index` 0..40 y claves `galdesign2_im
 - [ ] **Lemas de Identidad Visual y Editorial**: los dos son provisionales. Se escribieron solo para que dejaran de mostrar el de Rescate Animal, que es el único real. "Cada página, una decisión de diseño." en Editorial y "Marcas que se reconocen de un vistazo." en Identidad Visual. Con la retirada de UI/UX solo quedan estos dos por decidir.
 - [ ] **`thumbs/` de Rescate Animal a q76**: darían unos 300 KB menos, pero es bajar calidad de fotos sin medir el efecto.
 - [ ] **Medidas de las tiles de `design.html`**: los tres `<img>` de Diseño declaran `width="400" height="300"` y los ficheros reales son verticales de 1296×1571. No se deforman porque el CSS los recorta con `object-fit: cover`, así que el atributo es inerte, pero sigue siendo markup incorrecto.
-- [ ] **Nombres y descripciones de las 38 fotos de Producto**: los 27 ficheros que solo se nombran por número (`1.jpg`, `DSC04236.jpg`, `IMG_*.jpg`) y las piezas con código de referencia (`es3246-gallery-ext-platform2`, `jlg 600aj1`) están como "Pieza 01" a "Pieza 37" con descripción genérica. No dicen qué es cada fotografía. Los originales no se tocan y el manifiesto queda en `producto_manifest.json`, así que corregirlo no obliga a reprocesar las imágenes.
+- [ ] **Nombres reales de las 38 fotos de Producto**: los 27 ficheros que solo se nombran por número (`1.jpg`, `DSC04236.jpg`, `IMG_*.jpg`) y las piezas con código de referencia (`es3246-gallery-ext-platform2`, `jlg 600aj1`) están como "Pieza 01" a "Pieza 27". Ya **no se ven en la tarjeta** (sesión 35), pero siguen siendo el `alt` y el `aria-label`, que es lo que anuncia el botón al teclado y lo que copia el visor a la imagen grande. Los originales no se tocan y el manifiesto queda en `producto_manifest.json`, así que corregirlo no obliga a reprocesar las imágenes.
 - [ ] **5 fotos de producto demasiado pequeñas, y una límite**: quedaron fuera por decisión del usuario `images.png` (225×225), `gorra.png` (466×374), `metros-flexibles-con-llavero-baratos.jpg` (476×392), `LIBRETA.jpg` (474×480) y `MUGS BL.jpg` (512×512). Entran si aparecen originales. `jlg 600aj1.jpg` se quedó dentro con 558×429, del mismo orden de magnitud pero todavía cabe en el visor.
 - [ ] **20 claves i18n huérfanas**: se quedaron en 25 al quitar la galería de UI/UX, que se llevó por delante cuatro de ellas. Antes de borrarlas hay que buscar si algún sitio las construye por cadena, porque hay llaves que se arman en JavaScript y no salen en un `grep` de `data-i18n`.: restos de las galerías de maqueta y de interruptores de vista previa. Sin impacto visible.
 - [ ] **About / Design / Photography**: contenido real (bio, skills, imágenes).
@@ -1263,3 +1263,17 @@ La galería queda en 41 tarjetas, con `data-index` 0..40 y claves `galdesign2_im
 **Verificación en local**: 38 tarjetas, `data-index` 0..37 sin huecos, las 76 rutas existen, no queda ninguna WebP sin usar, las 38 medidas declaradas coinciden con las reales, i18n ES 327 y EN 327 sin diferencia, `node --check` limpio en los tres módulos, CSS con las llaves equilibradas y `gallery-photo-1` y `gallery-photo-2` sin tocar.
 
 **Verificación en producción**: despué de esperar a la reconstrucción de Pages, la página servida ya tiene las 38 tarjetas, el `data-lightbox`, el visor, y las 38 miniaturas y las 38 imagenes grandes responden 200. Retrato y Paisaje siguen intactas y sin visor.
+
+---
+
+## Sesión 35 - Fuera los textos de las tarjetas de Producto
+
+**Decisión del usuario**: el pie con el nombre y la descripción de cada tarjeta no hacia falta. Se quitan los 38 `<figcaption class="gallery__item__desc">` y con ellos las 76 claves `galphoto3_desc_*`, una por idioma.
+
+**Qué se queda y por qué**: el `alt` de cada imagen y el `aria-label` de cada botón. No se ven, pero sin ellos el botón se queda sin nombre accesible y el visor abre con la imagen grande sin descripción, porque `lightbox.js` copia el `alt` del `<img>` a `.lightbox__img`. Quitar el texto visible y el texto accesible a la vez habría sido una mejora de estética a costa de accesibilidad. Lo que se puede quitar cuando el usuario diga qué es cada foto es el *valor* del alt, no el atributo.
+
+**Lo que no se toca**: `.gallery__item__desc` sigue en `css/style.css` porque Retrato y Paisaje aún tienen su pie de texto, y `lightbox.js` no cambia.
+
+**i18n**: de 327 a 289 claves por idioma. 327 era el recuento **por idioma**, no la suma de los dos, así que se restan 38 y no 76. Los dos bloques siguen con las mismas claves y las 20 huérfanas no cambian: las `desc` se borraron al quedar sin uso, no se pasaron a la lista de huérfanas.
+
+**Error propio, del verificador**: la primera pasada marcó dos fallos que no eran de la página. Uno contaba `<figure>` en toda la página y se olvidaba de que el visor también tiene uno, y el otro restó 76 claves de un recuento que era por idioma. Corregir el verificador antes que el código: un `chk` que espera un número equivocado produce ruido que hace perder el tiempo.
