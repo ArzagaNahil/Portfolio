@@ -1346,6 +1346,15 @@ body.is-lightbox-open #three-canvas {
     opacity: 0;
 }
 
+/* Dentro del visor solo se ve el cursor del sitio (anillo + punto), así que se
+   oculta el del navegador. El selector con * es a propósito: sin él, el
+   cursor: pointer de los botones se vería por encima del anillo. El estado
+   hover del anillo sigue avisando de que el botón es pulsable. */
+body.is-lightbox-open,
+body.is-lightbox-open * {
+    cursor: none;
+}
+
 .lightbox {
     position: fixed;
     inset: 0;
