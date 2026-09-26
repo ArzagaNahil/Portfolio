@@ -1293,7 +1293,7 @@ La galería queda en 41 tarjetas, con `data-index` 0..40 y claves `galdesign2_im
 
 **Foto artística**: `gallery-photo-4.html` con sus 27 fotos, y la tile nueva **primera** en `photography.html`, como pidió el usuario. El número 4 es a propósito aunque sea la primera de las cuatro: renombrar los ficheros ya publicados habría roto las URL de Retrato, Paisaje y Producto.
 
-**El visor de las tresplaceholder**: Retrato y Paisaje no lo tenían, solo tenían tres tarjetas de muestra. Las cuatro páginas llevan ahora el mismo marcado `data-lightbox` + `[data-full]` + `data-index` y los 117 `alt` y `aria-label`, que son los que `lightbox.js` copia a la imagen grande.
+**El visor de las tres que eran placeholder**: Retrato y Paisaje no lo tenían, solo tenían tres tarjetas de muestra. Las cuatro páginas llevan ahora el mismo marcado `data-lightbox` + `[data-full]` + `data-index` y los 117 `alt` y `aria-label`, que son los que `lightbox.js` copia a la imagen grande.
 
 **Error propio, el más grave, y casi sube**: al unificar el CSS borré las reglas `.gallery__item*` creyendo que solo las usaba Fotografía. **También las usan `gallery-proyecto-1/2/3.html`**, y esas no son marcadores de posición: tienen contenido real (Distrito-R, la web de viajes, las extensiones de Chrome), pie de texto y enlace a demo. Habría dejado tres páginas enteras sin estilo. Lo detectó una comprobación que recorre todas las clases `gallery__` de todas las páginas y exige que exista su regla en el CSS. Se restauró con `git checkout HEAD -- css/style.css` y solo se quitó la regla `.gallery__item__link:focus-visible`, que era la que se había añadido para los botones de Fotografía y que ya no hace falta porque `.gallery__card` trae la suya. **Lección**: antes de borrar una regla hay que preguntar quién la usa, y la pregunta más barata es mirar si algún HTML la menciona.
 
@@ -1318,10 +1318,35 @@ La galería queda en 41 tarjetas, con `data-index` 0..40 y claves `galdesign2_im
 
 **Las etiquetas del visor son nuevas a propósito**: `lb_gallery_1` es "Galería de imágenes de Identidad Visual" y `lb_gallery_2` es la de "Diseño Editorial", no las de Retrato y Paisaje. Si se hubieran reutilizado, el visor de Retrato se habría anunciado como Identidad Visual. El mismo cuidado que con el sufijo `_3` de la sesión 32: el número de galería no es el nombre de la galería.
 
-**Las huórfanas bajan de 20 a 8**, pero no por arreglar 12: once de las 20 eran claves `_off` (`pt_dev_off`, `tile_res_off`...) que se usan con `data-i18n-offset` y el barrido solo recogía `data-i18n` y `data-i18n-key`. Las 8 que quedan son `galdesign1_card1`, `galdesign1_demo_1..3`, `galdesign2_card1` y `galdesign2_demo_1..3`, de las tarjetas de ejemplo de las galerías de diseño, que se pueden borrar cuando el usuario lo decida.
+**Las huérfanas bajan de 20 a 8**, pero no por arreglar 12: once de las 20 eran claves `_off` (`pt_dev_off`, `tile_res_off`...) que se usan con `data-i18n-offset` y el barrido solo recogía `data-i18n` y `data-i18n-key`. Las 8 que quedan son `galdesign1_card1`, `galdesign1_demo_1..3`, `galdesign2_card1` y `galdesign2_demo_1..3`, de las tarjetas de ejemplo de las galerías de diseño, que se pueden borrar cuando el usuario lo decida.
 
 **Verificación en local**: las 234 WebP (117 miniaturas + 117 grandes) abren, son WebP de verdad y ninguna pasa de 2000 px por lado, 36,14 MB. Las 234 rutas del manifiesto coinciden con lo que pone el HTML y con los ficheros del disco. Los 117 `width`/`height` de las miniaturas son los de verdad, leídos del fichero. Los 122 originales siguen intactos y fuera del repo. Las 16 páginas bien anidadas según `html.parser`, `data-index` de 0 a N-1 sin huecos en las cuatro, ninguna clase `gallery__` sin CSS, ninguna clase `gallery__item` en Fotografía, las 547 rutas locales de las 16 páginas existen, i18n con las mismas 363 claves en los dos idiomas y ninguna clave usada que falte, `node --check` limpio en `index.js` e `i18n.js` (que es módulo ES, así que se comprueba sobre una copia `.mjs`), CSS con las llaves equilibradas y el sitemap con 16 entradas.
+
+**Commit**: `6306470`, 208 ficheros, +830 / -352 líneas. Las 56 fotos nuevas miden 27,7 MB y las 38 de Producto regeneradas bajaron de 9,67 a 8,82 MB.
+
+**Verificación en producción**: `gallery-photo-4.html` responde 200 con sus 27 tarjetas, el `data-lightbox`, el visor y la etiqueta `lb_gallery_artistica`, y sin una sola huella de "Producto". Retrato, Paisaje y Producto sirven 200 con la tarjeta de diseño y sin ninguna clase `gallery__item`. En `photography.html` el orden servido es Foto artística, Retrato, Paisaje, Producto, con cuatro tiles. Las **234** imágenes de las cuatro galerías responden 200 **una a una**, las **16** entradas del sitemap responden 200, y ninguna de las **364** rutas locales que piden las 16 páginas da error. El `i18n.js` servido tiene 363 claves en los dos idiomas, con los 117 `galphoto*_img_*` presentes en ambos y las 8 claves de las tarjetas de ejemplo fuera. El CSS publicado tiene una sola `height: clamp(250px, 41vh, 506px)` y **conserva** las reglas `.gallery__item*` de las galerías de Desarrollo.
+
+**Error propio, del verificador, y el último de la serie**: la comprobación de rutas rotas marcó `index.html -> assets/IMG/Encabezado portfolio.png` con estado **0**, no con 404. El 0 era una excepción `InvalidURL`: `urllib` rechaza un espacio literal, y el HTML lo trae así tal cual. Codificando a `%20` el mismo fichero responde 200 con 76.794 bytes. No era una referencia rota sino un verificador que no hacía lo que hace el navegador. Quinta vez en dos sesiones que el verificador, y no el código, era el problema: **un 0 no es un 404, y un FAIL también hay que leerlo antes de tocar el código**.
 
 **Pendiente de mirar, y no se puede decidir sin ver**: los títulos de las tiles llevan dos ajustes hechos a ojo según la posición, `.devtile:first-child .tile__content { bottom: 1.8rem }` y `.devtile:nth-child(2) .tile__content { bottom: 2.6rem }`. Estaban ajustados para Retrato en la primera posición y Paisaje en la segunda. Con Foto artística primero, esos dos ajustes se han aplicado a Foto artística y a Retrato, y las dos tiles que estaban afinadas son ahora la tercera y la cuarta, que se quedan con el valor genérico. Puede que estén bien así, pero es lo único que no se ha podido comprobar sin mirar la pantalla.
 
 **Pendiente de verdad**: los `alt` y `aria-label` dicen "Retrato — 01" y "Producto — 01", que es correcto pero no informativo. Cuando el usuario sepa qué es cada foto, se cambian los 117 valores en `js/i18n.js` y nada más, porque el `alt` no se ve en la tarjeta pero el visor lo necesita.
+
+---
+
+## Para la próxima sesión
+
+**Lo primero, y es de olhar, no de código**: las cuatro galerías de Fotografía y las cuatro de Diseño, en pantalla grande y en móvil, con el carrusel quieto y con el dedo puesto. Esta sesión cambió la geometría de las tarjetas de fotografía y la forma de medir la velocidad, y **nada de eso se ha visto**. El HTML está bien, pero el CSS siempre escapa algo.
+
+**Pendiente de mirar**:
+- Los dos ajustes de posición de los títulos de las tiles, `.devtile:first-child .tile__content { bottom: 1.8rem }` y `.devtile:nth-child(2) .tile__content { bottom: 2.6rem }`. Estaban afinados a ojo para Retrato (1.ª) y Paisaje (2.ª); con Foto artística primera se aplican a Foto artística y Retrato. Si la 3.ª y la 4.ª se ven con el título pegado, hay que decidir si el ajuste pasa a ser por galería en vez de por posición, que es lo que en realidad significa.
+- Si alguna de las 117 fotos queda cortada en la tarjeta. Ya no hay `object-fit: cover`, así que debería estar entero, pero la miniatura es la que se ve y no la grande.
+
+**Pendiente de decidir, y solo lo puede decidir el usuario**:
+- Los 117 `alt` y `aria-label` dicen "Categoría — NN". Cambiar los valores en `js/i18n.js` es lo único que hay que tocar, porque el `alt` no se ve en la tarjeta pero `lightbox.js` lo copia a la imagen grande. Son las claves `galphoto1_img_1..13`, `galphoto2_img_1..39`, `galphoto3_img_1..38` y `galphoto4_img_1..27`.
+- Las 8 claves i18n huérfanas que quedan (`galdesign1_card1`, `galdesign1_demo_1..3`, `galdesign2_card1`, `galdesign2_demo_1..3`) son de las tarjetas de ejemplo de Identidad Visual y Diseño Editorial. Ya no las usa nadie.
+- El lema de Branding (`g_slogan_branding`) y el de Editorial (`g_slogan_editorial`) siguen siendo provisionales.
+- Contenido real de About, y por qué no están las miniaturas de Rescate Animal en q76.
+- Las medidas de las miniaturas de Rescate Animal siguen a 1000×1000 con el resto de las de diseño, no a la caja 2000×506 de fotografía. Unificarlo es el mismo trabajo de la sesión 29.
+
+**Lo que no se rompe**: `gallery-photo-4.html` es la primera aunque su número sea el 4, porque renombrar los ficheros publicados habría roto las URL de Retrato, Paisaje y Producto. Lo mismo que con el sufijo `_3` de UI/UX en la sesión 32.
