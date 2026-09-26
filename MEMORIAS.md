@@ -925,3 +925,202 @@ Arzaga/
 - [ ] **About / Design / Photography**: contenido real (bio, skills, imágenes).
 - [ ] **26 `href="#"`:** demos de galerías, Instagram y tiles.
 
+---
+
+## Sesión 24 — Cursor invisible + galería real de Rescate Animal con lightbox
+
+*Registrado el 26 de septiembre de 2026.*
+
+###  Objetivo
+Sustituir los placeholders de las galerías de Diseño y Fotografía por contenido real, e incorporar Rescate Animal como cuarta galería de diseño con fotos reales, y unificar el puntero en todo el sitio.
+
+###  Qué se hizo
+
+**Cursor**
+- `cursor: none` global, en una sola regla, para que el cursor propio (Three.js + anillo) no se mezcle con el del sistema.
+- Se aplicó también dentro del lightbox, que se abre como un overlay por encima de todo.
+- Se ajustó la zona sensible del marquee del hero: con el cursor oculto, la zona anterior resultaba demasiado fácil de activar.
+
+**Rescate Animal entra en Diseño**
+- Cuarta tarjeta en `design.html` con `animal.jpg` (800×1096) como portada y `data-hover` propio.
+- Página `gallery-design-4.html` completa: anillo de vuelta, descripción, CTA y carrusel.
+
+**18 fotos reales, dos versiones cada una**
+- `thumbs/` → miniaturas a **506px de alto**, que es exactamente el tope de `height: clamp(250px, 41vh, 506px)`, así que en pantallas grandes no se escalan hacia arriba.
+- `full/` → la misma foto a tamaño grande para el visor.
+- 13 proporciones distintas entre las 18 (de 0.71 a 2.04). Por eso la tarjeta **no fija ancho**: fija altura y deja que el ancho salga de la proporción natural. Ninguna se recorta ni se estira.
+- Los `<img>` llevan `width`/`height` reales, que es lo que el navegador usa como ratio mientras carga y evita saltos de maquetación.
+
+**Lightbox**
+- `js/lightbox.js` nuevo, a propósito **sin shader**: solo amplía. El fondo sigue siendo el de las partículas, no se añade ningún fondo nuevo.
+- Navegación con flechas, teclado (←/→/Esc) y botones; contador `n / total`; precarga de la actual y sus vecinas para que las flechas no parpadeen; foco atrapado dentro del diálogo con Tab.
+- `initLightbox()` se llama desde `js/index.js` en todas las páginas y **no hace nada** si no encuentra `[data-lightbox]` ni `.lightbox`. Por eso las demás galerías no cargan nada extra.
+- Regla que solo aplica a las galerías con visor: `.page-gallery:has(.lightbox) .gallery__carousel { margin-right: -2rem; }` — el carrusel se sangra por la derecha sin invadir la columna de texto.
+
+###  Archivos nuevos
+```
+assets/IMG/design/rescate-animal/
+├── thumbs/                   # 18 miniaturas a 506px de alto
+└── full/                     # 18 originales a tamaño grande
+js/lightbox.js                # visor de imagen
+gallery-design-4.html         # galería de Rescate Animal
+```
+
+###  Archivos modificados
+```
+Arzaga/
+├── design.html               # + tarjeta de Rescate Animal
+├── css/style.css             # cursor:none, .gallery__card, reglas del visor
+├── js/index.js               # + initLightbox()
+└── js/gooey.js               # cursor oculto dentro del lightbox
+```
+
+###  Nota de proceso
+- Con 18 fotos duplicadas en `thumbs/` y `full/` son 36 rutas nuevas. Un `src` mal escrito no se detecta leyendo el HTML, así que antes de dar la galería por buena se recorren todos los `src` y `data-full` contra el disco. Esa comprobación seIxó en el guion de verificación de cada sesión.
+
+---
+
+## Sesión 25 — CTA de contacto en las galerías de diseño + portada editorial
+
+*Registrado el 26 de septiembre de 2026.*
+
+###  Objetivo
+Que las cuatro galerías de diseño ofrezcan una vía de contacto, y dar a Diseño Editorial una portada real en lugar de un placeholder.
+
+###  Qué se hizo
+
+**CTA "Trabajemos juntos"**
+- Botón `→ contact.html` con la clave `g_hire` (ES/EN) en las cuatro galerías de diseño.
+- Donde ya existía un enlace de código (`g_code`, en Fotografía y Web) **se conservó**: el CTA se añadió, no sustituyó.
+
+**Portada editorial**
+- `poratadaDI_ED.jpg` (original del usuario, ya optimizada por su cuenta) se integró como tarjeta 1 de Diseño Editorial.
+- Salida: `portada.jpg`, 680×850, **ratio 4:5 exacto**, 103 KB, JPEG progresivo.
+- El original es más ancho que 4:5, así que para no deformarlo se completó con **barras laterales difuminadas** (radio grande, 170px) en lugar de recortar: **0 píxeles de foto perdidos**.
+- `base.jpg` y `hover.jpg` de esa carpeta quedaron intactos, byte a byte.
+
+###  Archivos modificados
+```
+Arzaga/
+├── gallery-design-1.html     # + CTA
+├── gallery-design-2.html     # + CTA, portada como tarjeta 1
+├── gallery-design-3.html     # + CTA
+├── gallery-design-4.html     # + CTA
+├── js/i18n.js                # + g_hire ES/EN
+└── assets/IMG/design/editorial/portada.jpg
+```
+
+---
+
+## Sesión 26 — Slogan de Rescate Animal: posición, opacidad y raya
+
+*Registrado el 26 de septiembre de 2026.*
+
+###  Objetivo
+Añadir una frase bajo el carrusel de Rescate Animal, alineada con la retícula y con un peso visual que no compita con el título de la página.
+
+###  Qué se hizo
+
+**Posición**
+- El slogan entra en la **misma celda que el carrusel** (`grid-area: carousel`, `align-self: end`, `justify-self: start`), no en una fila nueva. Así la fila `'text carousel'` se queda exactamente como estaba, sin cambiar la retícula.
+- Alineado al borde izquierdo del carrusel sin aritmética de columnas: al compartir celda, el borde coincide por construcción.
+- En móvil conserva su tercera fila mediante el modificador `.gallery--slogan`.
+
+**Tipografía y opacidad**
+- Mismo `var(--font-name)` (Bruno Ace) y mismo color que el título (`--color-heading`). El título va a `0.18`; el slogan a `0.25` porque siendo más pequeño necesita algo más de cuerpo.
+- `max-width` en `ch` (no en px) para que la medida acompañe al tamaño de fuente en todo el rango del `clamp`.
+
+**Raya de acento**
+- `::after` de 3.5rem × 2px en `--color-accent`, con `margin-top` para separarla del texto.
+
+###  Nota de proceso — el detalle que costó más
+La opacidad del texto estaba en el `<p>`, y **en CSS la opacidad de un elemento se multiplica sobre sus pseudo-elementos**. Con el `0.25` en el padre, la raya quedaba topada a `0.25` y no había forma de subirla desde dentro; con su propio `opacity: 0.55` Bajaba a `0.1375` y desaparecía.
+
+Solución: la opacidad se movió a un `<span>` interior que contiene el texto. El texto se atenúa solo y la raya queda a opacidad plena. Eso obligó a **mudar la clave i18n al `<span>`**, porque el script escribe con `textContent` sobre lo que lleve `data-i18n`: si se quedaba en el `<p>`, cada cambio de idioma borraría el span.
+
+###  Verificación
+| Comprobación | Resultado |
+|---|---|
+| Paridad i18n ES/EN | 209 claves, sin huérfanas |
+| Peor holgura lema ↔ carrusel | 8px (1280×720, 2 líneas) |
+| Peor holgura lema ↔ links sociales | 12px |
+| `node --check` en los JS | OK |
+
+---
+
+## Sesión 27 — Las tres galerías de diseño con la configuración de Rescate Animal
+
+*Registrado el 26 de septiembre de 2026.*
+
+###  Objetivo
+Que Identidad Visual, Diseño Editorial y UI/UX tengan exactamente la misma configuración que Rescate Animal, sin tocar las imágenes.
+
+###  Qué se hizo
+Por cada una de las tres:
+- `<section class="gallery">` → `gallery gallery--slogan`, y con ello la tercera fila y el reparto de escritorio.
+- `data-lightbox` en el carrusel + el markup completo del visor.
+- Las tres `gallery__item__link` (con `figure`, `figcaption` y enlace a demo) sustituidas por `gallery__card` con `data-index` y `data-full`. Se van los `figcaption` y los enlaces a demo.
+- El slogan bajo el carrusel, con su `span` y su raya.
+
+No hizo falta ningún `<script>` nuevo: `index.js` ya llama a `initLightbox()` en todas las páginas.
+
+**Etiqueta propia del visor.** `lb_gallery` está cableada a "Galería de imágenes de Rescate Animal", así que reutilizarla habría hecho que las otras tres anunciaran eso al lector de pantalla. Se añadieron `lb_gallery_1/2/3` y se corrigió también el `aria-label` estático del HTML, que es lo que se lee antes de que corra el i18n.
+
+**El slogan** reutiliza la frase de Rescate Animal bajo una clave compartida, `g_slogan_design`, para que cambiarlo sea una edición y quitarlo un borrado. Queda pendiente sustituirlo por texto propio de cada galería.
+
+###  Bug encontrado y corregido en `js/lightbox.js`
+Las tarjetas 1 y 3 de estas galerías apuntaban al mismo `base.jpg`. El visor **deduplicaba la lista de navegación por `data-full`**, así que la segunda se quedaba filtrada y, sin listener, era **un botón muerto**.
+
+- La lista se saca ahora por `data-index`, que los clones del carrusel repitan pero las tarjetas distintas no. Si el marcado no trae `data-index`, cae al `src`, que es lo que se usaba antes.
+- El listener se pone en **todas** las tarjetas, clones incluidos. Antes solo estaba en la original, de modo que en el tramo repetido del bucle infinito no abría ninguna. Rescate Animal se beneficia de ambos arreglos.
+
+###  Imágenes
+`data-full` apunta al `src` actual, así que el visor muestra la misma foto dos veces hasta que lleguen las reales. Cuando lleguen: generar `thumbs/` a 506px de alto y `full/`, y poner las dimensiones reales en el `width`/`height`.
+
+###  Verificación
+| Comprobación | Resultado |
+|---|---|
+| Paridad i18n ES/EN | 214 claves, sin huérfanas |
+| Lógica del visor (nodo, con clones) | 3 entradas con 2 src repetidos; ninguna tarjeta sin listener |
+| Las 4 galerías con visor | OK |
+| Assets referenciados en disco | todos |
+
+---
+
+## Sesión 28 — Tarjeta de Rescate Animal en `design.html`: título a dos líneas y hover propio
+
+*Registrado el 26 de septiembre de 2026.*
+
+###  Objetivo
+Que la tarjeta de Rescate Animal en el índice de Diseño se comporte como sus tres hermanas: título en dos líneas y hover con la misma imagen de portada.
+
+###  Qué se hizo
+
+**Título a dos líneas**
+- Se adoptó el patrón de las tarjetas 1 y 2: `data-i18n` + `data-i18n-offset` con un `<span class="tile__title__offset">`, que es `display: block` con `margin-left: 18%`. El salto de línea no lo fuerza el `white-space` (el título es `nowrap`), sino el `display: block` del span.
+- `tile_rescate` se sustituye por `tile_res_pre` / `tile_res_off`. En inglés invierte a "Animal / Rescue".
+- UI/UX se queda en una línea: es una sola expresión con barra.
+
+**Hover propio**
+- El `data-hover` apuntaba a `thumbs/02-anika.jpg`, que no es como funcionan las otras: cada una tiene su imagen base en la carpeta y un `hover.jpg` al lado. Ahora sigue la misma forma, con `animal.jpg` en reposo y `hover.jpg` al lado.
+
+###  Hallazgo — por qué el hover de las hermanas se ve más oscuro
+Las tres hermanas tienen `base.jpg` y `hover.jpg` **idénticos por SHA256**. O sea, **en el hover no cambia la foto**: el shader mezcla la portada consigo misma (`mix(image, hover, ...)`) y lo único que se anima es la deformación líquida. El oscurecimiento que se percibe es ese efecto, no un cambio de imagen.
+
+El primer `hover.jpg` de Rescate Animal era una copia del thumb de anika, lo que hacía que esa tarjeta **sí** cambiara de foto al hover: era la única de las cuatro con distinto comportamiento. Corregido: ahora es copia de `animal.jpg`.
+
+De paso quedó alineado el ratio: el hover tiene ahora las mismas 800×1096 que la portada, así que `u_hoverratio` en el shader mapea las mismas UV. Con el thumb de 358×506 el plano del hover se muestreaba a un ratio distinto del base dentro del mismo `object-fit: cover`.
+
+###  Verificación
+| Comprobación | Resultado |
+|---|---|
+| Paridad i18n ES/EN | 214 claves, sin huérfanas |
+| `base`/`hover` idénticos en las 4 carpetas | OK (SHA256) |
+| Las 4 tarjetas con `src` + `data-hover` en la misma carpeta | OK |
+| Assets sirviendo por HTTP | 200 |
+
+###  Pendientes
+- [ ] **Slogans propios** para Identidad Visual, Diseño Editorial y UI/UX (ahora comparten `g_slogan_design` con la frase de Rescate Animal). El usuario dijo que probablemente convenga eliminarlos más adelante.
+- [ ] **Imágenes reales** de las tres galerías: optimizadas `thumbs/` + `full/`, `data-full` corregido y `width`/`height` reales. El usuario tiene la ruta pendiente de enviar.
+- [ ] **`hover.jpg` propio** de Rescate Animal: hoy es copia de `animal.jpg`; basta con sobrescribir el fichero.
+- [ ] **About / Design / Photography**: contenido real (bio, skills, imágenes).
