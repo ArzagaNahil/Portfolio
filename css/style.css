@@ -1201,7 +1201,12 @@ main {
     animation: gallery-marquee 40s linear infinite;
 }
 
-.gallery__carousel:hover .gallery__track {
+/* El hover va en el track, no en .gallery__carousel: el carrusel se estira a
+   todo lo alto de la fila de la rejilla (~900px) y las tarjetas solo ocupan
+   506px, así que pausar desde el carrusel dejaba casi 200px de zona muerta
+   arriba y abajo. El track se ajusta justo a la altura de las tarjetas, con lo
+   que el marquee se detiene únicamente sobre las imágenes. */
+.gallery__track:hover {
     animation-play-state: paused;
 }
 
@@ -1344,15 +1349,6 @@ body.is-lightbox-open .gallery__track {
 
 body.is-lightbox-open #three-canvas {
     opacity: 0;
-}
-
-/* Dentro del visor solo se ve el cursor del sitio (anillo + punto), así que se
-   oculta el del navegador. El selector con * es a propósito: sin él, el
-   cursor: pointer de los botones se vería por encima del anillo. El estado
-   hover del anillo sigue avisando de que el botón es pulsable. */
-body.is-lightbox-open,
-body.is-lightbox-open * {
-    cursor: none;
 }
 
 .lightbox {
@@ -2217,6 +2213,32 @@ body.is-lightbox-open * {
 /* ============================================
    Custom Cursor
    ============================================ */
+
+/* Con el cursor del sitio activo se oculta el del navegador en toda la página,
+   para que solo se vean el anillo y el punto. El anillo ya crece al pasar por
+   encima de un elemento interactivo (ver initCustomCursor en js/index.js), así
+   que no se pierde la pista de qué es pulsable.
+
+   Se limita a html.js, que añade un script en línea en las 16 páginas: si el
+   JavaScript no llegara a ejecutarse, el cursor nativo sigue disponible y la
+   página no se queda sin puntero.
+
+   El selector con * es a propósito: los cursor: pointer de botones y enlaces son
+   menos específicos, así que sin él se vería la flecha por encima del anillo. */
+html.js body,
+html.js body * {
+    cursor: none;
+}
+
+/* Excepción: en los campos del formulario de contacto el puntero es
+   imprescindible para saber dónde se está escribiendo. Quitar estas tres líneas
+   si prefieres el efecto completo también ahí. */
+html.js body input,
+html.js body textarea,
+html.js body select {
+    cursor: text;
+}
+
 .custom-cursor {
     position: fixed;
     top: 0;
