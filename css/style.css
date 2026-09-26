@@ -1244,7 +1244,13 @@ main {
     gap: 2rem;
     width: max-content;
     will-change: transform;
-    animation: gallery-marquee 40s linear infinite;
+    /* La duracion NO es fija: la calcula initGalleryCarousel en JS a partir del
+       ancho real del track y la deja en --marquee-duration. Con 40s fijos la
+       velocidad sale proporcional al ancho, y como cada galeria tiene un track
+       mas o menos largo cada una iba a un ritmo distinto: Editorial iba 3,5
+       veces mas rapida que Rescate Animal. Los 40s de aqui son solo el valor
+       de reserva para cuando el JS no llega a fijarla. */
+    animation: gallery-marquee var(--marquee-duration, 40s) linear infinite;
 }
 
 /* El hover va en el track, no en .gallery__carousel: el carrusel se estira a

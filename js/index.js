@@ -115,6 +115,32 @@ function initGalleryCarousel() {
     if ((track.children.length / baseCount) % 2 !== 0) {
         baseItems.forEach((el) => track.appendChild(el.cloneNode(true)));
     }
+
+    // El keyframe es translate3d(-50%) sobre un track que se clona al doble, asi
+    // que una vuelta es la mitad de su ancho. Con la duracion fija en 40s la
+    // velocidad en pixeles por segundo salia proporcional al ancho del track y
+    // cada galeria iba a su ritmo: Editorial, con 36884px de track, corria 3,5
+    // veces mas rapida que Rescate Animal, con 10446px. Derivando la duracion
+    // del ancho real las cuatro galerias comparten PX_POR_SEGUNDO.
+    const PX_POR_SEGUNDO = 275; // el ritmo que ya tenia Rescate Animal
+    const fijarDuracion = () => {
+        const recorrido = track.scrollWidth / 2;
+        if (recorrido > 0) {
+            track.style.setProperty('--marquee-duration', (recorrido / PX_POR_SEGUNDO) + 's');
+        }
+    };
+    fijarDuracion();
+
+    // La tarjeta es height: clamp(250px, 41vh, 506px) con width: auto, asi que
+    // el ancho de cada una depende de la ALTURA de la ventana y el del track
+    // entero depende de cuantas haya. Sin recalcular al cambiar la altura, el
+    // ritmo se desvia justo como antes, solo que ahora depende del gesto.
+    let ultimoAlto = window.innerHeight;
+    window.addEventListener('resize', () => {
+        if (window.innerHeight === ultimoAlto) return;
+        ultimoAlto = window.innerHeight;
+        requestAnimationFrame(fijarDuracion);
+    });
 }
 initGalleryCarousel();
 initLightbox();
