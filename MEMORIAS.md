@@ -1202,3 +1202,25 @@ La galería queda en 41 tarjetas, con `data-index` 0..40 y claves `galdesign2_im
 - [ ] **`thumbs/` de Rescate Animal a q76**: darían unos 300 KB menos, pero es bajar calidad de fotos sin medir el efecto.
 - [ ] **25 claves i18n huérfanas**: restos de las galerías de maqueta y de interruptores de vista previa. Sin impacto visible.
 - [ ] **About / Design / Photography**: contenido real (bio, skills, imágenes).
+- [ ] **URLs del `sitemap.xml` y de `og:url` sin `/Portfolio`**: todas apuntan a `arzaganahil.github.io/...` cuando el repositorio se llama `Portfolio`. Es el mismo error que ya se cometió al darle una URL al usuario. Afecta a las 16 páginas, no solo a las galerías.
+
+---
+
+## Sesión 32 — Fuera la galería de UI / UX
+
+**Motivo**: el usuario dijo que no tiene material para esa disciplina y que era mejor quitarla. Al mirarlo, la decisión queda justificada por los datos: la galería era relleno de maqueta, no trabajo real.
+
+**Las pruebas**:
+
+- Tres tarjetas, pero solo dos ficheros distintos: `uiux/base.jpg` aparecía dos veces.
+- Los tres ficheros (`ui_ux/portadaUI_UX.jpg`, `uiux/base.jpg`, `uiux/hover.jpg`) son **copias byte a byte del mismo binario**, md5 `61b017fe75fb`. No había ni una imagen propia.
+- El HTML declaraba `width="400" height="300"` y los ficheros son de 1296×1571, verticales. Se veían deformados.
+- Los textos alternativos eran `UI / UX — proyecto 1/2/3`.
+- Las claves `galdesign3_card1` y `galdesign3_demo_1..3`, que nadie usaba, describían un panel de métricas, navegación modular y design system. Texto de maqueta, sin nada detrás.
+
+**Qué se retira**: `gallery-design-3.html`, el `<li>` de la tile en `design.html` (12 líneas), la entrada del `sitemap.xml`, las carpetas `assets/IMG/design/uiux/` y `assets/IMG/design/ui_ux/`, y 14 claves de i18n, ES y EN: `pt_galdesign3`, `tile_ui`, `alt_design_3`, `g_slogan_uiux`, `lb_gallery_3`, `galdesign3_card1`, `galdesign3_demo_1..3`, `galdesign3_img_1..3`, `meta_title_galdesign3`, `meta_desc_galdesign3`. La sección de Diseño pasa de cuatro disciplinas a tres: Identidad Visual, Editorial y Rescate Animal. Se recuperan unos 0,77 MB.
+
+**Aviso sobre el sufijo `_3`**: aquí `_3` no significa "UI/UX". Las claves de Fotografía y de los proyectos de Desarrollo también acaban así (`alt_photo_3`, `g3_img_3`, `galphoto2_demo_3`…). Borrar "las que acaban en 3" habría roto tres páginas más. Solo se tocan las 14 claves con nombre propio de la galería 3, y antes se comprobó que ninguna la usaba otra página.
+
+**Error propio**: el primer intento de quitar la tile usó `<li class="devtile">.*?gallery-design-3\.html.*?</li>` con `re.S`. Como `.*?` salta líneas, el patrón arrancaba en el primer `<li class="devtile">` y terminaba en el `</li>` de UI/UX, así que borró tres tiles de golpe y dejó la página con una sola disciplina. Lo detectó la comprobación que exigía 3 tiles y encontraba 1. Se restauró con `git checkout HEAD -- design.html` y se repitió troceando en bloques, quitando solo el que contenía la galería 3. **Lección**: para quitar un elemento de una lista hay que aislar primero el bloque y comprobar después cuántos quedan. Un `.*?` con `re.S` puede cruzar varios elementos sin avisar.
+
