@@ -77,6 +77,9 @@ export const I18N = {
         g_back_photo: 'Volver a Fotografía',
         g_ring_photo: '· IR A FOTOGRAFÍA · IR A FOTOGRAFÍA',
 
+        g_hire: 'Trabajemos juntos',
+        g_slogan_rescate: 'Únete a esta causa, ellos aún te necesitan!',
+
         lb_gallery: 'Galería de imágenes de Rescate Animal',
         lb_close: 'Cerrar',
         lb_prev: 'Imagen anterior',
@@ -154,7 +157,7 @@ export const I18N = {
         galdesign1_img_1: 'Identidad Visual — proyecto 1',
         galdesign1_img_2: 'Identidad Visual — proyecto 2',
         galdesign1_img_3: 'Identidad Visual — proyecto 3',
-        galdesign2_img_1: 'Diseño Editorial — proyecto 1',
+        galdesign2_img_1: 'Portada de Diseño Editorial',
         galdesign2_img_2: 'Diseño Editorial — proyecto 2',
         galdesign2_img_3: 'Diseño Editorial — proyecto 3',
         galdesign3_img_1: 'UI / UX — proyecto 1',
@@ -306,6 +309,9 @@ export const I18N = {
         g_back_photo: 'Back to Photography',
         g_ring_photo: '· GO TO PHOTOGRAPHY · GO TO PHOTOGRAPHY',
 
+        g_hire: "Let's work together",
+        g_slogan_rescate: "Join this cause, they still need you!",
+
         lb_gallery: 'Image gallery of Animal Rescue',
         lb_close: 'Close',
         lb_prev: 'Previous image',
@@ -383,7 +389,7 @@ export const I18N = {
         galdesign1_img_1: 'Visual Identity — project 1',
         galdesign1_img_2: 'Visual Identity — project 2',
         galdesign1_img_3: 'Visual Identity — project 3',
-        galdesign2_img_1: 'Editorial Design — project 1',
+        galdesign2_img_1: 'Editorial Design cover',
         galdesign2_img_2: 'Editorial Design — project 2',
         galdesign2_img_3: 'Editorial Design — project 3',
         galdesign3_img_1: 'UI / UX — project 1',
