@@ -1112,9 +1112,9 @@ main {
     row-gap: 2.5rem;
 }
 
-/* Frase de cierre bajo el carrusel. Solo la usa gallery-design-4 (clase
-   modificadora), así que las otras nueve galerías no se ven afectadas y
-   mantienen las dos áreas de siempre. */
+/* Frase de cierre bajo el carrusel. La usan las cuatro galerías de diseño:
+   gallery-design-4 con g_slogan_rescate y 1, 2 y 3 con g_slogan_design. Las
+   demás mantienen las dos áreas de siempre. */
 .gallery--slogan {
     grid-template-areas:
         'text'
@@ -1135,7 +1135,7 @@ main {
 .gallery__slogan {
     grid-area: slogan;
     max-width: 46ch;
-    margin: -0.5rem 0 0;
+    margin: 0.5rem 0 0;
     font-family: var(--font-name);
     font-size: clamp(1.05rem, 1.9vw, 1.6rem);
     font-weight: 400;
@@ -2183,16 +2183,18 @@ body.is-lightbox-open #three-canvas {
     /* El lema se alinea al borde izquierdo del carrusel compartiendo su celda
        de rejilla: el area 'carousel' empieza exactamente donde empieza el
        carrusel, sin tener que calcular a mano la fraccion 2fr/5fr de las
-       columnas. justify-self: start lo pega a ese borde. El margen inferior
-       reproduce la altura que tenia cuando iba anclado con bottom: 4.5rem
-       (el borde de la celda ya esta 2.5rem por encima del de la galeria). */
+       columnas. justify-self: start lo pega a ese borde. Al bajar el lema un
+       rem respecto a como estaba, el margen inferior pasa de 2rem a 1rem:
+       align-self: end lo ancla al pie de la celda, asi que reducir ese margen
+       es lo que lo baja, y el hueco de respiro lo aporta el 2.5rem que ya
+       separa las filas de la rejilla. */
     .page-gallery .gallery__slogan {
         grid-area: carousel;
         align-self: end;
         justify-self: start;
         width: auto;
         max-width: min(46ch, 60vw);
-        margin: 0 0 2rem;
+        margin: 0 0 1rem;
     }
 
     /* La barra superior (frame) se vuelve overlay transparente */
