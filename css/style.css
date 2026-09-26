@@ -1124,7 +1124,9 @@ main {
 
 /* Misma tipografía que el título de la página (.page-title usa --font-name,
    Bruno Ace) pero bastante más pequeña: es una frase larga y esa fuente es
-   ancha, así que a tamaño de título se desbordaría. */
+   ancha, así que a tamaño de título se desbordaría. Comparte también su
+   color y su opacidad, para que el lema lea como una segunda firma del
+   título y no como un texto de lectura. */
 .gallery__slogan {
     grid-area: slogan;
     max-width: 46ch;
@@ -1134,7 +1136,8 @@ main {
     font-weight: 400;
     line-height: 1.35;
     text-wrap: balance;
-    color: var(--color-text-alt);
+    color: var(--color-heading);
+    opacity: 0.18;
 }
 
 .gallery__back {
@@ -2159,18 +2162,19 @@ body.is-lightbox-open #three-canvas {
         grid-template-areas: 'text carousel';
     }
 
-    /* Los links sociales viven en .frame, superpuesto al area gallery y abajo a
-       la derecha ('title links' con align-self: end). El lema se ancla al
-       borde inferior de la galeria y se centra en el viewport, de modo que
-       queda en el hueco entre el carrusel y esos links. */
+    /* El lema se alinea al borde izquierdo del carrusel compartiendo su celda
+       de rejilla: el area 'carousel' empieza exactamente donde empieza el
+       carrusel, sin tener que calcular a mano la fraccion 2fr/5fr de las
+       columnas. justify-self: start lo pega a ese borde. El margen inferior
+       reproduce la altura que tenia cuando iba anclado con bottom: 4.5rem
+       (el borde de la celda ya esta 2.5rem por encima del de la galeria). */
     .page-gallery .gallery__slogan {
-        position: absolute;
-        left: 50%;
-        bottom: 4.5rem;
-        transform: translateX(-50%);
+        grid-area: carousel;
+        align-self: end;
+        justify-self: start;
         width: auto;
         max-width: min(46ch, 60vw);
-        margin: 0;
+        margin: 0 0 2rem;
     }
 
     /* La barra superior (frame) se vuelve overlay transparente */
