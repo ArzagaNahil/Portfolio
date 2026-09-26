@@ -1147,7 +1147,7 @@ main {
     content: '';
     display: block;
     width: 3.5rem;
-    height: 3px;
+    height: 5px;
     margin-top: 1.1rem;
     background: var(--color-accent);
 }
