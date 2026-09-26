@@ -80,7 +80,9 @@ export const I18N = {
 
         g_hire: 'Trabajemos juntos',
         g_slogan_rescate: 'Únete a esta causa, ellos aún te necesitan!',
-        g_slogan_design: 'Únete a esta causa, ellos aún te necesitan!',
+        g_slogan_branding: 'Marcas que se reconocen de un vistazo.',
+        g_slogan_editorial: 'Cada página, una decisión de diseño.',
+        g_slogan_uiux: 'Interfaces que se entienden sin instrucciones.',
 
         lb_gallery: 'Galería de imágenes de Rescate Animal',
         lb_gallery_1: 'Galería de imágenes de Identidad Visual',
@@ -373,7 +375,9 @@ export const I18N = {
 
         g_hire: "Let's work together",
         g_slogan_rescate: "Join this cause, they still need you!",
-        g_slogan_design: "Join this cause, they still need you!",
+        g_slogan_branding: "Brands you recognize at a glance.",
+        g_slogan_editorial: "Every page, a design decision.",
+        g_slogan_uiux: "Interfaces that need no instructions.",
 
         lb_gallery: 'Image gallery of Animal Rescue',
         lb_gallery_1: 'Image gallery of Visual Identity',

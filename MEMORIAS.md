@@ -1124,3 +1124,81 @@ De paso quedó alineado el ratio: el hover tiene ahora las mismas 800×1096 que 
 - [ ] **Imágenes reales** de las tres galerías: optimizadas `thumbs/` + `full/`, `data-full` corregido y `width`/`height` reales. El usuario tiene la ruta pendiente de enviar.
 - [ ] **`hover.jpg` propio** de Rescate Animal: hoy es copia de `animal.jpg`; basta con sobrescribir el fichero.
 - [ ] **About / Design / Photography**: contenido real (bio, skills, imágenes).
+
+---
+
+## Sesión 29 — Las tres galerías de Diseño con WebP
+
+**Objetivo**: servir las imágenes de las galerías en WebP en vez de JPEG, como ya se hacía en otro sitio del proyecto, y comprobar que no se pierde nada visible.
+
+**Decisiones**:
+- WebP en `thumbs/` a calidad 82 y en `full/` a 80, `method=6`.
+- Sin pictures de reserva: el sitio ya solo sirve WebP en las galerías.
+- `base.jpg` y `hover.jpg` se quedan en JPEG porque `design.html` los pasa como textura al shader.
+
+**Identidad Visual**: 42 ficheros, 3,81 → 1,49 MB. Se retiraron las tarjetas de ALO Rental y una más sin identificar, dejando 21.
+**Rescate Animal**: 36 ficheros, 6,21 → 4,08 MB. Casi todo el ahorro vino de `full/` (5,27 → 3,02 MB); los `thumbs/` apenas bajaron porque las miniaturas son las mismas. `animal.jpg` y `hover.jpg` siguen en JPEG para el shader.
+
+**Pendiente que quedó**: los `thumbs/` de Rescate Animal se probaron a q82 por prudencia. Son fotos y probablemente no haría falta tanta calidad; a q76 darían unos 300 KB menos. No se tocó sin medir el impacto visual.
+
+## Sesión 30 — Velocidad de los carruseles y portada de Editorial
+
+**Objetivo**: que los cuatro carruseles se movieran al mismo ritmo, y sacar la portada de Diseño Editorial del carrusel.
+
+**El fallo**: la duración del marquee estaba fija en `40s`, pero el keyframe recorre el `50%` del ancho del track. La velocidad en píxeles por segundo salía proporcional al ancho, y cada galería tenía un track distinto:
+
+| Galería | px/s | respecto a Rescate |
+|---|---|---|
+| Rescate Animal | 275 | referencia |
+| Identidad Visual | 440 | +60% |
+| Diseño Editorial | 965 | +251% |
+
+Diseño Editorial iba 3,5 veces más rápido que Rescate Animal. Con 53 tarjetas el track medía 36.884 px contra los 10.446 de Rescate.
+
+**La solución**: `initGalleryCarousel` mide el ancho real del track y deja la duración en `--marquee-duration`, dividiendo la distancia entre `PX_POR_SEGUNDO = 275`. En CSS queda `var(--marquee-duration, 40s)`, y los 40s son solo el valor de reserva. Rescate se queda en 40,0s, es decir, igual que antes; las otras dos pasan a 64,1s y 137,7s.
+
+Un detalle: la tarjeta es `height: clamp(250px, 41vh, 506px)` con `width: auto`, así que el ancho del track depende de la **altura** de la ventana. La duración se recalcula en `resize` al cambiar la altura; si no, el ritmo se desvariaría igual que antes.
+
+**La portada**: `portada.jpg` era una imagen creada a mano con su propio texto, no una pieza del trabajo. Se retira la card, se renumeran `data-index` y las claves `galdesign2_img_*`, y se borra el fichero al quedar sin uso. `base.jpg` y `hover.jpg` no se tocan.
+
+**Error propio**: al quitarla se renumeró el `data-index` del HTML y por separado las claves del fichero i18n, pero no el atributo `data-i18n-key` del HTML. El HTML acabó pidiendo las claves 2..54 y el i18n tenía 1..53: cada tarjeta pintaba el texto alternativo de la imagen siguiente. Lo detectó la verificación antes de subir.
+
+**Error propio, más grave**: la URL que se le dio al usuario, `arzaganahil.github.io/gallery-design-1`, da 404. El repositorio se llama `Portfolio`, así que la dirección real es `arzaganahil.github.io/Portfolio/gallery-design-1`. No se comprobó antes de decir que el sitio estaba publicado.
+
+**Lección operativa**: GitHub Pages cachea con fuerza. Tras un push, la verificación por HTTP seguía viendo la versión anterior y casi se dio por rota. Hay que pedir las URLs con un parámetro distinto cada vez para saltar la caché del CDN.
+
+## Sesión 31 — Calendario ALO Lift y el lema equivocado
+
+**Objetivo**: reducir el peso de la galería de Editorial y arreglar textos que no correspondían.
+
+**Calendario**: el calendario ALO Lift ocupaba 15 de las 53 tarjetas, todas del mismo proyecto y formato, y arrastraba el peso de la galería. Se reducen a tres: la página 1 (la portada), la 2 (primera dupla de meses) y la 15, que es la única de formato distinto — 255×506, el pliegue vertical de 1319×2618 del original. Se borran las 12 del 3 al 14.
+
+La galería queda en 41 tarjetas, con `data-index` 0..40 y claves `galdesign2_img_1..41` en ES y EN. Los 74 ficheros que quedan se renombran para que el prefijo global siga siendo 01..41, pero **el sufijo no se toca**: `calendario-15` sigue llamándose `calendario-15` porque es la página 15 del PDF original y es lo que permite rastrear la pieza. El prefijo es la posición en la galería; el sufijo es la página del original; no se mezclan. La galería baja de 10,65 a 9,50 MB.
+
+**Error propio**: el commit de esta sesión dejó preparados los 24 borrados y los 74 renombrados con `git rm` y `git mv`, pero el HTML y el i18n ya modificados en disco nunca se añadieron al área de preparación. Se publicó un commit donde el HTML pedía 53 imágenes con nombres que ya no existían. Hubo que corregirlo en un commit aparte.
+
+**Error grave, truncado el HTML**: al quitar las 12 tarjetas, el reensamblado se hizo troceando el fichero con `re.split` y un grupo. `re.split` devuelve `[cabeza, tarjeta, separador, tarjeta, ..., cola]`, y el bucle `for i in range(1, len, 2)` recorre 1, 3, 5… y nunca llega al último elemento, que es la cola. Se publicó un `gallery-design-2.html` que **terminaba en `</button>`**: sin cerrar `</div>`, `</section>`, `</main>`, sin el lightbox entero y sin `</body></html>`. La galería seguía viéndose porque el navegador cerraba solo lo que faltaba, y no había forma de notarlo mirando la página. Se rehízo el fichero entero desde `5ddd012`, que era la última versión sana, localizando las tarjetas con `finditer` y reconstruyendo con `cabeza + tarjetas + cola`.
+
+**LeCCIó operativa**: un verificador que solo mira lo que debería estar presente no detecta lo que falta. El que faltaba era un `count('</html>')` y un `data-lb` presente. Desde entonces la comprobación de cada galería incluye final del fichero, apertura y cierre del lightbox, y recuento de `<div>` contra `</div>`.
+
+**El lema**: eran **tres** galerías con el lema equivocado, no dos. Identidad Visual (1), UI/UX (3) y también Editorial (2) pintaban "Únete a esta causa, ellos aún te necesitan!", que es el lema de la campaña de adopción de Rescate Animal. Al ser disciplinas distintas no bastaba con reescribir la clave compartida `g_slogan_design`: se hizo una clave por galería, `g_slogan_branding`, `g_slogan_editorial` y `g_slogan_uiux`. Rescate Animal conserva `g_slogan_rescate`, que sí es la suya.
+
+**Por qué no se detectó antes**: la comprobación de paridad comparaba el bloque ES con el bloque EN de `i18n.js`, y ambos estaban completos. Lo que faltaba era contrastar las claves `data-i18n` del **HTML** contra las claves que existen en el i18n. Al borrar `g_slogan_design` del fichero de traducción, Editorial se quedó apuntando a una clave inexistente sin que nada lo indicara. La auditoría recorre ahora todas las páginas.
+
+**Otro defecto previo, no de esta sesión**: el `<div class="lightbox">` de las galerías 1, 2 y 3 nunca se cerraba, desde `06b489a`. El navegador lo cerraba al llegar a `</body>`, así que nunca se vio, pero el HTML no era válido. La galería 4, que se hizo aparte, sí lo cierra. Corregido en las cuatro.
+
+**Error propio, dos veces seguido**: se afirmó que faltaban 10 claves en inglés y que el bloque EN tenía 260 frente a 270 de ES. Era falso. El bloque EN usa comillas dobles y el ES comillas simples, y el escaneo solo buscaba comillas simples, así que medio archivo inglés era invisible. Con un extractor que acepta las dos formas: **ES 270, EN 270, ni una clave de diferencia**. Las 5 con texto idéntico son correctas (`Email`, `UI / UX`, `full frame`).
+
+**Error propio, anterior**: se afirmó que había 92 claves huérfanas. También falso, por el mismo motivo: el sistema usa `data-i18n` y `data-i18n-attr`, y el escaneo buscaba `data-i18n-key`, que solo usan las tarjetas de galería. Las huérfanas reales son 25, casi todas restos de las galerías de maqueta (`galdesign*_card1`, `galdesign*_demo_*`) y de interruptores de vista previa.
+
+---
+
+## Pendiente
+
+- [ ] **Nombres reales de los proyectos**: los textos alternativos de las 41 tarjetas de Editorial y las 21 de Identidad Visual son provisionales. "NH 1" dice cliente y número de pieza, no qué es la pieza. Sin esta información no se pueden escribir bien.
+- [ ] **MOTO de baja resolución**: 3 de las 41 imágenes de Editorial son menores que la tarjeta (606×462, 812×456, 805×260) y quedan sin ampliar. Se ven blandas. Arreglarlo exige el original a mayor resolución.
+- [ ] **T3 del calendario T**: en la carpeta de origen solo hay T1, T2, T4 y T5. Se respetó la numeración original en lugar de renumerar para tapar el hueco.
+- [ ] **Lema de Editorial**: se puso "Cada página, una decisión de diseño." para que dejara de mostrar el de Rescate, pero es un texto provisional igual que los otros dos. Si hay un lema propio de la disciplina, debe sustituirlo.
+- [ ] **`thumbs/` de Rescate Animal a q76**: darían unos 300 KB menos, pero es bajar calidad de fotos sin medir el efecto.
+- [ ] **25 claves i18n huérfanas**: restos de las galerías de maqueta y de interruptores de vista previa. Sin impacto visible.
+- [ ] **About / Design / Photography**: contenido real (bio, skills, imágenes).
