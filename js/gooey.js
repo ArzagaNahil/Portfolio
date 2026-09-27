@@ -132,8 +132,8 @@ void main() {
     uv *= u_ratio;
     uv += vec2(0.5);
 
-    vec4 image = texture2D(u_map, uv_h + vec2(nc + nh) * progressHover);
-    vec4 hover = texture2D(u_hovermap, uv + vec2(nc + nh) * progressHover * (1. - progress));
+    vec4 image = texture2D(u_map, uv + vec2(nc + nh) * progressHover);
+    vec4 hover = texture2D(u_hovermap, uv_h + vec2(nc + nh) * progressHover * (1. - progress));
 
     vec4 finalImage = mix(image, hover, clamp(nh * (1. - progress) + progressHover, 0., 1.));
 
