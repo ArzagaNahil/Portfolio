@@ -1358,6 +1358,24 @@ La galería queda en 41 tarjetas, con `data-index` 0..40 y claves `galdesign2_im
 
 ---
 
+## Sesión 38 - El botón de EN/ES llevaba toda la sesión 37 sin hacer nada
+
+**Lo que publicó el usuario**: `d47a5e1` y `4f2082f` a `origin/main`, y esta sesión en la bitácora. Los dos commits van separados porque el arreglo del shader es un bug y lo demás es optimización. El push falló dos veces con **HTTP 408** por los 33,2 MB de 215 ficheros nuevos, y se resolvió con `git -c http.postBuffer=536870912 -c http.lowSpeedLimit=0 push`, o sea **en esa llamada y no en la configuración global**, que es lo que toca.
+
+**El bug**: el botón de idioma no cambiaba nada. La causa era una línea borrada por mí en el commit `4f2082f` de la sesión 37: `export const SUPPORTED_LANGS = ['es', 'en'];`. Se usaba en dos sitios, `setLang` e `initI18n`, y al faltar saltó un **`ReferenceError: SUPPORTED_LANGS is not defined`** en cuanto se pulsó el botón. El síntoma de frío era desconcertante porque `apply()` **sí** llegaba a correr y por eso el botón se veía bien, con su "EN" puesto, y porque el resto del sitio traducía con normalidad: el fallo estaba en el manejador del clic, no en la traducción. `git log -S` señaló el commit en un segundo.
+
+**Por qué mis comprobaciones de la sesión 37 no lo vieron, y es lo importante**: `node --check` **solo valida sintaxis**, no que los identificadores existan, así que dio limpio con el `ReferenceError` dentro. El recuento de claves i18n tampoco lo detecta, porque las claves estaban todas: lo que faltaba era una constante. Cuatro comprobaciones de esa sesión dieron verde sobre un fichero roto. **Un fichero que pasa el análisis sintáctico puede no ejecutar**.
+
+**Cómo se encontró de verdad, y a partir de aquí ya no se trata de adivinar**: se montó una página de prueba en el proyecto que importa `js/i18n.js`, llama a `initI18n()`, pulsa el botón y escribe el resultado, y se lanzó Chrome en modo headless con `--dump-dom`. Salió un `Uncaught ReferenceError: SUPPORTED_LANGS is not defined` en la consola de la página. Con la línea restituida, `es -> en -> es` con `localStorage` sincronizado. Después se repitió **sobre las páginas reales** por CDP, con un clic de verdad en el botón de cada una: las seis responden bien.
+
+**Dos errores de tooling, los dos míos, y ninguno del sitio**:
+- El puerto 9222 **ya lo tenía el Chrome del usuario abierto** (el widget de Lenovo Vantage), así que las peticiones de DevPoint iban a su navegador y no al mío, y el script leía un target ajeno. Con `--remote-debugging-port` hay que usar un puerto libre y comprobar que responde el tuyo.
+- Y al recoger, `Stop-Process -Force` sobre `Get-Process chrome` **le cerró el navegador al usuario**, porque mata por nombre de proceso y no por PID. A partir de ahí se guardó el PID de los procesos lanzados y se cerró solo esos. Borrar procesos por nombre de producto es la forma rápida de matar cosas que no son del trabajo.
+
+**Verificación**: con la línea restituida, `index`, `gallery-photo-2`, `design`, `development`, `about` y `contact` pasan de `lang=es boton="EN"` a `lang=en boton="ES" nav="HOME"` con `localStorage=en`, y vuelven a `es` con el segundo clic. Los dos ficheros de prueba se borraron. i18n con 362 claves en los dos idiomas, ninguna solo en uno, las 8 huérfanas de siempre y ninguna usada sin definir.
+
+---
+
 ## Para la próxima sesión
 
 **Lo primero, y es de olhar, no de código**: las cuatro galerías de Fotografía y las cuatro de Diseño, en pantalla grande y en móvil, con el carrusel quieto y con el dedo puesto. Esta sesión cambió la geometría de las tarjetas de fotografía y la forma de medir la velocidad, y **nada de eso se ha visto**. El HTML está bien, pero el CSS siempre escapa algo.
