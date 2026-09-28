@@ -2019,8 +2019,39 @@ body.is-lightbox-open #three-canvas {
         padding-right: 2rem;
     }
 
-    /* --- Page title: fit the screen, wrap, clear the topnav --- */
+    /* --- Home / Contact: los 49px de desbordamiento horizontal ---
+       La rejilla base (`10vw 10vh 10vw 5vw 32vw 1fr`) deja a `.frame` con 228px
+       de ancho a 390 de viewport, y dentro necesita 205px: 3 iconos de 28 + 3
+       huecos de 24 + el botón de idioma de 49. Se salían 49px por la derecha y
+       la página se podía panear. Medido: ocultar `.frame__links` deja
+       `scrollWidth` en 390, así que es el único culpable; el canvas solo
+       arrastraba la anchura que ya estaba rota. Por debajo de 40em, que es
+       donde la caja es tan estrecha, se encoge lo justo para que quepa. */
+    @media screen and (max-width: 39.99em) {
+        .frame__links {
+            gap: 0.6rem;
+            margin-left: 0;
+        }
+
+        .frame__links img {
+            width: 24px;
+            height: 24px;
+        }
+
+        .frame .lang__toggle {
+            padding: 0.4rem 0.65rem;
+        }
+    }
+
+    /* --- Page title: fit the screen, wrap, clear the topnav ---
+       En móvil pasa de `fixed` a `absolute`: no hay nada que le reserve hueco,
+       así que cualquier cosa que scrollea (el párrafo de las galerías, el botón
+       de vuelta) se le colaba por debajo. Medido a 360x640: `p.gallery__desc`
+       con 5372px² de solape, y la primera tile de Diseño y Fotografía recortada
+       13px. `main` no está posicionado, así que `absolute` resuelve contra el
+       documento y el título se va al hacer scroll, sin alterar el flujo. */
     .page-title {
+        position: absolute;
         top: 4.75rem;
         left: 1.25rem;
         right: 1.25rem;
@@ -2029,6 +2060,18 @@ body.is-lightbox-open #three-canvas {
         font-size: clamp(1.5rem, 4.5vw + 0.6rem, 2.3rem);
         line-height: 1.12;
         opacity: 0.22;
+    }
+
+    /* --- Diseño / Fotografía / Desarrollo: aquí el título no tiene escapatoria ---
+       Su contenido es un carrusel horizontal, así que la página NO scrollea en
+       vertical (`scrollY` se queda en 0) y no hay forma de que el título se vaya
+       como en las galerías. Medido a 360x640: la primera card (`li.devtile`)
+       queda siempre debajo con 2939px² de solape. En móvil se oculta, igual que
+       ya se ocultan `.frame` y el `h2` de `.devtiles` en estas mismas páginas. */
+    body.page-design .page-title,
+    body.page-photography .page-title,
+    body.page-development .page-title {
+        display: none;
     }
 
     .page-title__offset {
