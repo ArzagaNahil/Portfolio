@@ -122,11 +122,25 @@ function initGalleryCarousel() {
     // cada galeria iba a su ritmo: Editorial, con 36884px de track, corria 3,5
     // veces mas rapida que Rescate Animal, con 10446px. Derivando la duracion
     // del ancho real las cuatro galerias comparten PX_POR_SEGUNDO.
-    const PX_POR_SEGUNDO = 275; // el ritmo que ya tenia Rescate Animal
+    //
+    // Medido a 1440x900, las diez galerias dan exactamente 275 px/s, asi que la
+    // sensacion de "unas van mas rapido que otras" no venia de aqui sino del
+    // tiempo total de vuelta, que depende de cuantas tarjetas tenga cada una:
+    // Retrato (13 tarjetas) tardaba 18.4s en repetir, mientras que Desarrollo Web
+    // y Ranking Tracker (3 tarjetas) la repasaban cada 3.7s, cinco veces mas
+    // a menudo. Un solo trozon de tres fotos dando vueltas cada 3.7s es lo que
+    // se percibe como nervioso, no el pixeles por segundo.
+    //
+    // PX_POR_SEGUNDO baja de 275 a 200 tomando Retrato como referencia, y
+    // VUELTA_MINIMA pone un suelo de 22s para que las galerias cortas no
+    // pisen ese suelo y repitan tan a menudo.
+    const PX_POR_SEGUNDO = 200; // el ritmo ya venia de Retrato, aqui se baja un poco mas
+    const VUELTA_MINIMA = 22;
     const fijarDuracion = () => {
         const recorrido = track.scrollWidth / 2;
         if (recorrido > 0) {
-            track.style.setProperty('--marquee-duration', (recorrido / PX_POR_SEGUNDO) + 's');
+            const segundos = Math.max(recorrido / PX_POR_SEGUNDO, VUELTA_MINIMA);
+            track.style.setProperty('--marquee-duration', segundos + 's');
         }
     };
     fijarDuracion();
