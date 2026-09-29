@@ -36,16 +36,16 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&family=Tulpen+One&family=Bruno+Ace&display=swap" rel="stylesheet" />
+    <!-- Tipografía que usa la demo de Codrops -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,500|Roboto+Mono" rel="stylesheet" />
 
     <!-- Splitting CSS -->
-    <link rel="stylesheet" href="https://unpkg.com/splitting@1.0.6/dist/splitting.css" />
-    <link rel="stylesheet" href="https://unpkg.com/splitting@1.0.6/dist/splitting-cells.css" />
 
     <!-- Three.js importmap -->
     <script type="importmap">
     {
         "imports": {
-            "three": "https://unpkg.com/three@0.170.0/build/three.module.js"
+            "three": "https://unpkg.com/three@0.170.0/build/three.module.min.js"
         }
     }
     </script>
@@ -53,10 +53,90 @@
     <!-- Main Styles -->
     <link rel="stylesheet" href="css/style.css" />
 
+    <!-- Estilos de la demo de Codrops (DeveloperDesignerPageLayout), tal cual -->
+    <link rel="stylesheet" href="css/demo.css" />
+    <link rel="stylesheet" href="css/pieces.css" />
+
+    <style>
+    /* =====================================================================
+       Convivencia con la demo importada. Nada de esto toca la demo: son
+       reglas de esta página para que sus estilos no se coman los de la web
+       (y al revés). La demo se ve igual que en la demo.
+       ===================================================================== */
+    /* La demo pinta body{background:#232323}: el fondo de la web manda. */
+    body { background: #000000; }
+    /* La demo pinta main{display:flex}: la rejilla de la web sigue mandando. */
+    main { display: grid; }
+    /* El contenedor de la demo es la sección .about de esta página. El
+       margin-top baja la caja por debajo de la topnav fija; el padding que
+       traía .about no servía porque no mueve a los hijos position:absolute,
+       y .content lo es.
+
+       La .about heredaba además el template de 2 columnas (0.85fr / 1fr), el
+       gap y el place-items:stretch de la ficha de proyecto antigua (style.css
+       322-340), que dejaban .pieces en la 1ª columna y pasándose de ancho. La
+       demo es una sola caja centrada: se anulan aquí y se ocupa todo el ancho
+       para que la foto quede centrada en el viewport como en la original. */
+    .page-about .demo-page {
+        position: relative;
+        padding: 0;
+        margin-top: 3.75rem;
+        grid-column: 1 / -1;
+        grid-template-columns: 1fr;
+        gap: 0;
+        place-items: center;
+    }
+    /* style.css define .content para esta rejilla; la demo lo usa como
+       capa absoluta. grid-area le colocaría dentro de la rejilla de .about. */
+    .demo-page .content { grid-area: auto; }
+    /* style.css define .menu/.menu__item para el menú LetterShuffle de la
+       web; la demo trae los suyos con otras reglas.
+       El :not es imprescindible: sin él, este display:block (0,2,0 y va
+       después) se comería el `display:none` de `.js .menu--code` de
+       demo.css:226 y se verían los dos menús apilados. */
+    .page-about .menu { pointer-events: auto; border-bottom: 0; }
+    .page-about .menu:not(.menu--code) { display: block; }
+    .page-about .menu__item { font-family: inherit; font-weight: inherit; font-size: inherit; line-height: inherit; color: inherit; white-space: normal; }
+    /* La cortina negra de la web se aplica también al .loading de la demo
+       (selector .js .loading). Esa cortina sí interesa; lo que no encaja es
+       el círculo del spinner de la web sobre el texto "- - -" de la demo. */
+    .page-about .loading::after { margin: 0; border-radius: 0; background: none; opacity: 1; }
+    /* Los iconos sociales, en su sitio de siempre (esquina inferior derecha,
+       grid-area: about), pero elevados por encima de .content (z-index 100)
+       de la demo, que los taparía. */
+    .page-about .frame__links { position: relative; z-index: 150; }
+    /* Controles de la esquina fuera: la flecha previa y la gota se han
+       quitado del HTML (y con ellos sus símbolos svg), y el botón
+       hamburguesa se oculta aquí. Ese botón NO se puede borrar del DOM:
+       tympMain.js lo referencia sin comprobar null (líneas 454, 666 y 738)
+       y reventaría el cambio de modo. */
+    .page-about .controls { display: none; }
+    /* "Work with me" acababa pegado a los 3 iconos sociales de la esquina
+       inferior derecha. Sube toda la fila (no solo el enlace) para no
+       desincronizarlo del conmutador Designer/Coder: ahora queda un margen
+       de 13-18px entre el enlace y los iconos. Solo >=54em, que es donde el
+       frame existe; en móvil la demo no se mueve. */
+    @media screen and (min-width: 54em) {
+        .page-about .content__bottom { margin-bottom: 4.5rem; }
+    }
+    </style>
+
     <script>document.documentElement.className="js";</script>
 </head>
-<body class="loading page-about">
-    <div id="three-canvas" data-ring-pos="10,0,0"></div>
+<body class="page-about">
+    <!-- Iconos de la demo -->
+    <svg class="hidden">
+        <symbol id="icon-menu" viewBox="0 0 24 24">
+            <title>menu</title>
+            <path d="M23.8,6H0.1V3h23.7C23.8,4.3,23.8,6,23.8,6z M23.8,10.5H0.1v3h23.7C23.8,13.5,23.8,10.5,23.8,10.5z M24,18H10v3h14V18z"/>
+        </symbol>
+        <symbol id="icon-menu-alt" viewBox="0 0 24 24">
+            <title>menu alt</title>
+            <path d="M10.4,6H0V3h10.4C10.4,4.3,10.4,6,10.4,6z M10.4,10.5H0v3h10.4C10.4,13.5,10.4,10.5,10.4,10.5z M15.1,18H9v3h6.1V18z M23.4,6H13V3h10.4C23.4,4.3,23.4,6,23.4,6z M23.4,10.5H13v3h10.4C23.4,13.5,23.4,10.5,23.4,10.5z M23.5,18h-6.1v3h6.1V18z"/>
+        </symbol>
+    </svg>
+
+    <div id="three-canvas" data-ring-pos="10,0,0" data-rings="off"></div>
     <main>
         <!-- NAV / TOP MINIMAL BAR -->
         <nav class="topnav">
@@ -88,16 +168,62 @@
             </nav>
         </div>
 
-        <!-- ABOUT SECTION -->
+        <!-- ABOUT SECTION — demo de Codrops importada tal cual -->
+        <section class="about demo-page">
+            <div class="pieces" style="background-image: url(assets/IMG/about/alex-normal.webp)" data-img-alt="url(assets/IMG/about/alex-alt.webp)" data-img-code="url(assets/IMG/about/alex-code.webp)"></div>
+            <div class="overlay overlay--hidden"></div>
+            <div class="content">
+                <div class="content__inner">
+                    <div class="content__top">
+                        <h2 class="title">
+                            <span class="title__inner mode mode--design" data-switch data-glitch>Annie Fox</span>
+                        </h2>
+                        <div class="controls">
+                            <button class="btn btn--menu mode mode--design" data-switch>
+                                <svg class="icon icon--menu"><use xlink:href="#icon-menu"></use></svg>
+                                <svg class="icon icon--menu-alt"><use xlink:href="#icon-menu-alt"></use></svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="menu">
+                        <ul class="menu__inner">
+                            <li class="menu__item"><a class="menu__link" data-switch>On Interface Design</a></li>
+                            <li class="menu__item"><a class="menu__link" data-switch>Portfolio</a></li>
+                            <li class="menu__item"><a class="menu__link" data-switch>Case Studies</a></li>
+                            <li class="menu__item"><a class="menu__link" data-switch>Musings</a></li>
+                        </ul>
+                    </div>
+                    <div class="menu menu--code">
+                        <ul class="menu__inner">
+                            <li class="menu__item"><a class="menu__link" data-switch>On Coding</a></li>
+                            <li class="menu__item"><a class="menu__link" data-switch>Experiments</a></li>
+                            <li class="menu__item"><a class="menu__link" data-switch>Current Projects</a></li>
+                            <li class="menu__item"><a class="menu__link" data-switch>Tutorials</a></li>
+                            <li class="menu__item"><a class="menu__link" data-switch>> Find me on GitHub</a></li>
+                        </ul>
+                    </div>
+                    <div class="content__bottom">
+                        <div class="switch mode mode--design">
+                            <a class="switch__item switch__item--current">Designer</a>
+                            <a class="switch__item"><span class="mode mode--design" data-switch data-glitch>Coder</span></a>
+                        </div>
+                        <div class="link-wrap">
+                            <a class="contact-link mode mode--design" data-switch data-glitch>Work with me</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="loading"></div>
+            <img class="hidden" src="assets/IMG/about/alex-code.webp"/>
+            <img class="hidden" src="assets/IMG/about/alex-alt.webp"/>
+        </section>
     </main>
 
     <!-- SCRIPTS -->
-    <script src="https://unpkg.com/gsap@3.12.5/dist/gsap.min.js"></script>
-    <script src="https://unpkg.com/splitting@1.0.6/dist/splitting.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js"></script>
-
-    <script src="js/segment.min.js"></script>
-    <script src="js/ease.min.js"></script>
+    <script src="js/anime.min.js"></script>
+    <script src="js/charming.min.js"></script>
+    <script src="js/imagesloaded.pkgd.min.js"></script>
+    <script src="js/tympMain.js"></script>
 
     <script type="module" src="js/index.js"></script>
 </body>

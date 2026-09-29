@@ -117,29 +117,6 @@ a:focus-visible {
     background: transparent;
 }
 
-/* ---- Hover line effect ---- */
-.hover-line {
-    white-space: nowrap;
-    overflow: hidden;
-    position: relative;
-}
-
-.hover-line::before {
-    content: '';
-    height: 1px;
-    width: 100%;
-    background: currentColor;
-    position: absolute;
-    top: 92%;
-    transition: transform 0.35s ease;
-    transform-origin: 0% 50%;
-}
-
-.hover-line:hover::before {
-    transform: scaleX(0);
-    transform-origin: 100% 50%;
-}
-
 /* ---- Utility ---- */
 .unbutton {
     background: none;
@@ -288,14 +265,6 @@ main {
     outline-offset: 3px;
 }
 
-.content__bio {
-    font-size: 0.95rem;
-    line-height: 1.8;
-    color: var(--color-text-alt);
-    border-left: 2px solid var(--color-accent);
-    padding-left: 1.25rem;
-}
-
 .content__image {
     max-width: 100%;
     width: auto;
@@ -354,6 +323,20 @@ main {
     display: grid;
     place-items: center;
     padding: 2rem;
+    gap: clamp(2rem, 5vw, 4rem);
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* La foto a un lado y el texto al otro a partir de 60em. Por debajo se apilan,
+   y el orden del HTML es foto primero, que es el que lee bien en móvil donde
+   la imagen se ve antes que nada. */
+@media (min-width: 60em) {
+    .about {
+        grid-template-columns: minmax(0, 0.85fr) minmax(0, 1fr);
+        align-items: center;
+        place-items: stretch;
+    }
 }
 
 .about__card {
@@ -403,6 +386,42 @@ main {
     border-radius: 100px;
     padding: 0.4rem 1rem;
     background: rgba(0, 147, 165, 0.06);
+}
+
+/* Las tres disciplinas del About. Sin separador entre bloques porque cada uno
+   lleva su título en mono, que ya hace de línea divisoria. */
+.about__discs {
+    display: grid;
+    gap: 1.4rem;
+    margin: 1.6rem 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.about__disc h3 {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: #7fd4dd;
+    margin: 0 0 0.35rem;
+}
+
+.about__disc p {
+    font-family: var(--font-para);
+    font-size: 1.05rem;
+    line-height: 1.45;
+    color: var(--color-text-alt);
+    margin: 0;
+}
+
+.about__close {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    letter-spacing: 0.04em;
+    color: var(--color-text);
+    margin: 1.8rem 0 0;
 }
 
 /* ---- Form ---- */
@@ -1199,20 +1218,6 @@ main {
     to {
         transform: rotate(1turn);
     }
-}
-
-.gallery__title {
-    margin: 1.75rem 0 1rem;
-    font-family: var(--font-name);
-    font-size: clamp(2rem, 5vw, 3.5rem);
-    font-weight: 400;
-    letter-spacing: -0.02em;
-    line-height: 1.05;
-    color: var(--color-heading);
-}
-
-.gallery__title__offset {
-    margin-left: 0;
 }
 
 .gallery__desc {
@@ -2334,28 +2339,31 @@ body.is-lightbox-open #three-canvas {
    Custom Cursor
    ============================================ */
 
-/* Con el cursor del sitio activo se oculta el del navegador en toda la página,
+/* Con el cursor propio activo se oculta el del navegador en toda la página,
    para que solo se vean el anillo y el punto. El anillo ya crece al pasar por
    encima de un elemento interactivo (ver initCustomCursor en js/index.js), así
    que no se pierde la pista de qué es pulsable.
 
-   Se limita a html.js, que añade un script en línea en las 16 páginas: si el
-   JavaScript no llegara a ejecutarse, el cursor nativo sigue disponible y la
-   página no se queda sin puntero.
+   .has-cursor la añade el propio módulo de JS justo después de crear el anillo.
+   Si ese módulo falla al cargar (por ejemplo, si el CDN de Three.js no
+   responde), el selector no coincide y el puntero del navegador sigue estando.
+   Antes colgaba de html.js, una clase que pone un script en línea y que se
+   ejecuta siempre, así que esa red de seguridad no existía: un error de módulo
+   dejaba la página sin ningún cursor.
 
    El selector con * es a propósito: los cursor: pointer de botones y enlaces son
    menos específicos, así que sin él se vería la flecha por encima del anillo. */
-html.js body,
-html.js body * {
+html.has-cursor body,
+html.has-cursor body * {
     cursor: none;
 }
 
 /* Excepción: en los campos del formulario de contacto el puntero es
    imprescindible para saber dónde se está escribiendo. Quitar estas tres líneas
    si prefieres el efecto completo también ahí. */
-html.js body input,
-html.js body textarea,
-html.js body select {
+html.has-cursor body input,
+html.has-cursor body textarea,
+html.has-cursor body select {
     cursor: text;
 }
 

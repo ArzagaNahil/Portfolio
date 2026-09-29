@@ -141,15 +141,7 @@ export const I18N = {
         g3_img_2: 'Extensiones — imagen 2',
         g3_img_3: 'Extensiones — imagen 3',
 
-        galdesign1_card1: 'Sistema de identidad visual integral: logotipo, paleta cromática, tipografía, iconografía y aplicaciones de papelería.',
-        galdesign2_card1: 'Maquetación de catálogo corporativo: arquitectura de información, jerarquía tipográfica y sistema de navegación visual.',
 
-        galdesign1_demo_1: 'Ver demo — Identidad Visual — proyecto 1',
-        galdesign1_demo_2: 'Ver demo — Identidad Visual — proyecto 2',
-        galdesign1_demo_3: 'Ver demo — Identidad Visual — proyecto 3',
-        galdesign2_demo_1: 'Ver demo — Diseño Editorial — proyecto 1',
-        galdesign2_demo_2: 'Ver demo — Diseño Editorial — proyecto 2',
-        galdesign2_demo_3: 'Ver demo — Diseño Editorial — proyecto 3',
 
         galdesign1_img_1: 'Identidad Visual — reverso de página',
         galdesign1_img_2: 'Identidad Visual — FH',
@@ -344,6 +336,23 @@ export const I18N = {
         galphoto4_img_22: 'Artística — 22',
         galphoto4_img_23: 'Artística — 23',
 
+        /* Texto del About rescatado del portafolio de Wix y reescrito en primera
+           persona. Lo de Wix venía en plural, para un estudio, y con relleno de
+           plantilla ("Company X", "Event Y", "Client Z"). */
+        about_rol: 'diseño gráfico, fotografía y desarrollo web',
+        about_intro: 'Diseño, fotografía y desarrollo web. Me interesa dar forma a una idea hasta que se entienda de un vistazo, y la imagen que tenga intención además de impacto.',
+        about_diseno_t: 'Diseño gráfico',
+        about_diseno_p: 'Identidad visual, diseño editorial, catálogos y tarjetas, diagramado de logotipos. Sistemas que funcionan igual de bien en papel que en pantalla.',
+        about_foto_t: 'Fotografía',
+        about_foto_p: 'Retrato, paisaje, producto y escena. Nada de banco de imagen: cada foto se hace para el proyecto que la pide.',
+        about_dev_t: 'Desarrollo web',
+        about_dev_p: 'Páginas, landings y extensiones. Front y back con el mismo cuidado que el diseño: lo que se ve tiene que funcionar.',
+        about_wip_t: 'Fuera del encargo',
+        about_wip_p: 'Rescate Animal: identidad y piezas para una asociación. Cuando sobra tiempo, proyectos propios.',
+        about_close: 'Barcelona, España. Abierto a proyectos, colaboraciones y oportunidades.',
+        about_figcaption: 'Barcelona, España',
+        about_foto_alt: 'Retrato de Arzaga Nahil',
+
         c_over: 'Contacto',
         c_title: 'Trabajemos juntos',
         c_sub: 'Estoy abierto a nuevos proyectos, colaboraciones y oportunidades. Cuéntame de tu idea.',
@@ -526,15 +535,7 @@ export const I18N = {
         g3_img_2: 'Extensions — image 2',
         g3_img_3: 'Extensions — image 3',
 
-        galdesign1_card1: 'Complete visual identity system: logo, color palette, typography, iconography and stationery applications.',
-        galdesign2_card1: 'Corporate catalog layout: information architecture, typographic hierarchy and visual navigation system.',
 
-        galdesign1_demo_1: 'View demo — Visual Identity — project 1',
-        galdesign1_demo_2: 'View demo — Visual Identity — project 2',
-        galdesign1_demo_3: 'View demo — Visual Identity — project 3',
-        galdesign2_demo_1: 'View demo — Editorial Design — project 1',
-        galdesign2_demo_2: 'View demo — Editorial Design — project 2',
-        galdesign2_demo_3: 'View demo — Editorial Design — project 3',
 
         galdesign1_img_1: 'Visual Identity — back page',
         galdesign1_img_2: 'Visual Identity — FH',
@@ -728,6 +729,20 @@ export const I18N = {
         galphoto4_img_21: 'Artistic — 21',
         galphoto4_img_22: 'Artistic — 22',
         galphoto4_img_23: 'Artistic — 23',
+
+        about_rol: 'graphic design, photography and web development',
+        about_intro: 'Design, photography and web development. I like shaping an idea until it reads at a glance, and images with intent as well as impact.',
+        about_diseno_t: 'Graphic design',
+        about_diseno_p: 'Visual identity, editorial design, catalogues and cards, logo layout. Systems that work as well on paper as on screen.',
+        about_foto_t: 'Photography',
+        about_foto_p: 'Portrait, landscape, product and scene. No stock imagery: every frame is made for the project that asks for it.',
+        about_dev_t: 'Web development',
+        about_dev_p: 'Sites, landing pages and extensions. Front and back with the same care as the design: what you see has to work.',
+        about_wip_t: 'Off the clock',
+        about_wip_p: 'Animal Rescue: identity and pieces for an organisation. Spare time goes to projects of my own.',
+        about_close: 'Barcelona, Spain. Open to projects, collaborations and opportunities.',
+        about_figcaption: 'Barcelona, Spain',
+        about_foto_alt: 'Portrait of Arzaga Nahil',
 
         c_over: 'Contact',
         c_title: "Let's work together",

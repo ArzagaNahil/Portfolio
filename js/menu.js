@@ -49,6 +49,8 @@ export class Menu {
 
         this.menuItems = [];
         this.DOM.items.forEach((item) => this.menuItems.push(new MenuItem(item)));
+
+        this.bindItemLinks();
     }
 
     initSegments() {
@@ -71,6 +73,13 @@ export class Menu {
             this.menuStatus.isOpen ? this.close() : this.open();
         });
 
+        this.bindItemLinks();
+    }
+
+    /* Los items se vuelven a crear en restart() (cambio de idioma), así que este
+       enganche tiene que repetirse ahí: si solo se atara en el constructor, tras
+       cambiar de idioma los enlaces "#" volverían a saltar al inicio de página. */
+    bindItemLinks() {
         this.DOM.items.forEach(item => {
             if (item.getAttribute('href') === '#') {
                 item.addEventListener('click', (e) => e.preventDefault());

@@ -11,6 +11,11 @@ export function initScene(container, ringPosOverride, showRings = true) {
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
   container.appendChild(renderer.domElement)
 
+  /* Con "reducir movimiento" el fondo se queda quieto: un solo fotograma, sin
+     giro ni parallax. Antes se animaba igual para quien pidió justo lo
+     contrario en su sistema. */
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
   const count = 2000
   const positions = new Float32Array(count * 3)
   for (let i = 0; i < count * 3; i++) {
@@ -93,9 +98,7 @@ export function initScene(container, ringPosOverride, showRings = true) {
     mouse.y = -(e.clientY / window.innerHeight) * 2 + 1
   })
 
-  function animate() {
-    requestAnimationFrame(animate)
-
+  function draw() {
     particlesMesh.rotation.x += 0.0002
     particlesMesh.rotation.y += 0.0004
 
@@ -109,17 +112,36 @@ export function initScene(container, ringPosOverride, showRings = true) {
 
     renderer.render(scene, camera)
   }
-  animate()
+
+  if (reduceMotion) {
+    draw()
+  } else {
+    const animate = () => {
+      requestAnimationFrame(animate)
+      draw()
+    }
+    animate()
+  }
 
   function onResize() {
     camera.aspect = window.innerWidth / window.innerHeight
     camera.updateProjectionMatrix()
     renderer.setSize(window.innerWidth, window.innerHeight)
+    if (reduceMotion) draw()
   }
   window.addEventListener('resize', onResize)
 
   return () => {
     window.removeEventListener('resize', onResize)
+    /* Sin liberar geometrías, materiales y texturas, el contexto WebGL se
+       queda con los buffers vivos hasta que el navegador mata la pestaña. */
+    particlesGeo.dispose()
+    particlesMat.dispose()
+    ;[ring, ring2, ring3].forEach((mesh) => {
+      if (!mesh) return
+      mesh.geometry.dispose()
+      mesh.material.dispose()
+    })
     renderer.dispose()
   }
 }

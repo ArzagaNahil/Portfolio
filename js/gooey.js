@@ -100,6 +100,17 @@ float circle(in vec2 _st, in float _radius, in float blurriness) {
     return 1. - smoothstep(_radius - (_radius * blurriness), _radius + (_radius * blurriness), dot(dist, dist) * 4.0);
 }
 
+/* Minimo suave: se parece a min(a, b) pero sin la esquina. Con k grande tiende
+   al min y con k = 8 el pico queda en 0.41 en vez de 0.5, y la esquina se convierte
+   en una curvatura repartida en un 12% del ancho. Importa porque el min de verdad
+   cambia de derivada en uv = 0.5 y dejaba una arruga vertical por el centro de la
+   tile: el pico alto y la envolvente suave son incompatibles, porque cualquier
+   funcion suave que llegue a 0.5 en el centro con derivada nula queda por encima
+   del min en los vecinos. */
+float huecoSuave(float a, float b, float k) {
+    return -log(exp(-k * a) + exp(-k * b)) / k;
+}
+
 void main() {
     vec2 resolution = u_res * PR;
     float time = u_time * 0.05;
@@ -119,8 +130,13 @@ void main() {
     float offY = uv.y + sin(uv.x * 5.) * .1 - sin(time * 0.5) + snoise3(vec3(uv.x, uv.y, time) * 0.5);
     offX += snoise3(vec3(offX, offY, time) * 5.) * .3;
     offY += snoise3(vec3(offX, offX, time * 0.3)) * .1;
-    float nc = (snoise3(vec3(offX, offY, time * .5) * 8.)) * progressHover;
-    float nh = (snoise3(vec3(offX, offY, time * .5) * 2.)) * .03;
+    /* La amplitud vuelve a ser grande, pero ya no se aplica igual en todas partes:
+       se multiplica por el hueco que queda en cada eje, que es lo único que
+       garantiza que la UV no se salga de la textura. En el centro de la tile el
+       movimiento es íntegro y se apaga solo al llegar al borde, en vez de recortarlo
+       con un margen fijo que se comía el efecto. */
+    float nc = (snoise3(vec3(offX, offY, time * .5) * 8.)) * .5;
+    float nh = (snoise3(vec3(offX, offY, time * .5) * 2.)) * .08;
 
     nh *= smoothstep(nh, 0.5, 0.6);
 
@@ -132,10 +148,18 @@ void main() {
     uv *= u_ratio;
     uv += vec2(0.5);
 
-    vec4 image = texture2D(u_map, uv + vec2(nc + nh) * progressHover);
-    vec4 hover = texture2D(u_hovermap, uv_h + vec2(nc + nh) * progressHover * (1. - progress));
+    /* Con la UV ya remapeada a cover, uno de los dos ejes llega justo a 0 y a 1,
+       así que el hueco disponible es min(uv, 1 - uv). El minimo suave nunca
+       supera a ese hueco, luego el muestreo no se sale de la textura. */
+    vec2 env = vec2(huecoSuave(uv.x, 1. - uv.x, 8.), huecoSuave(uv.y, 1. - uv.y, 8.));
+    vec2 env_h = vec2(huecoSuave(uv_h.x, 1. - uv_h.x, 8.), huecoSuave(uv_h.y, 1. - uv_h.y, 8.));
 
-    vec4 finalImage = mix(image, hover, clamp(nh * (1. - progress) + progressHover, 0., 1.));
+    vec4 image = texture2D(u_map, uv + vec2(nc + nh) * progressHover * env);
+    vec4 hover = texture2D(u_hovermap, uv_h + vec2(nc + nh) * progressHover * (1. - progress) * env_h);
+
+    /* smoothstep en vez de clamp: el clamp deja un escalón donde el factor se
+       pasa de 1, y ese escalón son líneas finas de contorno. */
+    vec4 finalImage = mix(image, hover, smoothstep(0., 1., nh * (1. - progress) + progressHover));
 
     gl_FragColor = vec4(finalImage.rgb, u_alpha);
 }

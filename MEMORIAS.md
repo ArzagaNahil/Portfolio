@@ -1376,11 +1376,431 @@ La galería queda en 41 tarjetas, con `data-index` 0..40 y claves `galdesign2_im
 
 ---
 
+## Sesión 39 — Limpieza integral de código muerto, assets huérfanos y rendimiento WebGL
+
+**Objetivo de la sesión**: pasar el rastrillo por todo el repositorio para eliminar código muerto, librerías que se cargaban sin usarse, assets no referenciados, y arreglar fugas de rendimiento en los bucles de animación (rAF) y WebGL.
+
+### 1. Corrupción binaria en `gallery-design-1.html`
+- El archivo arrancaba con **21 bytes NUL (`\x00`)** antes de `<!DOCTYPE html>`. Provocaba que parsers estrictos y validadores trataran el fichero como binario. Se limpiaron; el HTML empieza en el byte 0 limpio.
+
+### 2. Dependencias externas y vendor scripts
+- **Three.js minificado**: en las 12 páginas que montan Three.js (`index`, `design`, `development`, `photography` y las 8 galerías) el `importmap` apuntaba a `three.module.js` (uncompressed, ~650 KB). Se cambió a `three.module.min.js` (~140 KB, reducción de ~80% de transferencia).
+- **Adiós a WebFont Loader**: todas las páginas cargaban `webfont.js` desde cdnjs para llamar a `preloadFonts('...')`. Se eliminó por completo la dependencia y se reemplazó por la API nativa del navegador `document.fonts.ready` con fallback de timeout de 2.5s.
+- **`js/utils.js` eliminado**: sólo contenía la función `preloadFonts` que ya nadie usa.
+- **Vendor scripts purgados por página**:
+  - `about.html` y `contact.html` cargaban GSAP sin tener un solo tween (usan transiciones CSS).
+  - Las 10 páginas de galería (`gallery-*.html`) cargaban Splitting.js, segment y ease que solo usa el menú de las páginas principales.
+  - Resultado: cada galería carga ahora solo lo que necesita (Three.js para el fondo interactivo + su script de galería + i18n + hoverSound).
+
+### 3. Cursor personalizado (`js/index.js` y `css/style.css`)
+- **Problema previo**: el CSS aplicaba `* { cursor: none !important; }` global a todas las pantallas, atrapando el cursor incluso en móviles, pantallas táctiles y campos de texto (`<input>`, `<textarea>`). Además, el bucle `requestAnimationFrame` corría indefinidamente a 60 FPS aun con el cursor quieto.
+- **Solución**:
+  - El cursor personalizado ahora se activa vía clase `html.has-cursor` que `js/index.js` inyecta **únicamente si** el navegador cumple `window.matchMedia('(hover: hover) and (pointer: fine)').matches` y no tiene `prefers-reduced-motion: reduce`.
+  - El cursor respeta `cursor: text` en `input`, `textarea` y `[contenteditable]`.
+  - El bucle `renderCursor()` ahora entra en reposo cuando la distancia entre la posición actual y el target es menor a 0.05px. Se reactiva al siguiente `mousemove`. Cero gasto de CPU cuando el usuario lee o tiene el ratón quieto.
+
+### 4. Rendimiento WebGL: `gooey.js` y `particles.js`
+- **`js/gooey.js`**:
+  - Antes fijaba el DPR sin límite: en pantallas Retina (DPR 3) renderizaba 9 veces más píxeles a 60 FPS continuo a pantalla completa. Ahora se aplica `Math.min(window.devicePixelRatio || 1, 2)`.
+  - Se implementó dirty-checking con bandera `sceneDirty`: el renderizador solo dibuja cuando una textura termina de cargar, se hace scroll, se cambia el tamaño de la ventana o se pasa el ratón por una tarjeta. No más renderizado a 60 FPS constante en pantalla quieta.
+  - **Corrección del shader de fluido (eliminación de rayitas)**: el shader anterior usaba una distorsión UV escalar idéntica en X e Y (`vec2(nc + nh)`), forzando deformaciones estrictas a 45°; evaluaba ruido 1D por pasar la misma variable en X e Y; y la amplitud desmedida (hasta 1.0) provocaba que las coordenadas UV excedieran el marco de textura, repitiendo píxeles de borde en forma de peine (*clamp-to-edge*). Se rediseñó el fragment shader desacoplando las componentes X e Y con ruidos 3D desfasados e independientes, acotando la amplitud a un máximo orgánico de 0.045 con modulación tipo campana `sin(progressHover * PI)`, y atenuando la deformación en reposo para que el material metálico (oro, plata o bronce) se asiente 100% nítido y limpio.
+
+- **`js/particles.js`**:
+  - Se añadió comprobación de `prefers-reduced-motion`: si el usuario lo solicita, las partículas se congelan.
+  - Se añadió limpieza de recursos WebGL (`geometry.dispose()`, `material.dispose()`) al desmontar.
+
+### 5. `js/hoverSound.js` perezoso
+- Antes creaba el `AudioContext` y precargaba los 4 buffers de audio inmediatamente en la carga de la página, incluso en dispositivos táctiles o páginas donde el usuario no hace hover.
+- Ahora los buffers y el contexto se inicializan en el primer evento de puntero (`pointermove`/`pointerdown`). En móviles táctiles nunca llega a gastar memoria ni peticiones de red.
+
+### 6. Bug en `js/menu.js` con el cambio de idioma
+- `bindItemLinks` interceptaba los clics en `.menu__item-link` para aplicar animaciones. Al cambiar de idioma con el botón EN/ES, `apply()` actualizaba el DOM y los listeners se perdían o quedaban huérfanos. Se desacopló la intercepción para que persista intacta entre cambios de idioma.
+
+### 7. CSS muerto eliminado de `css/style.css`
+- `.hover-line` (antigua línea decorativa de los enlaces de las primeras sesiones, sustituida por el shuffle).
+- `.content__bio` (bloque de texto de la plantilla original de Codrops).
+- `.gallery__title` y `.gallery__title__offset` (restos del slider editorial sustituido en sesión 28).
+
+### 8. Assets huérfanos eliminados
+- `js/utils.js` (sin referencias tras retirar WebFont Loader).
+- `assets/IMG/dev/*/full/*.webp` (11 imágenes en subcarpetas `full` de desarrollo que eran duplicados de mayor peso de las miniaturas en `thumb/`).
+- `assets/IMG/follow-inst.svg` (icono no referenciado, el portafolio usa `instagram.svg`).
+- `assets/IMG/site.webmanifest` (incompleto y sin `<link rel="manifest">` en ningún HTML).
+- **Ahorro total**: ~1.3 MB eliminados del árbol de git.
+
+### 9. Limpieza de claves i18n huérfanas en `js/i18n.js`
+- Se retiraron las 8 claves que quedaban sin uso desde la sesión 38: `galdesign1_card1`, `galdesign2_card1`, `galdesign1_demo_1..3`, `galdesign2_demo_1..3`.
+- **Estado final**: 354 claves en ES = 354 claves en EN = 354 atributos `data-i18n` en HTML. Paridad 100%, 0 faltantes, 0 huérfanas.
+
+### 10. Validación integral
+- **Sintaxis**: `node --check` limpio en todos los archivos JS (`index`, `menu`, `gooey`, `particles`, `i18n`, `hoverSound`, etc.).
+- **Smoke test headless Chrome**: se probaron las 16 páginas sirviendo el sitio en local; las 16 cargan sin errores en consola, retiran la cortina `.loading`, muestran el título correcto y responden al botón EN/ES.
+- **Capturas visuales**: se tomaron screenshots completos de `design.html` y `development.html` comprobando que las tarjetas, textos, shader WebGL y navegación siguen renderizándose idénticos.
+- `README.md` y `sitemap.xml` sincronizados con el estado real de páginas y tecnologías.
+
+---
+
+
+## Sesión 40 — El hover gooey recuperó el líquido del push, y el About rescatado del portafolio de Wix
+
+**Empezó como una vuelta atrás y acabó siendo un arreglo de shader**. El usuario avisó de que las galerías no se veían como el último push, así que `js/gooey.js` volvió a `67e6504` y la versión de la sesión 39 se guardó antes en `C:\Users\alexi\AppData\Local\Temp\opencode\gooey_shader_fluido_2026-09-28.js.bak`. Todo el demás trabajo sin commitear de la sesión 39 se dejó intacto.
+
+**Las rayitas y por qué eran inevitables con el shader del push**: el ruido `nc` iba a frecuencia 8 y amplitud ±1, así que la UV se salía de `[0,1]` en casi media tile. La GPU no repite nada, recorta al borde, y al recortar copia la última fila de píxeles hacia dentro: eso es el peine. Medido, **el 45,99 % de los fragmentos del push se sale del rango**. Bajando la amplitud a 0,19 y poniendo un margen fijo en el borde se bajó a 1,34 %, pero el usuario dijo que el líquido había muerto, y con razón: la amplitud se queda corta en toda la tile, no solo en el borde, porque el margen se come un 25 % por cada lado.
+
+**El arreglo que funciona no baja la amplitud, baja la deformación donde no hay sitio**: el desplazamiento se multiplica por el hueco que queda en cada eje, `min(uv, 1 - uv)`, que en el centro vale medio y en el borde cero. El centro se mueve igual que antes y el borde no puede salirse nunca. `nc` recupera su frecuencia 8 con amplitud 0,5, y `nh` se queda en 0,08.
+
+**El detalle que costó encontrar**: el `min` de verdad deja una arruga vertical por el centro de la tile, porque cambia de derivada en `uv = 0.5`. La columna central medía **+28,4 %** de segundo orden frente a sus vecinas, cuando en el push era +3,3 %. Y no se arregla subiendo la suavidad, porque **es imposible tener pico alto y envolvente suave a la vez**: el hueco disponible es `0.5 - |u - 0.5|`, y cualquier función suave que llegue a 0,5 en el centro con derivada nula queda por encima de esa línea en los vecinos. La salida es un **mínimo suave** en lugar de un `min`:
+
+```glsl
+float huecoSuave(float a, float b, float k) {
+    return -log(exp(-k * a) + exp(-k * b)) / k;
+}
+```
+
+Con `k = 8` el pico queda en 0,5 - 0,693/8 = **0,413**, nunca supera al `min` real, y la esquina se convierte en una curvatura repartida en un 12 % del ancho en vez de una arruga. Se eligió `k = 8` porque más `k` acerca al `min` y devuelve la arruga, y menos `k` apelmaza demasiado.
+
+**Resultado medido** (Chrome headless, hover de verdad moviendo el ratón por CDP, 3 capturas por versión, cursor propio oculto):
+
+| | UV fuera de `[0,1]` | energía de detalle |
+|---|---|---|
+| push `67e6504` | 45,99 % | 14,24 |
+| amplitud 0,19 (rechazada) | 1,34 % | 16,63, movimiento muerto |
+| **mínimo suave** | **0,00 %**, p99 = 0,000 | **14,60** |
+
+El usuario lo confirmó a ojo: volvió la textura aceitosa del metal fundido.
+
+Tres errores de medición, todos míos:
+- La primera métrica de fuera de rango daba 72 % y 97 % porque usé mal `step(0.0, x)`, que vale 1 para todo `x >= 0`. La cifra buena es la continua.
+- El cursor propio es un anillo claro dibujado en HTML encima del canvas y su contorno es una línea de un píxel, así que dispara cualquier medida de detalle. La sonda inyecta `.custom-cursor{display:none}` antes de capturar.
+- Medir los colores de la tile no dice nada de las UV. Hay que meter una build de depuración que escriba la UV muestreada en el canal azul, que es lo que hace el `patch_debug.py` del temporal.
+- Y la arruga: como el mínimo suave es derivable en todo punto, el mapa de deformación no puede tener pliegue. La segunda diferencia sigue dando +11,9 % en la línea central, pero el push da −6,6 % en la misma medida, así que eso está dentro de la dispersión propia del indicador. Con el `min` duro eran +28,4 %.
+
+### El About
+
+**Las tres elipses fuera de `about.html`**: se puso `data-rings="off"` en el div, igual que en las otras 12 páginas. `js/index.js:129` lo lee como `showRings` y `js/particles.js:54` hace `if (showRings)`, así que los tres `TorusGeometry` **no llegan a crearse**: no es ocultarlos, es no construirlos. `contact.html:59` es la única página que se queda con ellas.
+
+**El texto de About se rescató del portafolio de Wix** (`https://alexisnahil963.wixsite.com/visualcraft/`, páginas Home, About y Portfolio) y se reescribió. Lo que había:
+
+- **Estaba escrito en plural**, para un estudio: "VisualCraft es...", "nuestra misión", "somos...". Aquí es una persona.
+- **Relleno de la plantilla de Wix**: "the iconic branding of *Company X*", "the sleek designs for *Event Y*", "the website design for *Client Z*". Son de la demo.
+- **Cinco maneras de decir lo mismo**: "transcends conventional boundaries", "testament to innovation and artistry", "where creativity knows no limits", "push the boundaries", "unleashing boundless imagination".
+- **Home y About de Wix eran el mismo texto parafraseado**, así que tal cual las dos páginas de este sitio habrían dicho lo mismo.
+
+Lo que sí valía: la tríada de disciplinas, lo de "imágenes con intención" (que ya estaba en `hero_sub`) y el inventario real de la página de Portfolio, *Animal Rescue, Catalogs and Cards, Diagramming logos, Product Photography, Art*, que calca 1:1 con las galerías de este sitio. Eso es lo que hace creíble un About: nombres concretos, no adjetivos. Los datos de contacto (Barcelona 08030, +34 631 66 27 16, alexisnahil963@gmail.com) ya están en la sección de contacto y no se duplican.
+
+**El copy optimizado, pendiente de montar**. Estas claves **todavía no existen** en `js/i18n.js` ni en el HTML:
+
+ES:
+```
+about_rol        diseño gráfico, fotografía y desarrollo web
+about_intro      Diseño, fotografía y desarrollo web. Me interesa dar forma a una idea hasta
+                 que se entienda de un vistazo, y la imagen que tenga intención además de
+                 impacto.
+about_diseno_t   Diseño gráfico
+about_diseno_p   Identidad visual, diseño editorial, catálogos y tarjetas, diagramado de
+                 logotipos. Sistemas que funcionan igual de bien en papel que en pantalla.
+about_foto_t     Fotografía
+about_foto_p     Retrato, paisaje, producto y escena. Nada de banco de imagen: cada foto se
+                 hace para el proyecto que la pide.
+about_dev_t      Desarrollo web
+about_dev_p      Páginas, landings y extensiones. Front y back con el mismo cuidado que el
+                 diseño: lo que se ve tiene que funcionar.
+about_wip_t      Fuera del encargo
+about_wip_p      Rescate Animal: identidad y piezas para una asociación. Cuando sobra
+                 tiempo, proyectos propios.
+about_close      Barcelona, España. Abierto a proyectos, colaboraciones y oportunidades.
+```
+
+EN:
+```
+about_rol        graphic design, photography and web development
+about_intro      Design, photography and web development. I like shaping an idea until it
+                 reads at a glance, and images with intent as well as impact.
+about_diseno_t   Graphic design
+about_diseno_p   Visual identity, editorial design, catalogues and cards, logo layout.
+                 Systems that work as well on paper as on screen.
+about_foto_t     Photography
+about_foto_p     Portrait, landscape, product and scene. No stock imagery: every frame is
+                 made for the project that asks for it.
+about_dev_t      Web development
+about_dev_p      Sites, landing pages and extensions. Front and back with the same care as
+                 the design: what you see has to work.
+about_wip_t      Off the clock
+about_wip_p      Animal Rescue: identity and pieces for an organisation. Spare time goes
+                 to projects of my own.
+about_close      Barcelona, Spain. Open to projects, collaborations and opportunities.
+```
+
+`about_wip` es una decisión mía y no estaba en Wix: el About de Wix no tenía nada personal y sin algo así es una lista de servicios. Se borra si no sirve. Del Contact de Wix solo se rescató el tono, y el texto que ya había aquí (`c_title`, "Trabajemos juntos") está mejor que su "Crafting Visual Experiences".
+
+**Lo que queda de esta sesión**: `about.html` tiene el hueco libre entre el `</div>` de `.frame` (línea 87) y el `<!-- ABOUT SECTION -->` (línea 89), y la regla `.about` de `css/style.css` está vacía. Falta decidir el layout y volcar las claves.
+
+---
+
+## Sesión 41 — Efecto de decodificación de Codrops en el About, y el bug que dejó las otras quince páginas en la cortina
+
+**Aviso de cabecera, porque es lo primero que hay que hacer al abrir**: el efecto **no se parece** al del demo y va a rediseñarse desde cero. Antes de tocar nada, **borrar lo último que se cargó en el About**, que son las líneas **90 a 123** de `about.html` (el `<section class="about">` completo, con el panel de la foto y el copy). Los comentarios de las líneas 89 y 124 se quedan.
+
+Lo que **no** se toca, porque se pidió en la sesión 40 y no tiene nada que ver:
+- El `data-rings="off"` de la línea 57. Las tres elipses del About siguen apagadas.
+- El `<!-- ABOUT SECTION -->` y el hueco entre el `</div>` de `.frame` y el cierre de `</main>`.
+
+Y lo que **no** hace falta borrar, porque no se carga en ninguna página mientras no haya marcado:
+- `js/decode.js`, los dos assets de `assets/IMG/about/`, las reglas `.about`/`.decode` de `css/style.css` y la llamada de `index.js`. El módulo tiene la guarda de `el` y sin marcado no monta nada, así que están inertes. **Decidir si se aparcan o se borran**: la sesión 39 quitó código muerto y dejarlos es deuda, pero el módulo y el duotono son la base del rediseño de mañana.
+
+### El efecto, y por qué no se parece
+
+El demo de Codrops (Developer/Designer Page Layout) no decodifica nada de forma progresiva.parte la foto en una rejilla de tiles y cada uno se apaga al azar un rato y vuelve, en bucle: lo que se ve es una imagen que falla a ratos. Y para que se note hace falta **una segunda imagen debajo**, porque los tiles que se apagan dejan ver esa capa; el demo usa `img/code.jpg` contra `img/normal.jpg`. Aquí la de debajo es el duotono de la misma foto.
+
+La reproducción quedó fiel en la mecánica: 154 tiles (14×11), 19,5-24,7 % apagados por fotograma, y el apagado se lee en toda la superficie. Lo que falla es la lectura, y la causa está en la foto:
+
+- **`foto alex hv2.jpg`** está en `C:\Users\alexi\OneDrive\Imágenes\`, es de **1275×1700**, y es **74 % negro puro** (brillo 0-15) con una densidad de bordes de **1,68**, o sea una imagen muy plana: un sujeto sobre fondo completamente negro.
+- Con el 74 % de la imagen en negro, los tiles que se apagan caen casi todos sobre superficie negra, y ahí el apagado se lee como **"la imagen se rompe a trozos"** y no como una decodificación. Por eso no se parece.
+- La foto y el duotono sí se separan de sobra donde se apagan: en la zona negra la diferencia es **R=9,6 G=55,6 B=66,5**. El problema no es el contraste entre capas, es que el efecto pedido no encaja con una imagen así.
+
+Lo que hay que replantear mañana es el efecto, no la foto: tal como está copiado del demo, un retrato sobre negro no tiene nada que "decodificar".
+
+### Los assets
+
+| fichero | qué es | tamaño |
+|---|---|---|
+| `assets/IMG/about/alex.webp` | la foto, tal cual, WebP q88 | 55 KB |
+| `assets/IMG/about/alex-code.webp` | duotono `#07161c` → `#96f0fa` | 32 KB |
+
+El duotono es un `ImageOps.colorize` con un desenfoque gaussiano de 0,4 antes de mapear. Las dos cosas costaron un rato:
+
+- **El realce de contraste** no se puede poner. Como el 74 % de la imagen está en negro, subir contraste y brillo estira el ruido de sombras del JPEG y el duotono se fue a **574 KB**. Sin realce son 32 KB.
+- **`point()` con 768 entradas no entrelaza.** Aplica la primera terna al canal R, la segunda a G y la tercera a B, no por píxel. Salían colores imposibles (13, 119, 190 para un supposed teal) y no comprimía por estar los canales descorrelacionados.
+- El tono bajo del duotono **no puede ser casi negro**. Si lo fuera, el negro de la foto y el negro del duotono serían el mismo color y los tiles que se apagan no se verían en el 74 % de la superficie. Con un teal profundo se ve de sobra.
+
+### El bug: faltaba la guarda, y dejó las quince páginas paradas
+
+`js/decode.js` llamaba a `el.querySelector(...)` sin comprobar que `el` existiera, **cuando el comentario dos líneas más arriba decía que la guarda estaba**. En las quince páginas sin `.decode`, `initDecode(null)` lanzaba un `TypeError` en el módulo, y eso corta `index.js` en la línea 136. Lo que venía detrás:
+
+- línea 203 `initGalleryCarousel()`: el carrusel se quedaba sin clonar, 38 items en vez de 76 en Retrato.
+- línea 204 `initLightbox()`: muerto.
+- línea 345 `hideLoader()`: **la clase `loading` no se quitaba nunca**, y eso es lo que el usuario vio. Las páginas estaban debajo de la cortina, no vacías.
+
+Reproducido con la guarda quitada y la caché desactivada:
+
+```
+SIN GUARDA   cargando:true   track:38   TypeError: Cannot read properties of null (reading 'querySelector')
+CON GUARDA   cargando:false  track:76   (nada)
+```
+
+Las 16 páginas comprobadas después, con `cargando:false` y cero errores de consola, y los 154 tiles solo en `about.html`.
+
+**Dos errores de método, los dos míos, y son la parte útil de esta sesión**:
+
+1. **Chrome cachea los módulos ES.** La primera reproducción dio *idéntico con y sin guarda* y estuve a punto de dar el diagnóstico por falso. No lo era: el navegador estaba sirviendo del caché la versión buena en las dos pruebas, porque el fichero del disco ya no se pedía. **Sin `Network.setCacheDisabled` o una query en la URL, cambiar un módulo y recargar no prueba nada.** Esto convierte cualquier A/B sobre JS en un comparativo de la versión antigua contra sí misma.
+2. **Una comprobación tiene que mirar lo que corre *después* de la línea sospechosa.** El primer control fue sobre el canvas de Three.js y el cursor personalizado, y los dos parecían bien. Los dos se inicializan en las líneas 131 y 98, **antes** de la 136, así que no podían detectar la caída: había que identificar el orden de ejecución de `index.js` antes de elegir el indicador. El que sí valía era `document.body.classList.contains('loading')`, que depende de la línea 345.
+
+Las dos cosas curvas de nuevo hacia la misma dirección que la sesión 38: **una página puede tener un fichero perfectamente sintácticamente válido y estar rota**, y ahora se añade que **una prueba puede estar midiendo la versión anterior del código**.
+
+### Lo verificado del efecto, antes de borrarlo
+
+- La rejilla reconstruye la foto exacta: con los tiles congelados en opacidad 1, la diferencia media con el original es **2,9 de 255** (resampleo y WebP) y las fronteras de tile miden **−0,4 %** frente al interior, o sea indistinguibles. Ningún tile desplazado ni costuras.
+- `prefers-reduced-motion`: con la preferencia puesta, 0 tiles y se queda la foto; sin ella, 154 tiles y el duotono debajo.
+- Móvil 375, tablet 768 y escritorio 1440 sin scroll horizontal.
+
+Dos fallos que se corrigieron por el camino:
+
+- **El redondeo al alza de los tiles estiraba la imagen un 1,07 % en vertical**, porque la escala se calculaba por eje y los dos no salen iguales. Ahora es una escala única, la mayor de las dos, y la imagen cubre la capa.
+- **En móvil y tablet el panel se quedaba en 133×178 px**: `.about` lleva `place-items: center`, que encoge el elemento al ancho de su contenido, y como la foto va en `position: absolute` lo único que daba ancho era el pie de foto. Faltaba ancho declarado en `.about__panel`.
+
+---
+
+## Sesión 42 — El efecto de otra manera: la foto siempre entera y la señal se rompe encima
+
+> **BORRADO EL MISMO DÍA.** El usuario lo rechazó antes de verlo medido, y ya está fuera: `js/signal.js` eliminado, la sección fuera de `about.html`, el import y la llamada de `index.js`, y las reglas `.signal*` y `.about__panel` fuera de `css/style.css`. **No quedan referencias a `signal` en el repo.** `about.html` vuelto a 96 líneas, con lo único que queda de fuera es el `data-rings="off"`. Lo que sigue se documenta por lo que deja aprendido, no por el efecto.
+
+Borrado el panel de decodificación y rehecho desde cero. La dirección la eligió el usuario: **la foto se ve siempre entera y nítida, y lo que falla es la señal que la rodea**; y **de vez en cuando, no seguido**. Es justo lo contrario del intento de la sesión 41, que tapaba un 20 % de la imagen en perpetuo.
+
+**Aviso: el efecto nunca se llegó a juzgar.** Se midió entero pero el usuario lo rechazó antes de mirarlo, y al día siguiente estaba borrado. Todas las cifras de abajo son correctas; si algún día se retoma esta dirección, sirven. La imagen de comparación está en `C:\Users\alexi\AppData\Local\Temp\opencode\comparativo_signal.png` (esa carpeta no es permanente).
+
+### Lo que se borró y lo que se quedó
+
+Fuera: `js/decode.js`, `assets/IMG/about/alex-code.webp` (el duotono ya no hacía falta: sin tiles que se apaguen no hay nada que ocultar debajo), las reglas `.decode*` del CSS y la llamada de `index.js`. **Cero referencias a "decode" en el repo**, comprobado.
+
+Dentro: el `data-rings="off"` y el copy aprobado de la sesión 41, que volvió al HTML y reutiliza las 13 claves `about_*` que ya estaban en `js/i18n.js`. No hizo falta tocar el i18n: al volver el copy, las claves dejaron de ser huérfanas.
+
+Nuevo: `js/signal.js`. Se llama así porque lo que hace ya no es decodificar.
+
+### Cómo funciona
+
+La foto es un `<img>` de verdad, con su `alt` y su `width`/`height`, y el lienzo va **encima**. Eso por sí solo ya resuelve el problema del intento anterior: si el WebGL no llega a montarse, lo que se ve es la foto, que es exactamente el estado en reposo del efecto.
+
+El quad es un `PlaneGeometry(1,1)` con cámara ortográfica, así que el redimensionado no toca la cámara. El fragment shader hace tres cosas:
+
+- **26 franjas horizontales.** Solo se mueve el 22 %, y de esas solo las que enciende el azar de cada chispa, de modo que en el pico se mueven unas 5 de 26.
+- **Desplazamiento y separación de canales**, ambos condicionados a esas mismas franjas.
+- **Líneas de barrido permanentes** (una raya por cada píxel y medio, al 3 %) y **grano**, que sube de intensidad dentro de la ráfaga.
+
+El grano solo se mueve durante las ráfagas porque `u_t` solo avanza entonces. En reposo el ruido está congelado, y una imagen quieta con ruido quieto es una foto con suciedad, no una señal.
+
+La envolvente de cada ráfaga es una trapezoid: subida del 12 % de la duración, meseta, bajada del 30 %. En fracciones y no en milisegundos, para que una ráfaga corta suba entera y una larga no tarde una eternidad en bajarse.
+
+### El coste, que es lo que se designed para que sea cero
+
+Entre ráfagas no hay bucle de render: el hueco lo cuenta un `setTimeout` y no un `rAF`. Medido con las llamadas de dibujo de WebGL contadas **por lienzo** (`gl.canvas`), no globalmente, porque en el About hay tres rendereros a la vez y un total agregado no dice cuál está trabajando:
+
+```
+154 dibujos en 40,5 s = 3,8/s
+6 periodos, con huecos de 8,0 / 3,0 / 3,5 / 7,0 / 7,5 s
+```
+
+Seis ráfagas en 40 s, todas dentro del rango configurado de 3,5 a 9 s, y renderizando el 6 % del tiempo. El resto de la vida del lienzo es no pintar.
+
+### Tres fallos, y los tres se encontraron midiendo
+
+**1. El shader se comía más de la mitad de la luz.** Brillo 10,73 de 25,64. La causa es la línea de `gooey.js` que había copiado sin pensar: marcar la textura como `SRGBColorSpace`. Three la guarda en un formato interno sRGB, así que `texture2D` devuelve valores **ya linealizados**, y como en un `ShaderMaterial` no se vuelve a codificar al escribir, la foto se escribe a oscuras. **La textura se deja en su espacio por defecto** y sale idéntica: brillo 25,13 de 26,02, error medio 1,94 de 255, sin desviación entre canales (R 1,97 / G 1,94 / B 1,90). Los −3,42 % de luz que quedan son el barrido, que de media es 0,97; el cálculo cuadra.
+
+Y una pregunta que quedó abierta: **`gooey.js` hace lo mismo y nadie lo había medido.** Puede que el hover que está aprobado se vea más oscuro de lo que es, y que eso formara parte de lo que gustaba de "metal fundido". No se ha tocado. Si algún día se revisa, es el mismo cambio de una línea.
+
+**2. La separación de canales iba en todos los píxeles.** Con 2,9 px de desfasaje R/B, el **89 % de las filas** cambiaban en cada ráfaga. No era "unas slices que pierden la sincronía", era la foto entera con un fringe de color. Ahora va condicionada a las franjas activas.
+
+**3. El margen de seguridad era un zoom.** Para que el desplazamiento de una franja no pidiera un píxel fuera del borde, había encogido el UV un 12 % durante la ráfaga. Fue un descuido de diseño: convertí la seguridad en un **zoom del 12 % de la imagen entera**, que se lleva por delante el 86 % de las filas. Sin encogerlo, en reposo el dibujo es idéntico al `<img>` píxel a píxel, que es lo que hay que comprobar.
+
+El orden importa: el 2 y el 3 fallaron en la misma dirección y taparon al 1. Midiendo "cuántas filas cambian" se vio el síntoma del 2, se cambió, y apenas se movió (89 → 86 %), lo cual ya decía que la causa era otra. **Un arreglo que no mueve la cifra no era la causa.**
+
+| | filas alteradas en una ráfaga |
+|---|---|
+| con el zoom del 12 % y la separación global | 86-89 % |
+| sin el zoom, separación condicionada | **20-29 %** |
+| en reposo | 0 % |
+
+**Y una cuarta, que era un problema inventado.** El hash del grano `fract(sin(n) * 43758.5453)` da solo 6.896 valores distintos de 178.608 píxeles, y con eso iba a cambiarlo. Mal: reproduciendo las reglas de GLSL en Python (`fract` siempre da [0,1) con signo perdido, float32 de 24 bits), el hash que ya estaba da media 0,499, sigma 0,288 contra 0,2887 del uniforme, y correlación entre píxeles vecinos de 0,333, que es aleatorio puro. Los valores repetidos son la cuantización de float32 y no se ven. La variante "mejorada" que iba a adoptar (un `fract` previo) tiene chi² de 2.822: era **peor**. No se cambió nada.
+
+### Verificado
+
+- Las 16 páginas reales (`index`, `about`, `contact`, `design`, `development`, `photography`, las 4 de foto, 3 de diseño y 3 de proyecto) cargan con `cargando:false` y cero errores. El signal solo se monta en About.
+- `about.html` **sin un solo fallo de red**.
+- 375, 768 y 1440: lienzo del tamaño exacto del panel, proporción 0,750 (la de la foto, 1275/1700), sin scroll horizontal.
+- Con `prefers-reduced-motion: reduce` **no se monta nada**: ni lienzo ni bucle, `data-signal-listo="0"`, y el `<img` se queda solo en su panel de 311×415 o 420×560.
+- En reposo, 0 filas alteradas sobre 283 capturas de 40 s.
+
+### Una nota sobre las sondas
+
+Los 404 que salían en la comprobación de las 16 páginas eran **la sonda pidiendo páginas que no existen**: se pedía `fotografia.html`, `retrato.html`, `bodegon.html` y `producto.html`, y las de verdad son `photography.html`, `gallery-photo-1..4.html`, `gallery-design-1,2,4.html` y `gallery-proyecto-1..3.html`. No había ningún recurso roto; `sonda_rutas.py` y `sonda_404.py` no encuentran ni una ruta local inexistente en HTML, CSS ni JS. Merece la pena porque un 404 inventado por la sonda se lee como un fallo del sitio.
+
+El coste de una captura por CDP es de ~140-310 ms según el tamaño del recorte, y no baja de ~158 ms por mucho que se recorte: es el viaje de ida y vuelta, no el raster. Con ráfagas de 220-520 ms eso da un muestreo demasiado lento para pillarlas todas, y en una tanda de 26 s solo se cazó 1. Con 40 s y el recorte entero salieron 11. Si hay que medir ráfagas, **subir la duración de la tanda**; no sirve capturar más rápido.
+
+---
+
+## Sesión 43 — La demo de Codrops dentro de About, tal cual
+
+Tercer intento de meterle un efecto a About. Las sesiones 41 y 42 se borraron sin llegar a juzgarse; esta vez **no se ha escrito ni una línea de efecto propio**: se ha importado dentro de `about.html` la demo [DeveloperDesignerPageLayout](https://tympanus.net/Development/DeveloperDesignerPageLayout/) de Codrops. Las tres decisiones son del usuario: *todo el contenido de la página menos el fondo* (manda el `#000000` de Arzaga), la foto de encima es `normal.jpg` y debajo asoma `code.jpg`.
+
+### Qué se copió sin tocar
+
+`css/demo.css`, `css/pieces.css`, `js/anime.min.js` (anime **v2**, hace falta por `anime.random`), `js/charming.min.js`, `js/imagesloaded.pkgd.min.js`, el `js/main.js` de la demo renombrado a **`js/tympMain.js`** para no pisar nada, y `assets/IMG/demo/{normal,alt,code}.jpg` (44,4 / 48,1 / 77,4 KB, las tres 597×916: ratio 0,6517, que es exactamente `58.6572vh / 90vh` de `.pieces`).
+
+`css/normalize.css` se descargó y **se borró**: no hacía falta, la web ya pone `<html class="js">` a mano. Cero referencias.
+
+El HTML se copió de la página en vivo y se contrastó línea a línea: idéntico salvo las rutas de las imágenes y el bloque del anuncio. De paso se corrigieron los tres `symbol` del SVG, que en la primera copia tenían los `path` de la esquina distintos.
+
+**Fuera, y conviene decirlo**: `sponsor/pater.css` con el anuncio de Hired.com. Es publicidad de Codrops, no de la demo.
+
+### Los choques con el CSS de la web
+
+Todo lo de convivencia vive en un `<style>` inline de `about.html`, colocado después de los tres enlaces de CSS; ni `demo.css` ni `pieces.css` se tocaron.
+
+- `body{background:#232323}` de la demo → `#000000`. Es el "menos el background".
+- `main{display:flex}` de la demo → `display:grid`, que es la rejilla de la web.
+- `.content`, `.menu` y `.menu__item` son nombres que la web ya usa para otra cosa: se neutralizan con `.demo-page .content`, `.page-about .menu` y `.page-about .menu__item`.
+- `.js .loading::before/::after` (cortina y spinner de la web) también pega en el `.loading` de la demo: se conserva la cortina, se anula el círculo.
+- `charming` crea `class="char1"…`, no `.char`, así que la regla `.menu__item .char` de la web no se entera.
+
+**Y `js/index.js:18`**, que era el fallo que lo habría reventado todo: `document.querySelector('.menu')` se tragaba el `.menu` de la demo, `new Menu()` moría en `menuCtrl.el` y se caía el módulo entero (i18n, Three.js, cursor y lightbox). Ahora elige el `.menu` que tenga `.menu__items` o `.menu__button`, que es como se reconoce el de la web. Comprobado: en `about.html` hay 2 `.menu` (los de la demo) y ninguno se bindea; en `index` y `contact` sigue habiendo 1.
+
+### Tres fallos que solo se vieron midiendo
+
+**1. La foto salía descentrada porque `.about` sigue siendo la ficha de proyecto de antes.** `css/style.css:322-340` le da a `.about` un template de 2 columnas (`0.85fr / 1fr`), `gap` y `place-items: stretch` a partir de 60em. La demo es una sola caja centrada, así que `.pieces` caía en la 1ª columna (402 px) con 530 px de ancho. Arreglado en el `<style>` inline: `grid-column: 1/-1; grid-template-columns: 1fr; gap: 0; place-items: center`. Medido a 1280: caja de la demo x=40 w=1200 y foto x=375, o sea centro 640 = centro exacto del viewport. A 1440: foto 455-985, centro 720.
+
+**2. Los dos menús de la demo se veían a la vez.** Mi `.page-about .menu { display: block }` (0,2,0, y va después de `demo.css`) se comía el `.js .menu--code { display: none }` de `demo.css:226`. Con `:not(.menu--code)` vuelve a ocultarse; al pasar a Coder es la propia demo la que lo muestra con `display` en línea.
+
+**3. Los iconos sociales y el "Work with me" se pisaban.** 3201 px² de solapamiento en la esquina inferior derecha: `.frame__links` (z-index 150) tapaba el enlace de la demo. El usuario eligió **mover los iconos al zócalo `side`**, que en esta página está vacío → `.page-about .frame { grid-area: side }`. Medido: iconos x=158-314, foto x=375, contacto x=1103 → **solapamiento 0**.
+
+Dos cosas que parecían fallos y no lo eran. **La demo arranca con `alt.jpg` de fondo**, no `normal.jpg`: es `loopFx` (`tympMain.js:211`) el que pinta el `.pieces` con `data-img-alt`, `normal.jpg` lo llevan las 140 piezas encima, y `stopLoopFx` lo cambia por `code.jpg` al ir a Coder — o sea, exactamente lo que pidió el usuario. Y **`.btn--menu` no reacciona al clic**: en la demo original tampoco tiene listener, solo cambia de aspecto con el modo; el menú no se "abre", los dos menús son el contenido de cada modo.
+
+Además se quitó `loading` de la clase del `<body>`: `tympMain.js:440` hace `document.querySelector('.loading')` y, con la clase puesta, capturaría el `<body>` y le pondría `loading--hide` (opacidad 0 en toda la página). `hideLoader` de `index.js` solo hace `remove`, es inocuo.
+
+### Verificado
+
+- **140 piezas** (14×10) y `loopFx` vivo: entre dos muestras separadas 2,5 s cambian de opacidad 5-15 piezas.
+- Ciclo completo **Designer ↔ Coder**: `alt.jpg` → `code.jpg` → `alt.jpg`, clases `mode--code`/`mode--design` en título, contacto y botón, menús intercambiados, `charming` con 9 letras en el título.
+- Hover en "Work with me": **70 de 140 piezas** se apagan (fxCustom).
+- **Cero errores JS en las 16 páginas**, con `cargando:false` y cursor propio en todas.
+- 375, 768 y 1440: sin scroll horizontal ni vertical, la foto dentro del viewport y el título por debajo de la topnav.
+- `node --check` en `js/index.js` y `js/tympMain.js`. Cero referencias a `signal`, `decode.js` o `normalize.css`.
+
+### Lo que no se puede comprobar desde aquí
+
+Que se **parezca** a la demo. Todo lo de arriba es geometría y estado; el parecido visual lo tiene que juzgar el usuario.
+
+---
+
+## Sesión 44 — Las fotos del usuario dentro de la demo, y que las dos calzen exactas
+
+Refinado final de la sesión 43 y sustitución de las tres imágenes de la demo por las del usuario. El pedido fue evolucionando en cuatro pasos: sustituir `normal/alt/code` por sus fotos (tres, incluida la del modo Coder), pasadas a WebP y a 597:916; luego **que las dos se vieran del mismo tamaño**; luego **que coder no se desbordara**; y al final, que al quitar una aparezca la otra exactamente igual. Al final el usuario dio por cerrado "lo más difícil del About".
+
+### El refinado
+
+- Los 3 SVG sociales vuelven a **abajo a la derecha** (`grid-area: about`, elevados sobre `.content` con `z-index: 100`) y "Work with me" sube. Medido: iconos x=1092-1248 y=840-876, contacto y=771-822, **solapamiento 0 px**.
+- `about.html:113` → `.page-about .controls { display: none; }`: fuera la flecha previa y la gota. `.btn--menu` **no se puede borrar del DOM** porque `tympMain.js:454,666,738` lo tocan sin null-check; se oculta.
+- Del SVG se eliminan los `symbol` de `icon-arrow` e `icon-drop`: quedan **2 símbolos** (`icon-menu` y `icon-menu-alt`). Cero referencias a los tres nombres borrados en todo el repo.
+
+### Las imágenes
+
+Las tres, todas **1000×1534** (ratio 0,65189 frente al 0,651747 de la demo, 597/916: un 0,02 %, o sea 0,11 px en 812 de alto):
+
+| fichero | origen en Descargas | peso |
+|---|---|---|
+| `alex-normal.webp` | `alex_Pbn_final_transparent.png` | 42 KB |
+| `alex-code.webp` | `alex_binario_transparente.png` | 187 KB |
+| `alex-alt.webp` | lienzo transparente | 3,3 KB |
+
+`about.html` **no se toca en ningún paso**: los nombres de los tres ficheros son los mismos y solo cambian los bytes. Las referencias siguen en `about.html:173` (inline de `.pieces` + `data-img-alt` + `data-img-code`) y las precargas ocultas en `:217-218`.
+
+**No hay `ffmpeg`, `magick` ni `cwebp` en la máquina**, así que la conversión PNG → WebP se hace con **Canvas de Chrome por CDP**: `canvas.toDataURL('image/webp', q)`, que además maneja alfa. q0.80 en `normal`, q0.70 en `code`.
+
+### La clave de "no calzan": una sola transformación compartida
+
+Antes cada imagen se encajaba con **su propia** bbox de contenido, y eso es justamente lo que hacía que la de Coder saliera más pequeña que la foto: su silueta llevaba un "aura de números" que se salía de la caja, y al normalizar esa caja la figura acababa reducida. Pesa más que la anchura: mientras cada una se normalice por su propia caja, nunca calzan.
+
+Ahora se mide **la bbox combinada de las dos fuentes** (filas 375..3436, columnas 237..2372 → 2136×3062) y se aplica **exactamente la misma transformación a las dos**: `k = 0,46067`, `ox = −101,18`, `oy = −111,04`. Misma escala y mismo desplazamiento, luego quedan registradas.
+
+Medido sobre los dos ficheros **ya generados**: desplazamiento óptimo **0 px en filas** y −1 px en columnas, solape de perfiles 0,984 y Δ de centroide **0,0 px**. La figura ocupa 984 px = 98,4 % del lienzo en las dos.
+
+Del aura de números, por si se retoma: la primera versión de coder tenía contenido **280 px por encima** de la figura, que era lo que inflaba su bbox; tras la última corrección del usuario quedan **0 píxeles** por encima de la fila 375 (desapareció el resto de 6 píxeles de las filas 91-92). Residuo heredado de los originales y no corregible desde aquí: la silueta de coder llega 8 px menos por la derecha (0,7 %) y empieza 3 px más abajo.
+
+### Dos cosas que parecían fallos y no lo eran
+
+- **El título se "quedaba" en `mode--code`**: `GlitchFx` (`tympMain.js:392-419`) alterna `mode--code`/`mode--design` sobre `[data-glitch]` cada 50-250 ms. Es el glitch de la demo, no un estado atascado.
+- **`alex-alt` es un lienzo transparente** (3,3 KB): es la capa que pinta `loopFx` bajo las 140 piezas. Con una foto de fondo detrás se vería un rectángulo tapando el recorte; sin ella, el parpadeo hace aparecer y desaparecer trozos de la silueta.
+
+### Verificado
+
+- **140/140 piezas** con `alex-normal`; contenedor `alt → code → alt` en el ciclo Designer↔Coder.
+- **0 peticiones fallidas** y **0 errores JS** en `about.html` (red y consola contadas aparte).
+- Geometría intacta: foto 530×812, solapamiento 0 px, `controles: none`, `flechaGota: 0`, `simbolos: 2`.
+- 375 / 768 / 1440 sin scroll horizontal; **16 páginas** con `cargando:false` y `ERR []`.
+- `node --check` en los JS tocados; cero temporales (`_tmp_*.png`) en el repo.
+
+### Sin commitear, a decisión del usuario
+
+`assets/IMG/demo/{normal,alt,code}.jpg` (175 KB) y `assets/IMG/about/alex.webp` (56 KB) **no los referencia ningún HTML, CSS ni JS**: son los de la demo original y el de los intentos de las sesiones 41-42. No entran en el commit; siguen en disco a la espera de que se diga si se borran.
+
+---
+
 ## Para la próxima sesión
 
 **Lo primero, y es de olhar, no de código**: las cuatro galerías de Fotografía y las cuatro de Diseño, en pantalla grande y en móvil, con el carrusel quieto y con el dedo puesto. Esta sesión cambió la geometría de las tarjetas de fotografía y la forma de medir la velocidad, y **nada de eso se ha visto**. El HTML está bien, pero el CSS siempre escapa algo.
 
+**Hecho, ya no hay que hacerlo**: borrar las líneas 90 a 123 de `about.html`. Se hizo en su día y la sesión 42 lo repitió; esa sección ya no existe. Hoy `about.html` son 228 líneas porque aloja la demo de Codrops (sesión 43), pero el copy viejo no ha vuelto.
+
 **Pendiente de mirar**:
+- **Hecho (sesión 44): `about.html` con la demo, ya vista y aprobada por el usuario** ("lo más difícil del About, conseguido"). Lo que quedó fijo: la foto a 530×812 centrada en el viewport, los iconos sociales **abajo a la derecha**, los controles de la esquina ocultos y las dos imágenes (foto y binario) con **la misma transformación**, de modo que al cambiar de Designer a Coder solo cambia el relleno y no se mueve la figura. Si se retoca, lo único que hay que rehacer es la transformación compartida de `alex-normal` y `alex-code` (bbox combinada de las dos fuentes), nunca por imagen aparte.
 - Los dos ajustes de posición de los títulos de las tiles, `.devtile:first-child .tile__content { bottom: 1.8rem }` y `.devtile:nth-child(2) .tile__content { bottom: 2.6rem }`. Estaban afinados a ojo para Retrato (1.ª) y Paisaje (2.ª); con Foto artística primera se aplican a Foto artística y Retrato. Si la 3.ª y la 4.ª se ven con el título pegado, hay que decidir si el ajuste pasa a ser por galería en vez de por posición, que es lo que en realidad significa.
 - Si alguna de las 117 fotos queda cortada en la tarjeta. Ya no hay `object-fit: cover`, así que debería estar entero, pero la miniatura es la que se ve y no la grande.
 
@@ -1388,7 +1808,8 @@ La galería queda en 41 tarjetas, con `data-index` 0..40 y claves `galdesign2_im
 - Los 117 `alt` y `aria-label` dicen "Categoría — NN". Cambiar los valores en `js/i18n.js` es lo único que hay que tocar, porque el `alt` no se ve en la tarjeta pero `lightbox.js` lo copia a la imagen grande. Son las claves `galphoto1_img_1..13`, `galphoto2_img_1..39`, `galphoto3_img_1..38` y `galphoto4_img_1..27`.
 - Las 8 claves i18n huérfanas que quedan (`galdesign1_card1`, `galdesign1_demo_1..3`, `galdesign2_card1`, `galdesign2_demo_1..3`) son de las tarjetas de ejemplo de Identidad Visual y Diseño Editorial. Ya no las usa nadie.
 - El lema de Branding (`g_slogan_branding`) y el de Editorial (`g_slogan_editorial`) siguen siendo provisionales.
-- Contenido real de About, y por qué no están las miniaturas de Rescate Animal en q76.
+- El copy de About está decidido y guardado en la sesión 40 y está **sin montar**, pero con la mitad del camino ya hecha, que conviene no repetir: las 13 claves `about_*` **ya están en `js/i18n.js`** (ahora huérfanas, porque no las usa ningún HTML), y en `css/style.css` están `.about`, `.about__card`, `.about__title`, `.about__text` y `.about__skills` de antes, más `.about__discs`, `.about__disc` y `.about__close` de la sesión 41, que tampoco tienen marcado. **Lo que falta es solo el HTML de la sección.** Si se vuelve a montar, reutilizar eso y no reimplementarlo. Sigue sin responder por qué no están las miniaturas de Rescate Animal en q76.
 - Las medidas de las miniaturas de Rescate Animal siguen a 1000×1000 con el resto de las de diseño, no a la caja 2000×506 de fotografía. Unificarlo es el mismo trabajo de la sesión 29.
+- `assets/IMG/about/alex.webp` (56 KB) **no lo referencia ningún HTML, CSS ni JS**: quedó de los intentos de las sesiones 41 y 42, que se borraron. Si no se va a usar, sobra.
 
 **Lo que no se rompe**: `gallery-photo-4.html` es la primera aunque su número sea el 4, porque renombrar los ficheros publicados habría roto las URL de Retrato, Paisaje y Producto. Lo mismo que con el sufijo `_3` de UI/UX en la sesión 32.

@@ -1,4 +1,3 @@
-import { preloadFonts } from './utils.js';
 import { Menu } from './menu.js';
 import { initScene } from './particles.js';
 import { initHoverSound } from './hoverSound.js';
@@ -12,18 +11,38 @@ initI18n(() => {
     if (menu) menu.restart();
 });
 
-Splitting();
+// Splitting solo se carga en las páginas con menú LetterShuffle (index/contact).
+// La guardia evita el ReferenceError que rompería todo el módulo en el resto.
+if (typeof Splitting === 'function') Splitting();
 
-const menuEl = document.querySelector('.menu');
+/* La demo de Codrops importada en about.html monta sus propios .menu, que
+   no llevan .menu__items ni .menu__button. Un selector a ciegas se los
+   tragaba y new Menu() moría en menuCtrl.el, lo que tira el módulo entero
+   (i18n, Three.js, cursor y lightbox). El menú de la web se reconoce por
+   .menu__items/.menu__button. */
+const menuEl = Array.from(document.querySelectorAll('.menu'))
+    .find((el) => el.querySelector('.menu__items, .menu__button'));
 if (menuEl) menu = new Menu(menuEl);
 
 initHoverSound('.topnav__links a');
 
 function initCustomCursor() {
+    /* Solo con puntero fino (ratón o trackpad): en táctil no hay cursor que
+       sustituir, así que no se crea el nodo ni se escucha mousemove. Con
+       prefers-reduced-motion tampoco, porque el anillo persigue al ratón con
+       retardo, que es justo el movimiento que esa preferencia pide evitar. */
+    if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
     const cursor = document.createElement('div');
     cursor.className = 'custom-cursor';
     cursor.innerHTML = '<span class="cursor-ring"></span><span class="cursor-dot"></span>';
     document.body.appendChild(cursor);
+    /* La clase que oculta el cursor nativo la pone este JS, no el script en
+       línea que marca html.js: si este módulo falla al cargar (por ejemplo si
+       el CDN de Three.js no responde), el CSS no encuentra .has-cursor y el
+       puntero del navegador sigue estando ahí. */
+    document.documentElement.classList.add('has-cursor');
 
     const ring = cursor.querySelector('.cursor-ring');
     const dot = cursor.querySelector('.cursor-dot');
@@ -33,32 +52,47 @@ function initCustomCursor() {
     let dotX = 0, dotY = 0;
     let rafId = null;
 
+    /* translate3d en vez de left/top: se resuelve en el compositor y no fuerza
+       a recalcular el diseño en cada fotograma. El translate(-50%, -50%) que
+       centra el anillo se reescribe aquí para no perderlo. */
+    function place(el, x, y) {
+        el.style.transform = `translate3d(${x}px, ${y}px, 0) translate(-50%, -50%)`;
+    }
+
     function animate() {
         ringX += (mouseX - ringX) * 0.15;
         ringY += (mouseY - ringY) * 0.15;
         dotX += (mouseX - dotX) * 0.3;
         dotY += (mouseY - dotY) * 0.3;
 
-        ring.style.left = `${ringX}px`;
-        ring.style.top = `${ringY}px`;
-        dot.style.left = `${dotX}px`;
-        dot.style.top = `${dotY}px`;
+        place(ring, ringX, ringY);
+        place(dot, dotX, dotY);
 
-        rafId = requestAnimationFrame(animate);
+        /* Cuando ya alcanzó al ratón se corta el bucle: antes seguía animando
+           60 veces por segundo aunque no hubiera nada que mover. */
+        const settled = Math.abs(mouseX - ringX) < 0.1 && Math.abs(mouseY - ringY) < 0.1
+            && Math.abs(mouseX - dotX) < 0.1 && Math.abs(mouseY - dotY) < 0.1;
+        rafId = settled ? null : requestAnimationFrame(animate);
     }
 
     document.addEventListener('mousemove', (e) => {
         mouseX = e.clientX;
         mouseY = e.clientY;
-        if (!rafId) animate();
-    });
+        if (rafId === null) rafId = requestAnimationFrame(animate);
+    }, { passive: true });
 
     const interactive = 'a, button, .menu__item, .tile__link, .gallery__item__link, .dev-nav__arrow, .lang__toggle, .topnav__toggle, .shiny-cta, input, textarea, select';
+    const isInteractive = (node) => node instanceof Element && node.closest(interactive);
+    const setHover = (on) => cursor.classList.toggle('cursor-hover', on);
+
     document.addEventListener('mouseover', (e) => {
-        if (e.target.closest(interactive)) cursor.classList.add('cursor-hover');
+        if (isInteractive(e.target)) setHover(true);
     });
     document.addEventListener('mouseout', (e) => {
-        if (e.target.closest(interactive)) cursor.classList.remove('cursor-hover');
+        /* Solo se quita al salir FUERA del elemento interactivo. Si se quitara
+           al pasar de un hijo a otro, el anillo parpadearía dentro del mismo
+           enlace o botón. */
+        if (isInteractive(e.target) && !isInteractive(e.relatedTarget)) setHover(false);
     });
     document.addEventListener('mousedown', () => cursor.classList.add('cursor-click'));
     document.addEventListener('mouseup', () => cursor.classList.remove('cursor-click'));
@@ -92,11 +126,14 @@ function initTopnav() {
 }
 initTopnav();
 
+/* Las 16 páginas llevan #three-canvas, pero la guardia es barata: sin ella, un
+   HTML nuevo sin el contenedor rompería el módulo entero y con él el menú, el
+   lightbox y la navegación de las tiles. */
 const container = document.getElementById('three-canvas');
-const ringAttr = container.dataset.ringPos;
+const ringAttr = container?.dataset.ringPos;
 const ringPos = ringAttr ? (() => { const [x, y, z] = ringAttr.split(',').map(Number); return { x, y, z }; })() : null;
-const showRings = container.dataset.rings !== 'off';
-const cleanup = initScene(container, ringPos, showRings);
+const showRings = container?.dataset.rings !== 'off';
+const cleanup = container ? initScene(container, ringPos, showRings) : () => {};
 const cleanupGooey = initGooey();
 
 function initGalleryCarousel() {
@@ -167,9 +204,16 @@ function initGalleryCarousel() {
 initGalleryCarousel();
 initLightbox();
 
+const desktop = window.matchMedia('(min-width: 54em)');
 const tiles = document.querySelector('.devtiles');
-if (tiles && window.matchMedia('(min-width: 54em)').matches) {
+
+/* La rueda del ratón no desplaza contenedores horizontales por sí sola. La
+   comprobación de escritorio va DENTRO del manejador: si el listener se ata
+   solo cuando ya es escritorio, al pasar de móvil a escritorio (o al girar la
+   tablet) la página se queda sin rueda hasta recargar. */
+if (tiles) {
     tiles.addEventListener('wheel', (e) => {
+        if (!desktop.matches) return;
         if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
         e.preventDefault();
         tiles.scrollLeft += e.deltaY;
@@ -177,19 +221,25 @@ if (tiles && window.matchMedia('(min-width: 54em)').matches) {
 }
 
 const scrollHint = document.querySelector('.scroll-hint');
-if (scrollHint && tiles.scrollWidth > tiles.clientWidth) {
-    tiles.addEventListener('scroll', () => {
-        if (tiles.scrollLeft > 8) scrollHint.classList.add('is-hidden');
-    });
-} else if (scrollHint) {
-    scrollHint.classList.add('is-hidden');
+if (scrollHint) {
+    if (tiles && tiles.scrollWidth > tiles.clientWidth) {
+        tiles.addEventListener('scroll', () => {
+            if (tiles.scrollLeft > 8) scrollHint.classList.add('is-hidden');
+        });
+    } else {
+        scrollHint.classList.add('is-hidden');
+    }
 }
 
 const pageTitle = document.querySelector('.page-title');
-if (pageTitle && tiles && window.matchMedia('(min-width: 54em)').matches) {
-    tiles.addEventListener('scroll', () => {
-        pageTitle.style.transform = `translate3d(${tiles.scrollLeft * 0.2}px, 0, 0)`;
-    });
+if (pageTitle && tiles) {
+    const syncTitle = () => {
+        pageTitle.style.transform = desktop.matches
+            ? `translate3d(${tiles.scrollLeft * 0.2}px, 0, 0)`
+            : '';
+    };
+    tiles.addEventListener('scroll', syncTitle);
+    desktop.addEventListener('change', syncTitle);
 }
 
 const prevBtn = document.querySelector('.dev-nav__arrow--prev');
@@ -287,9 +337,18 @@ if (tiles && prevBtn && nextBtn) {
     devNav.update();
 }
 
-preloadFonts('Inter:300,400,600,700').then(() => {
-    document.body.classList.remove('loading');
-});
+/* La cortina negra (.loading) se retira cuando la tipografía está lista.
+   Antes dependía del callback de WebFont.load (script externo): si ese CDN
+   tardaba o fallaba, la página se quedaba en negro sin salida. Las fuentes ya
+   se piden en el <link> de Google Fonts, así que aquí basta con document.fonts
+   (resuelve siempre, incluso si una fuente falla) más dos redes de seguridad:
+   un temporizador y el evento load. */
+const hideLoader = () => document.body.classList.remove('loading');
+if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(hideLoader, hideLoader);
+}
+setTimeout(hideLoader, 2500);
+window.addEventListener('load', () => setTimeout(hideLoader, 200), { once: true });
 
 window.addEventListener('beforeunload', cleanup);
 window.addEventListener('beforeunload', cleanupGooey);
