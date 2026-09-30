@@ -119,6 +119,57 @@
     @media screen and (min-width: 54em) {
         .page-about .content__bottom { margin-bottom: 4.5rem; }
     }
+    /* "Work with me" ha quedado sin función propia: Photographer ocupa su
+       papel y el enlace deja de verse. Como con .controls, NO se borra del
+       DOM: tympMain.js lo referencia sin comprobar null (líneas 449, 492,
+       526 y 541) y reventaría el cambio de modo. */
+    .page-about .link-wrap { display: none; }
+    /* Separador tras el estado central: demo.css solo dibuja el de
+       :first-child y con tres estados hacen falta dos barras. */
+    .page-about .switch__item:nth-child(2)::after {
+        content: '';
+        position: absolute;
+        top: -5%;
+        left: calc(100% + 0.75em);
+        width: 1px;
+        height: 110%;
+        background: #464646;
+        transform: rotate(22.5deg);
+    }
+    /* Capa Photographer (js/photographer.js): 140 teselas con la foto del
+       carrete superpuestas a la capa principal. inset:0 la deja a caja de
+       .pieces, z-index:10 la coloca por encima de .overlay (z auto) y por
+       debajo de .content__inner (z 100), y el ResizeObserver del script la
+       rehace cuando PieceMaker cambia el tamaño de .pieces. */
+    .page-about .pieces--photo {
+        position: absolute;
+        inset: 0;
+        z-index: 10;
+        pointer-events: none;
+        display: flex;
+        flex-wrap: wrap;
+    }
+    /* Con tres estados el conmutador se queda sin sitio en móvil. */
+    @media screen and (max-width: 40em) {
+        .page-about .switch__item { margin-right: 0.9em; }
+        .page-about .switch { font-size: 0.85em; }
+    }
+    /* La caja crece 10px hacia arriba y 5px hacia abajo (pedido del usuario):
+       el alto extra va en pieces.css (14.9px, para que el redondeo a
+       múltiplos de 14 de la demo salte siempre 14) y aquí se ajusta el
+       desplazamiento. Como .demo-page centra la caja, al crecer 14px el
+       borde superior ya sube solo 7px: con top:7px (antes 10) la subida neta
+       es 10px y la bajada ~4-5px en todos los viewports. position:relative
+       ya lo trae pieces.css; top no altera el layout ni el resize de la demo,
+       y el transform del tilt (inline, tympMain.js:179) no lo pisa. */
+    .page-about .pieces { top: 7px; }
+    /* Con el contenedor de la foto ensanchado, la banda izquierda de huecos
+       del carrete invade la caja del conmutador en 1280-1600px: a 0.875em
+       "Desarrollador" queda ~11px a la izquierda de la banda (en >=1920 el
+       solape existía ya en la versión anterior y se mantiene). */
+    @media screen and (min-width: 40.0625em) {
+        .page-about .switch { font-size: 0.875em; }
+    }
     </style>
 
     <script>document.documentElement.className="js";</script>
@@ -168,7 +219,8 @@
             </nav>
         </div>
 
-        <!-- ABOUT SECTION — demo de Codrops importada tal cual -->
+        <!-- ABOUT SECTION — demo de Codrops importada, con el conmutador
+             ampliado a tres estados: Fotógrafo | Diseñador | Desarrollador -->
         <section class="about demo-page">
             <div class="pieces" style="background-image: url(assets/IMG/about/alex-normal.webp)" data-img-alt="url(assets/IMG/about/alex-alt.webp)" data-img-code="url(assets/IMG/about/alex-code.webp)"></div>
             <div class="overlay overlay--hidden"></div>
@@ -176,7 +228,7 @@
                 <div class="content__inner">
                     <div class="content__top">
                         <h2 class="title">
-                            <span class="title__inner mode mode--design" data-switch data-glitch>Annie Fox</span>
+                            <span class="title__inner mode mode--design" data-switch data-glitch data-i18n="about_title">Annie Fox</span>
                         </h2>
                         <div class="controls">
                             <button class="btn btn--menu mode mode--design" data-switch>
@@ -187,28 +239,29 @@
                     </div>
                     <div class="menu">
                         <ul class="menu__inner">
-                            <li class="menu__item"><a class="menu__link" data-switch>On Interface Design</a></li>
-                            <li class="menu__item"><a class="menu__link" data-switch>Portfolio</a></li>
-                            <li class="menu__item"><a class="menu__link" data-switch>Case Studies</a></li>
-                            <li class="menu__item"><a class="menu__link" data-switch>Musings</a></li>
+                            <li class="menu__item"><a class="menu__link" data-switch data-i18n="about_menu_iface">Sobre diseño de interfaces</a></li>
+                            <li class="menu__item"><a class="menu__link" data-switch data-i18n="about_menu_portfolio">Portafolio</a></li>
+                            <li class="menu__item"><a class="menu__link" data-switch data-i18n="about_menu_cases">Casos de estudio</a></li>
+                            <li class="menu__item"><a class="menu__link" data-switch data-i18n="about_menu_musings">Reflexiones</a></li>
                         </ul>
                     </div>
                     <div class="menu menu--code">
                         <ul class="menu__inner">
-                            <li class="menu__item"><a class="menu__link" data-switch>On Coding</a></li>
-                            <li class="menu__item"><a class="menu__link" data-switch>Experiments</a></li>
-                            <li class="menu__item"><a class="menu__link" data-switch>Current Projects</a></li>
-                            <li class="menu__item"><a class="menu__link" data-switch>Tutorials</a></li>
-                            <li class="menu__item"><a class="menu__link" data-switch>> Find me on GitHub</a></li>
+                            <li class="menu__item"><a class="menu__link" data-switch data-i18n="about_menu_coding">Sobre programación</a></li>
+                            <li class="menu__item"><a class="menu__link" data-switch data-i18n="about_menu_experiments">Experimentos</a></li>
+                            <li class="menu__item"><a class="menu__link" data-switch data-i18n="about_menu_current">Proyectos actuales</a></li>
+                            <li class="menu__item"><a class="menu__link" data-switch data-i18n="about_menu_tutorials">Tutoriales</a></li>
+                            <li class="menu__item"><a class="menu__link" data-switch data-i18n="about_menu_github">> Encuéntrame en GitHub</a></li>
                         </ul>
                     </div>
                     <div class="content__bottom">
                         <div class="switch mode mode--design">
-                            <a class="switch__item switch__item--current">Designer</a>
-                            <a class="switch__item"><span class="mode mode--design" data-switch data-glitch>Coder</span></a>
+                            <a class="switch__item switch__item--photo switch__item--current"><span class="mode mode--design" data-switch data-i18n="about_sw_photo">Fotógrafo</span></a>
+                            <a class="switch__item switch__item--design"><span class="mode mode--design" data-switch data-i18n="about_sw_design">Diseñador</span></a>
+                            <a class="switch__item switch__item--code"><span class="mode mode--design" data-switch data-glitch data-i18n="about_sw_dev">Desarrollador</span></a>
                         </div>
                         <div class="link-wrap">
-                            <a class="contact-link mode mode--design" data-switch data-glitch>Work with me</a>
+                            <a class="contact-link mode mode--design" data-switch data-glitch data-i18n="about_contact">Trabajemos juntos</a>
                         </div>
                     </div>
                 </div>
@@ -216,6 +269,7 @@
             <div class="loading"></div>
             <img class="hidden" src="assets/IMG/about/alex-code.webp"/>
             <img class="hidden" src="assets/IMG/about/alex-alt.webp"/>
+            <img class="hidden" src="assets/IMG/about/alex-photo.webp"/>
         </section>
     </main>
 
@@ -224,6 +278,7 @@
     <script src="js/charming.min.js"></script>
     <script src="js/imagesloaded.pkgd.min.js"></script>
     <script src="js/tympMain.js"></script>
+    <script src="js/photographer.js"></script>
 
     <script type="module" src="js/index.js"></script>
 </body>

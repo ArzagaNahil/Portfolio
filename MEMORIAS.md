@@ -1772,6 +1772,8 @@ Ahora se mide **la bbox combinada de las dos fuentes** (filas 375..3436, columna
 
 Medido sobre los dos ficheros **ya generados**: desplazamiento óptimo **0 px en filas** y −1 px en columnas, solape de perfiles 0,984 y Δ de centroide **0,0 px**. La figura ocupa 984 px = 98,4 % del lienzo en las dos.
 
+**Vertical anclado abajo, no centrado.** Centrando, la figura flotaba con 61 px de banda vacía bajo los pies, y el usuario lo pidió así: `oy = H − 3437·k = −49,34`. Comprobado en los ficheros generados: la última fila con contenido es la **1533 de 1533**, o sea hueco 0; arriba quedan 123 px (8 %) de aire sobre la cabeza. El registro no se toca: Δ centroide sigue en 0,0 px.
+
 Del aura de números, por si se retoma: la primera versión de coder tenía contenido **280 px por encima** de la figura, que era lo que inflaba su bbox; tras la última corrección del usuario quedan **0 píxeles** por encima de la fila 375 (desapareció el resto de 6 píxeles de las filas 91-92). Residuo heredado de los originales y no corregible desde aquí: la silueta de coder llega 8 px menos por la derecha (0,7 %) y empieza 3 px más abajo.
 
 ### Dos cosas que parecían fallos y no lo eran
@@ -1787,19 +1789,87 @@ Del aura de números, por si se retoma: la primera versión de coder tenía cont
 - 375 / 768 / 1440 sin scroll horizontal; **16 páginas** con `cargando:false` y `ERR []`.
 - `node --check` en los JS tocados; cero temporales (`_tmp_*.png`) en el repo.
 
-### Sin commitear, a decisión del usuario
+### Residuos borrados (decisión del usuario)
 
-`assets/IMG/demo/{normal,alt,code}.jpg` (175 KB) y `assets/IMG/about/alex.webp` (56 KB) **no los referencia ningún HTML, CSS ni JS**: son los de la demo original y el de los intentos de las sesiones 41-42. No entran en el commit; siguen en disco a la espera de que se diga si se borran.
+`assets/IMG/demo/{normal,alt,code}.jpg` (175 KB) y `assets/IMG/about/alex.webp` (56 KB) **no los referencia ningún HTML, CSS ni JS**: eran los de la demo original y el de los intentos de las sesiones 41-42. El usuario mandó borrarlos y están fuera del disco y del repo. Comprobado después con la sonda de red: **16 páginas, 0 respuestas ≥ 400 y 0 fallos**.
+
+---
+
+## Sesión 45 — La capa Photographer y el conmutador de tres estados
+
+Tercera capa sobre la demo de Codrops: la foto con carrete (`alex-photo.webp`, 30 KB) encima de las capas Designer y Developer, y el conmutador ampliado a **Fotógrafo | Diseñador | Desarrollador** (Photography primero; "Coder" pasa a llamarse "Developer"). "Work with me" desaparece —Photographer ocupa su papel— y todos los textos del About llevan ya `data-i18n` en ambos idiomas.
+
+Decisiones del usuario, respondiendo a cuatro preguntas: los tres estados en ese orden; **todos** los textos de `about.html` con `data-i18n`; "Work with me" fuera; cada foto con su fondo (Photographer con fondo negro y carretes, las otras dos transparentes). Indicación operativa: "puedes comenzar a ejecutar los cambios y corregimos en el proceso".
+
+### Cómo está montado
+
+- **Capa `.pieces--photo`** (`z-index: 10`) dentro de `.pieces`, creada por JS con las **140 mismas teselas** y la misma matemática que `PieceMaker._layout` (`tympMain.js:106`): como `.pieces` ya está ajustado a píxel por la demo, ambas capas miden **exactamente igual** (53×58 en 1280/1440, 60×66 en 768) y no hay costuras. La capa **no tiene background propio**: al salir, el barrido revela la capa de abajo.
+- El `z-index: 10` queda por debajo de `.content__inner` (100, título y menús encima) y **por encima de `.overlay`** (z auto, así la foto se ve sin el tinte oscuro del modo código). No hizo falta tocar el overlay.
+- **`js/photographer.js`** (clásico, incluido tras `tympMain.js`): `ResizeObserver` sobre `.pieces` (la demo redimensiona el contenedor al crear las piezas y hay que recalcular), máquina de estados `photo → leaving → off`, y captura de clics en `document` **en fase de captura** con `stopPropagation` mientras haya capa — así no depende del orden de registro con el listener de `switchMode`. Al terminar la salida reenvía el clic a la demo con `.click()`, **solo si el modo destino ≠ actual**: Fotógrafo→Diseñador no vuelve a llamar a `switchMode` y se evitan los parpadeos de letras y el reinicio del bucle.
+- **`fxSplit`** simétrico a `fxCustom` (`tympMain.js:290`): cada tesela sale hacia su lado con retardo `|col−4,5|×40 ms + data-delay` (el centro arranca primero y el barrido se abre hacia ambos lados), duración 400 ms saliendo / 500 ms entrando, easing `[0.2,1,0.3,1]` / `[0.8,1,0.3,1]`; con `prefers-reduced-motion` el cambio es instantáneo.
+- **Único punto tocado de la demo**: `tympMain.js:443` — `firstElementChild`/`lastElementChild` por `.switch__item--design`/`.switch__item--code`, porque con tres ítems los extremos ya no son esos dos.
+- **`i18n.js`**: 14 claves nuevas (`about_sw_*`, `about_title`, `about_menu_*`, `about_contact`) en ES y EN —las 13 claves `about_*` del copy de la sesión 40 siguen huérfanas, son otras—, más un **guard en `apply()`** (`if (el.textContent !== dict[key])`) para no destruir los spans de `charming` cuando el texto no cambia. El HTML por defecto lleva el texto en ES, que es lo que salta el guard.
+- **`.contact-link` no se borra del DOM**: `tympMain.js` lo referencia sin null-check en cuatro sitios (`:449,492,526,541`); se oculta con `.page-about .link-wrap { display: none }`, mismo patrón que `.btn--menu` y `.controls`.
+
+### Verificado
+
+- **6 estados recorridos** con la sonda: inicial (Fotógrafo, capa visible, 140/140 teselas con `alex-photo`), →Diseñador (capa oculta, contenedor `alt`), →Fotógrafo (capa vuelve), →Desarrollador *desde foto* (delegación: contenedor `code`, overlay 1), →Fotógrafo *desde código* (capa encima del overlay), →Diseñador *desde foto sobre código* (vuelve a `alt`, overlay 0). En todos, `switch__item--current` correcto y etiquetas correctas.
+- **La animación vuela de verdad**: a los 180 ms de la salida, opacidad media 0,494 y la tesela central ya a 246 px; a los 250 ms de la entrada, 0,811 con la central aún a 60 px.
+- **i18n ES→EN→ES**: Fotógrafo/Diseñador/Desarrollador ↔ Photographer/Designer/Developer, menú y título traducidos, vuelta completa.
+- **375 / 768 / 1440**: el switch cabe en `.content__inner`, sin scroll horizontal, la caja de la capa = caja de `.pieces` y medidas iguales entre capas.
+- **0 errores de consola** y **0 fallos de red** en `about.html`; **16 páginas** sin fallos; `node --check` en `photographer.js`, `tympMain.js` e `i18n.js`.
+- El título no lo tapa la capa: `elementFromPoint` sobre el título devuelve `SPAN.char1` (z 100 > 10). Las 140 piezas principales siguen parpadeando con `loopFx`; las de la capa no, como debe ser.
+
+### Corrección de la sesión: los huecos del carrete
+
+El usuario vio que la capa tenía el fondo negro pero **no los huecos del rollo**. Causa: en `alex_Carrete.png` las bandas perforadas viven en los bordes del lienzo (x 16..153 y x 2428..2571, altura completa) y la ventana de recorte compartida —x∈[215,5–2400,5], la misma que da el registro de la figura— se las lleva por delante. Los huecos están **fuera de cuadro**.
+
+**Versiones probadas**:
+1. Pegar las bandas dentro con `lighten` — rechazada: los huecos caían encima del brazo.
+2. Bandas pegadas con **GAP = 45 px** y los huecos que no cabían **omitidos** (6 de 58) — rechazada: "suprimiste huecos"; la perforación izquierda se interrumpía en el torso.
+3. Mostrar `alex_Carrete.png` **tal cual** (imagen entera, `k=0,3876`, sin recorte) — generada y **deshacida a petición del usuario**: la figura quedaba al 83,3 % frente al 98,4 % de las otras capas.
+4. **Versión vigente — lienzo ensanchado**: la sección se agranda para que quepan **todos** los huecos con margen ≥90 px sin achicar ni remontar la imagen (última indicación: "agrandar esa sección para que quepa sin tener que remontar ni achicar la imagen").
+
+**Cómo funciona la versión vigente** (`convert_transparent.mjs`):
+- **Lienzo 1162×1534** (antes 1000×1534). `k` **pineado** a la escala de siempre, `(1000−2·8)/2150 = 0,45767`: la figura no se achica. `ox = (1000−CW·k)/2 − MINX·k + 135` — la figura y su fondo se corren 135 px a la derecha, abriendo la franja izquierda. `oy = H − (MAXY+1)·k − 10` — anclado abajo **con los pies desbordando 10 px** (pedido aplazado de la sesión 45, ya ejecutado); la foto conserva su `dy +6`. Las tres capas comparten la transformación → registro intacto.
+- **Bandas ancladas al borde del lienzo** (no a `ox`): huecos izq. en x[12,57], der. en x[1108,1153]. El ensanchado mete en cuadro las bandas naturales del original (x[36,110] y x[1143,1162]), así que se **borran en negro** antes de pegar (`fillRect(30,0,85,H)` y `fillRect(1130,0,…)`, seguros: la figura va de x149 a x1017).
+- **Regla del hueco**: componente conexo de brillo ≥40, franja [ZL=90, ZR=1050], **GAP = 90 px** contra la silueta fila a fila (umbral 30). Con 135 px extra de franja **caben todos**: `huecos {"detectados":53,"pintados":53}` — **0 suprimidos**. Márgenes mínimos: **93 px izq., 103 px der.**
+- **`css/pieces.css`**: ratio nuevo — `width: 68.1747vh; height: 90vh` y media query `max-aspect-ratio: 1162/1534` → `80vw × 105.6107vw`.
+- **La caja crece 10 px hacia arriba y 5 px hacia abajo** (pedido del usuario, posterior al −10 de la imagen): `height: calc(90vh + 14.9px)` en `pieces.css` (móvil `calc(105.6107vw + 14.9px)`) y `.page-about .pieces { top: 7px }` (antes 10) en `about.html`. Tres detalles que costaron:
+  1. **La demo cuantiza el alto a múltiplos de 14** (`rows`): `tympMain.js:137` fija `h*rows`, así que el salto real siempre es de 14 px → con `top:7px` el borde superior baja exactamente −10 y el inferior queda en +4. Con `+15` exactos, en alturas tipo 1080 el redondeo saltaba dos filas (987/14 = 70,5 → 71) y la caja crecía 28 px; por eso **14,9**.
+  2. **`_init` medía con `offsetHeight`** (entero): 986,89 → 987 y el truco de 14,9 se deshacía. Ahora usa `getBoundingClientRect()` como ya hacía el resize (`tympMain.js:94`), que es además la medición coherente entre init y resize.
+  3. **La imagen se estira a la caja** (si no, al crecer el alto se veía repetido el borde superior por el `repeat` de las teselas): `background-size: 100% 100%` en `pieces.css` y tamaño explícito `w*cols × h*rows` en las teselas (`tympMain.js:132,195` y `photographer.js:71`). Estirado ~2,5 % vertical, **las tres capas idéntico** → registro intacto; el ancho no se toca → solapes switch/menú sin cambios.
+  - Verificado con matriz de **16 viewports** (1920×1080/1200/1440, 1600×900, 1536×864, 1440×900, 1366×768, 1280×1024/800/720, 414×896, 393×851, 375×812, 768×1024, 820×1180, 1024×1366): Δalto = 14 en todos, `dTop 0`, `dBottom −1`, `scrollX/Y 0`, `scrollH = innerH`, 0 errores. En 4 alturas la caja invade 1-6 px el borde inferior: es el `overflow:hidden` de `main` recortando el negro del film (en 1280×720 ya pasaba antes del cambio). Capturas `agranda_{1920,1280,768,375}.png` y `fin_*` en Temp.
+
+Comprobado (`measure_gap.mjs` sobre el fichero publicado): 53/53 pasan 45, 46 **y 90**, `startLmin 149 / endRmax 1017`, sin fallos. Regeneración completa: `node convert_transparent.mjs _ 0.70` (argv[4] = subcadena para regenerar solo una; sin argv regenera las tres + `alex-alt`).
+
+### Colisiones de texto con las bandas (medido, no a ojo)
+
+- **Conmutador ↔ banda izquierda**: con la caja ensanchada, "Desarrollador" invadía la banda 24 px en 1280/1440/1600 (antes no). Arreglado con `.page-about .switch { font-size: 0.875em }` solo en `min-width: 40.0625em` (`about.html`): solape **0** en 1280/1440/1600. En ≥1920 queda ~29 px, **preexistente** (en la versión de 58,66 vh también chocaba).
+- **Menú ↔ banda derecha**: "Sobre diseño de interfaces" cruza la banda 24-29 px en todos los tamaños. **Preexistente**: recalculado sobre la caja vieja (58,66 vh), el solape ya era de 15-29 px y el usuario lo aprobó (`huecos_sitio.png`). No se toca.
+- **Cuadros negros intermitentes en modo Diseño**: son el `loopFx` de la demo — al cargar pinta `.pieces` con `data-img-alt` y parpadea teselas a opacidad 0. **`alex-alt.webp` está vacío (100 % transparente) desde el commit c0cd199**, así que por debajo se ve el `body` negro. Preexistente, no es una regresión; si algún día se quiere el efecto con foto habrá que generar un alt real.
+
+### Verificación de la ampliación
+
+Capturas `fin_photo_{375,768,1280,1440}`, `fin_design_1280`, `fin_code_1280`, `fin_photo2_1280`, `fin_imagen` en `C:\Users\alexi\AppData\Local\Temp\opencode\`: bandas completas y separadas en los cuatro viewports, registro entre los tres modos, móvil sin scroll (`scrollX/scrollY 0`), **0 errores de consola**. La sonda de solapes (`solapes.mjs`) y la de márgenes (`measure_gap.mjs`) dan los números de arriba.
+
+### Pendiente
+
+- **Revisión visual del usuario** — la sonda no ve: las capturas `fin_*` y `agranda_*` están en `C:\Users\alexi\AppData\Local\Temp\opencode\`.
+- Degradación conocida: al cambiar de idioma **en runtime**, `apply()` reemplaza el `textContent` de los elementos con `charming` y se pierden las letras animadas del título y los menús hasta recargar. El guard solo evita la destrucción cuando el texto **no** cambia.
+- **Sin comunicar al usuario**: se omitió el anuncio `sponsor/pater.css` (Hired.com).
 
 ---
 
 ## Para la próxima sesión
 
-**Lo primero, y es de olhar, no de código**: las cuatro galerías de Fotografía y las cuatro de Diseño, en pantalla grande y en móvil, con el carrusel quieto y con el dedo puesto. Esta sesión cambió la geometría de las tarjetas de fotografía y la forma de medir la velocidad, y **nada de eso se ha visto**. El HTML está bien, pero el CSS siempre escapa algo.
+**Lo primero, y es de olhar, no de código**: la capa Photographer de `about.html` (sesión 45), que solo se ha visto por capturas y sondas —el estado inicial, la salida a medio vuelo, Diseñador y Desarrollador—. Después, las cuatro galerías de Fotografía y las cuatro de Diseño, en pantalla grande y en móvil, con el carrusel quieto y con el dedo puesto. Esta sesión cambió la geometría de las tarjetas de fotografía y la forma de medir la velocidad, y **nada de eso se ha visto**. El HTML está bien, pero el CSS siempre escapa algo.
 
-**Hecho, ya no hay que hacerlo**: borrar las líneas 90 a 123 de `about.html`. Se hizo en su día y la sesión 42 lo repitió; esa sección ya no existe. Hoy `about.html` son 228 líneas porque aloja la demo de Codrops (sesión 43), pero el copy viejo no ha vuelto.
+**Hecho, ya no hay que hacerlo**: borrar las líneas 90 a 123 de `about.html`. Se hizo en su día y la sesión 42 lo repitió; esa sección ya no existe. Hoy `about.html` son 252 líneas porque aloja la demo de Codrops (sesión 43) con el conmutador de tres estados (sesión 45), pero el copy viejo no ha vuelto.
 
 **Pendiente de mirar**:
+- **Hecho (sesión 45): la capa Photographer de `about.html`, PENDIENTE DE VER POR EL USUARIO.** El conmutador es Fotógrafo | Diseñador | Desarrollador, "Work with me" está oculto (no borrado: `tympMain.js` lo toca sin null-check) y todo el texto lleva `data-i18n`. Si hay que retocar algo, lo único de la demo que se tocó es `tympMain.js:443` (selectores por clase en vez de first/last child); el resto está en `js/photographer.js`.
+- **Hecho (sesión 45, cerrado): los +10 px de abajo de la imagen del About** (`oy −10`), regeneradas las tres imágenes con la transformación compartida, `dy` de la foto incluido. Los pies se recortan 10 px en el borde inferior del lienzo, como se pidió.
 - **Hecho (sesión 44): `about.html` con la demo, ya vista y aprobada por el usuario** ("lo más difícil del About, conseguido"). Lo que quedó fijo: la foto a 530×812 centrada en el viewport, los iconos sociales **abajo a la derecha**, los controles de la esquina ocultos y las dos imágenes (foto y binario) con **la misma transformación**, de modo que al cambiar de Designer a Coder solo cambia el relleno y no se mueve la figura. Si se retoca, lo único que hay que rehacer es la transformación compartida de `alex-normal` y `alex-code` (bbox combinada de las dos fuentes), nunca por imagen aparte.
 - Los dos ajustes de posición de los títulos de las tiles, `.devtile:first-child .tile__content { bottom: 1.8rem }` y `.devtile:nth-child(2) .tile__content { bottom: 2.6rem }`. Estaban afinados a ojo para Retrato (1.ª) y Paisaje (2.ª); con Foto artística primera se aplican a Foto artística y Retrato. Si la 3.ª y la 4.ª se ven con el título pegado, hay que decidir si el ajuste pasa a ser por galería en vez de por posición, que es lo que en realidad significa.
 - Si alguna de las 117 fotos queda cortada en la tarjeta. Ya no hay `object-fit: cover`, así que debería estar entero, pero la miniatura es la que se ve y no la grande.
@@ -1810,6 +1880,5 @@ Del aura de números, por si se retoma: la primera versión de coder tenía cont
 - El lema de Branding (`g_slogan_branding`) y el de Editorial (`g_slogan_editorial`) siguen siendo provisionales.
 - El copy de About está decidido y guardado en la sesión 40 y está **sin montar**, pero con la mitad del camino ya hecha, que conviene no repetir: las 13 claves `about_*` **ya están en `js/i18n.js`** (ahora huérfanas, porque no las usa ningún HTML), y en `css/style.css` están `.about`, `.about__card`, `.about__title`, `.about__text` y `.about__skills` de antes, más `.about__discs`, `.about__disc` y `.about__close` de la sesión 41, que tampoco tienen marcado. **Lo que falta es solo el HTML de la sección.** Si se vuelve a montar, reutilizar eso y no reimplementarlo. Sigue sin responder por qué no están las miniaturas de Rescate Animal en q76.
 - Las medidas de las miniaturas de Rescate Animal siguen a 1000×1000 con el resto de las de diseño, no a la caja 2000×506 de fotografía. Unificarlo es el mismo trabajo de la sesión 29.
-- `assets/IMG/about/alex.webp` (56 KB) **no lo referencia ningún HTML, CSS ni JS**: quedó de los intentos de las sesiones 41 y 42, que se borraron. Si no se va a usar, sobra.
 
 **Lo que no se rompe**: `gallery-photo-4.html` es la primera aunque su número sea el 4, porque renombrar los ficheros publicados habría roto las URL de Retrato, Paisaje y Producto. Lo mismo que con el sufijo `_3` de UI/UX en la sesión 32.

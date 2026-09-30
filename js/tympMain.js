@@ -90,8 +90,11 @@
 		this.imgsrc = this.el.style.backgroundImage.replace('url(','').replace(')','').replace(/\"/gi, "");
 		// Window sizes.
 		this.win = {width: window.innerWidth, height: window.innerHeight};
-		// Container sizes.
-		this.dimensions = {width:this.el.offsetWidth, height:this.el.offsetHeight};
+		// Container sizes (getBoundingClientRect, como en el resize de la línea
+		// 187: offsetHeight redondea a entero y se come los 0,9px del
+		// calc(90vh + 14.9px) de pieces.css).
+		const elBounds = this.el.getBoundingClientRect();
+		this.dimensions = {width:elBounds.width, height:elBounds.height};
 		// Render all the pieces defined in the options.
 		this._layout();
 		// Init tilt.
@@ -129,7 +132,7 @@
 		piece.className = 'piece';
 		piece.style.width = w + 'px';
 		piece.style.height = h + + 'px';
-		piece.style.backgroundSize = w * this.options.pieces.columns + 'px auto';
+		piece.style.backgroundSize = w * this.options.pieces.columns + 'px ' + h * this.options.pieces.rows + 'px';
 		piece.setAttribute('data-column', column);
 		piece.setAttribute('data-delay', anime.random(-25,25));
 		this.el.appendChild(piece);
@@ -192,7 +195,7 @@
 					
 					piece.style.width = w + 'px';
 					piece.style.height = h + 'px';
-					piece.style.backgroundSize = w * self.options.pieces.columns + 'px auto';
+					piece.style.backgroundSize = w * self.options.pieces.columns + 'px ' + h * self.options.pieces.rows + 'px';
 					self.el.style.width = w * self.options.pieces.columns + 'px';
 					self.el.style.height = h * self.options.pieces.rows + 'px';
 				}
@@ -439,9 +442,11 @@
 	DOM.body = document.body;
 	DOM.loading = document.querySelector('.loading');
 	DOM.switchCtrls = document.querySelector('.switch');
+	// Con tres estados en el conmutador (Fotógrafo | Diseñador | Desarrollador)
+	// first/lastElementChild ya no valen: se selecciona por clase.
 	DOM.switchModeCtrls = {
-		'design' : DOM.switchCtrls.firstElementChild,
-		'code' : DOM.switchCtrls.lastElementChild
+		'design' : DOM.switchCtrls.querySelector('.switch__item--design'),
+		'code' : DOM.switchCtrls.querySelector('.switch__item--code')
 	};
 	DOM.pieces = document.querySelector('.pieces');
 	DOM.glitchElems = document.querySelectorAll('[data-glitch]');

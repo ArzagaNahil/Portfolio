@@ -361,6 +361,21 @@ export const I18N = {
         c_label_message: 'Mensaje',
         c_submit: 'Enviar mensaje',
 
+        about_sw_photo: 'Fotógrafo',
+        about_sw_design: 'Diseñador',
+        about_sw_dev: 'Desarrollador',
+        about_title: 'Annie Fox',
+        about_menu_iface: 'Sobre diseño de interfaces',
+        about_menu_portfolio: 'Portafolio',
+        about_menu_cases: 'Casos de estudio',
+        about_menu_musings: 'Reflexiones',
+        about_menu_coding: 'Sobre programación',
+        about_menu_experiments: 'Experimentos',
+        about_menu_current: 'Proyectos actuales',
+        about_menu_tutorials: 'Tutoriales',
+        about_menu_github: '> Encuéntrame en GitHub',
+        about_contact: 'Trabajemos juntos',
+
         meta_title_index: 'Arzaga Nahil — Portafolio',
         meta_desc_index: 'Portafolio profesional de Arzaga Nahil. Diseño moderno, desarrollo web y marketing digital.',
         meta_title_about: 'Sobre mí — Arzaga Nahil',
@@ -752,6 +767,21 @@ export const I18N = {
         c_label_message: 'Message',
         c_submit: 'Send message',
 
+        about_sw_photo: 'Photographer',
+        about_sw_design: 'Designer',
+        about_sw_dev: 'Developer',
+        about_title: 'Annie Fox',
+        about_menu_iface: 'On Interface Design',
+        about_menu_portfolio: 'Portfolio',
+        about_menu_cases: 'Case Studies',
+        about_menu_musings: 'Musings',
+        about_menu_coding: 'On Coding',
+        about_menu_experiments: 'Experiments',
+        about_menu_current: 'Current Projects',
+        about_menu_tutorials: 'Tutorials',
+        about_menu_github: '> Find me on GitHub',
+        about_contact: 'Work with me',
+
         meta_title_index: 'Arzaga Nahil — Portfolio',
         meta_desc_index: 'Professional portfolio of Arzaga Nahil. Modern design, web development and digital marketing.',
         meta_title_about: 'About — Arzaga Nahil',
@@ -812,11 +842,14 @@ function apply() {
 
         if (el.matches('.menu__item')) {
             el.dataset.label = dict[key];
-            el.textContent = dict[key];
+            // Solo se reescribe si el texto cambia: en About tympMain.js ha
+            // partido el contenido en spans (charming) y un textContent igual
+            // los borraría, dejando las animaciones de letra sin objetivos.
+            if (el.textContent !== dict[key]) el.textContent = dict[key];
             return;
         }
 
-        el.textContent = dict[key];
+        if (el.textContent !== dict[key]) el.textContent = dict[key];
     });
 
     document.querySelectorAll('[data-i18n-attr]').forEach((el) => {
