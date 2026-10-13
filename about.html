@@ -149,10 +149,73 @@
         display: flex;
         flex-wrap: wrap;
     }
+    /* =====================================================================
+       Título y conmutador: la tipografía de la web + el hueco que queda
+       antes de la banda de perforaciones de la película.
+
+       Medido con la sonda fit_probe.mjs, el hueco libre (borde de la caja de
+       texto hasta el primer hueco) en el MODO ALTO de pieces.css —la foto
+       ocupa toda la altura y sí llega al título y al conmutador— vale
+       560px − 33.383vh con la caja de 1200 centrada (≥1200px de ancho) y
+       50vw − 33.383vh − 40px por debajo de 1200px (ahí la caja empieza en
+       0 y el padding son 2.5em). En el MODO ANCHO —la foto se ajusta al
+       ancho y queda centrada— no llega a ninguno de los dos y no hay
+       conflicto. pieces.css elige el modo con max-aspect-ratio: 1162/1534;
+       aquí se decide igual, y la rama ancha va después para que en el
+       empate gane la ancha, como en pieces.css.
+       ===================================================================== */
+    /* --- Título: "Alexis / Rivera Miranda" a dos líneas, como el hero del
+       index. Bruno Ace y --color-heading, igual que los .page-title de las
+       demás páginas (sin su opacidad 0.18: aquí el texto va sobre la foto y
+       tiene que leerse). "Rivera Miranda", la línea más larga, mide 9.07em
+       con el tracking de la web → factor 0.105 sobre el hueco (quedan ~10px
+       de holgura en 1280×900). Piso 0.75rem: es el 12px que ya tenía el
+       título en móvil, y por debajo de eso ya no se lee. Techo 2.6rem, el
+       mismo que el hero del index. */
+    .page-about .title {
+        height: auto;
+        line-height: 1.05;
+        letter-spacing: -0.02em;
+    }
+    /* demo.css pinta .title__inner.mode--design { font-size: 1.5em }: aquí el
+       tamaño lo manda .title, para que el glitch y el modo código cambien de
+       tipografía y de color pero nunca de tamaño. */
+    .page-about .title__inner.mode--design {
+        font-size: 1em;
+        font-family: var(--font-name);
+        font-weight: 400;
+        color: var(--color-heading);
+    }
+    @media screen and (min-aspect-ratio: 1162/1534) {
+        .page-about .title {
+            font-size: max(0.75rem, min(2.6rem,
+                calc((560px - 33.383vh) * 0.105),
+                calc((50vw - 33.383vh - 40px) * 0.105)));
+        }
+    }
+    /* Modo ancho: sin conflicto, se queda en el tamaño de siempre. */
+    @media screen and (max-aspect-ratio: 1162/1534) {
+        .page-about .title { font-size: 1.5rem; }
+    }
+    /* --- Conmutador: Bruno Ace en --color-accent (el azul de la web).
+       Las tres palabras + los dos separadores miden 24.87em desde el borde
+       de .switch hasta el final de "Desarrollador" → factor 0.037 sobre el
+       hueco. Piso 8px: con menos margen no cabe nada legible y aun así el
+       solape sigue siendo menor que el de los 14px actuales (52px en
+       1920×1080); techo 13px. Solo en modo diseño: en modo código manda el
+       Roboto Mono rojo de la demo, y durante el glitch el rojo del span. */
+    .page-about .switch.mode--design {
+        font-family: var(--font-name);
+    }
+    .page-about .switch.mode--design .switch__item:not(.switch__item--current) {
+        color: var(--color-accent);
+    }
+    .page-about .switch.mode--design .switch__item:not(.switch__item--current):hover {
+        color: var(--color-heading);
+    }
     /* Con tres estados el conmutador se queda sin sitio en móvil. */
     @media screen and (max-width: 40em) {
         .page-about .switch__item { margin-right: 0.9em; }
-        .page-about .switch { font-size: 0.85em; }
     }
     /* La caja crece 10px hacia arriba y 5px hacia abajo (pedido del usuario):
        el alto extra va en pieces.css (14.9px, para que el redondeo a
@@ -163,12 +226,22 @@
        ya lo trae pieces.css; top no altera el layout ni el resize de la demo,
        y el transform del tilt (inline, tympMain.js:179) no lo pisa. */
     .page-about .pieces { top: 7px; }
-    /* Con el contenedor de la foto ensanchado, la banda izquierda de huecos
-       del carrete invade la caja del conmutador en 1280-1600px: a 0.875em
-       "Desarrollador" queda ~11px a la izquierda de la banda (en >=1920 el
-       solape existía ya en la versión anterior y se mantiene). */
-    @media screen and (min-width: 40.0625em) {
+    /* Modo alto: la foto llega al fondo y el conmutador tiene que caber en
+       el hueco de la izquierda (fórmulas arriba). El factor 0.037 deja ~10px
+       de holgura en 1280×900 y ~14px en 1536×770. */
+    @media screen and (min-aspect-ratio: 1162/1534) {
+        .page-about .switch {
+            font-size: max(8px, min(13px,
+                calc((560px - 33.383vh) * 0.037),
+                calc((50vw - 33.383vh - 40px) * 0.037)));
+        }
+    }
+    /* Modo ancho: sin conflicto, el tamaño de siempre (0.875em ≈ 14px). */
+    @media screen and (max-aspect-ratio: 1162/1534) {
         .page-about .switch { font-size: 0.875em; }
+    }
+    @media screen and (max-width: 40em) and (max-aspect-ratio: 1162/1534) {
+        .page-about .switch { font-size: 0.85em; }
     }
     </style>
 
@@ -228,7 +301,7 @@
                 <div class="content__inner">
                     <div class="content__top">
                         <h2 class="title">
-                            <span class="title__inner mode mode--design" data-switch data-glitch data-i18n="about_title">Annie Fox</span>
+                            <span class="title__inner mode mode--design" data-switch data-glitch>Alexis<br>Rivera Miranda</span>
                         </h2>
                         <div class="controls">
                             <button class="btn btn--menu mode mode--design" data-switch>

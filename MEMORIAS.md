@@ -1861,6 +1861,88 @@ Capturas `fin_photo_{375,768,1280,1440}`, `fin_design_1280`, `fin_code_1280`, `f
 
 ---
 
+## Sesión 46 — El título y el conmutador de About en la tipografía de la web, sin pisar la banda de perforaciones
+
+**Lo que se pidió**: que "Annie Fox" pasara a **Alexis Rivera Miranda** con el estilo de título del hero del index (Bruno Ace, dos líneas), y que **Fotógrafo | Diseñador | Desarrollador** fueran a Bruno Ace con el azul de la página (`--color-accent`), **al mayor tamaño que quepa** sin entrar en la banda de perforaciones de la película.
+
+**Las dos decisiones del usuario** (una pregunta por asunto): el título, **dos líneas como el hero** ("Alexis" / "Rivera Miranda"); el conmutador, **horizontal al tamaño que cabe** — que puede quedar por debajo de los 14 px de antes si hace falta, con tal de ir en Bruno Ace y en azul. Dato de la máquina: pantalla 1536×864 al 125 % de escala, o sea un viewport real de unos 1521×770.
+
+### El hueco no es una constante: depende del modo y de las dos dimensiones
+
+Medido con `fit_probe.mjs` (error ≤ 2,5 px) sobre la caja de la sesión 45. El borde izquierdo de la banda de huecos es el **x = 12 del lienzo 1162×1534**, así que `huecos.x = piecesL + 12 × (piecesW / 1162)`. Dos regímenes, los mismos que usa `pieces.css` con `max-aspect-ratio: 1162/1534`:
+
+- **Modo alto** (aspecto > 1162/1534, foto 68,1747 vh de ancho): `huecos = W/2 − 0,489673 × piecesW`, y el hueco libre **desde el inicio del texto** (`.content__inner`, caja + 40 px de padding) vale **`560px − 33,383vh`** con W ≥ 1200 y **`50vw − 33,383vh − 40px`** por debajo. Huecos medidos: 261 px en 1280/1440/1600×900, 198 en 1920×1080, 305 en 1536×770, 271 en 1536×864, 217 en 1024×768, 77 en 900×1000, 45 en 768×1024.
+- **Modo ancho** (aspecto ≤ 1162/1534, foto 80 vw centrada): la foto **no llega en y** ni al título ni al conmutador → sin conflicto. Comprobado con solape en y: **0** en 1024×1366, 820×1180, 414×896 y 375×812, y **14 px** en 768×1024, que caen sobre el borde negro superior del film (texto blanco sobre negro, no se distingue). El cruce en x de estas vistas es **falso positivo**: es el motivo por el que la rama ancha se deja al tamaño de siempre.
+
+Anchos en em (Bruno Ace, `letter-spacing: −0.02em`): "Rivera Miranda" **9,0691 em**; el conmutador entero **24,869 em** desde el borde de `.switch` (tres palabras + dos separadores + márgenes y paddings).
+
+### Medido, antes y después, con la misma sonda
+
+Cruce en px contra la columna de huecos: **negativo = no la toca**. "Antes" es el `about.html` de `HEAD` medido hoy mismo (se restauraron los dos ficheros y se comprobó por hash que vuelven a ser los míos); el título de antes era Roboto a 24 px (12 px ≤ 40 em) y el conmutador Roboto a 14 px (11,56 px en móvil).
+
+| viewport | título antes | título ahora | conmutador antes | conmutador ahora |
+|---|---|---|---|---|
+| 1280×900 | 24 px, −156 | 27,25 px, **−14** | 14 px, **+14** | 9,60 px, **−27** |
+| 1440×900 | 24 px, −156 | 27,25 px, −14 | 14 px, −11 | 9,60 px, −27 |
+| 1600×900 | 24 px, −196 | 27,25 px, −14 | 14 px, **+14** | 9,60 px, **−27** |
+| 1920×1080 | 24 px, −92 | 20,94 px, **−8** | 14 px, **+52** | 8 px, **−2** |
+| 1920×1200 | 24 px, −53 | 16,74 px, −7 | 14 px, **+91** | 8 px, **+37** |
+| 1536×770 (su máquina) | 24 px, −240 | 31,81 px, −17 | 14 px, −30 | 11,21 px, −32 |
+| 1536×864 | 24 px, −166 | 28,51 px, −12 | 14 px, −21 | 10,05 px, −26 |
+| 1366×768 | 24 px, −200 | 31,88 px, −16 | 14 px, −56 | 11,23 px, −31 |
+| 1280×1024 | 24 px, −112 | 22,91 px, **−9** | 14 px, **+33** | 8,07 px, **−20** |
+| 1024×768 | 24 px, −112 | 22,64 px, −12 | 14 px, **+33** | 8 px, **−22** |
+| 900×1000 | 24 px, **+28** | 12 px, **+32** | 14 px, **+173** | 8 px, **+118** |
+| 640×400 | 12 px, −119 | 15,38 px, −32 | 11,56 px, **+21** | 8 px, **+14** |
+| 2560×1440 | 24 px, **+25** | 12 px, **+29** | 14 px, **+170** | 8 px, **+115** |
+
+Lectura: el conmutador **mejora en los trece** —deja de cruzar la banda en 1280×900, 1600×900, 1920×1080, 1280×1024 y 1024×768— y solo quedan cruces donde manda el piso de 8 px (ventanas de más de ~1080 px de alto o muy bajas), siempre mejor que antes. El título pasa de sobrar 92-240 px a sobrar 8-32 px (texto 1,4× más grande y con tres caracteres más de línea) y **solo** se queda en el piso de 0,75rem en 900×1000 y 2560×1440, donde cruza 4 px más que antes (el nombre es más largo a igual de 12 px).
+
+**Corregido un dato de la sesión 45**: ahí se dio "solape 0 en 1280/1440/1600 con 0,875em" y "≈29 px en ≥1920". Medido hoy con la sonda (texto del último `.switch__item` contra la columna de huecos), el conmutador de entonces (Roboto, 14 px) cruzaba **14 px en 1280×900 y 1600×900** y **52 px en 1920×1080**; en 1440×900 sí quedaba a −11. La cifra de arriba es con la misma sonda antes y después, así que la comparación es válida; la de la sesión 45 no se sabe con qué referencia se tomó.
+
+### Cómo está montado (bloque `<style>` de `about.html`)
+
+- `.title { height: auto; line-height: 1.05; letter-spacing: −0.02em }` — el `height: 1.75em` de `demo.css` es para una sola línea y con dos se pisaban.
+- `.title__inner.mode--design { font-size: 1em; font-family: var(--font-name); font-weight: 400; color: var(--color-heading) }` — el `1em` anula el `1.5em` de `demo.css`: el tamaño lo manda `.title` y **el glitch y el modo código cambian de tipografía y de color pero nunca de tamaño**.
+- Factores sobre el hueco: título **0,105** (deja ~10 px de holgura en 1280×900), piso **0,75rem** (los 12 px que ya tenía el título en móvil), techo **2,6rem** (el del hero). Conmutador **0,037**, piso **8 px**, techo **13 px**.
+- Dos ramas por `aspect-ratio: 1162/1534`: la de modo alto **antes** que la de modo ancho para que en el empate gane la ancha, igual que en `pieces.css`, y la de `(max-width: 40em) and (max-aspect-ratio: 1162/1534)` la última.
+- Conmutador en `.switch.mode--design`: `font-family: var(--font-name)`, `color: var(--color-accent)` en los no actuales y `var(--color-heading)` al hover. En modo código manda el Roboto Mono rojo de la demo y durante el glitch el rojo del span, como hasta ahora.
+- El `margin-right: 0.9em` móvil se separó de la regla de `font-size`, porque las dos cosas ya no van en la misma rama. Se conservan `.pieces { top: 7px }` y `.content__bottom { margin-bottom: 4.5rem }`.
+
+### Error propio: `font-size: 1` no es CSS válido
+
+La primera versión escribió `font-size: 1` donde quería decir `1em`. Una longitud sin unidad no es un valor válido para `font-size`, el navegador descarta la declaración y ganaba el `1.5em` de `demo.css`: el título salía **1,5 veces más grande** de lo calculado. Se detectó **midiendo el `font-size` computado en la sonda**, no leyendo el CSS: en 1280×900 daba 40,9 px en vez de 27,25. La lección de siempre, aplicada a CSS: **una regla que no se aplica no da ningún error, solo se ve en la medida**.
+
+### i18n: el título ya no se traduce, y es a propósito
+
+`apply()` escribe `textContent` (el guard solo evita escribir cuando el texto no cambia), así que con `data-i18n` habría borrado el `<br>` de las dos líneas y los 20 spans de `charming`. Se quitó `data-i18n="about_title"` y las dos claves de `js/i18n.js`. El nombre es idéntico en ES y EN, no se pierde nada: **380 claves por idioma (iguales), 355 usadas en HTML y todas definidas, 26 `about_*` por idioma**; las 13 huérfanas del copy de la sesión 40 siguen igual, más las 12 `*_off`, que se usan con `data-i18n-offset`.
+
+### El conmutador de tres estados, revisado
+
+Se miró la píldora `--current` que pasaba de `C--` a `--C` a `-C-`: **es correcta y no es una regresión**. `photographer.js:128` hace `toggle(..., item === el)` (un solo ítem activo) y `tympMain.js:573-574` solo rota design/code; la píldora sigue al modo activo. No se tocó nada.
+
+### Verificación
+
+- **Matriz de 19 viewports** (1920×1080/1200/1440, 1600×900, 1536×864/770, 1440×900, 1366×768, 1280×1024/900/800/720, 1024×768/1366, 820×1180, 768×1024, 414×896, 393×851, 375×812): `scrollX/scrollY 0`, `scrollHeight − innerHeight = 0`, hueco título→menú **59,2 px** (32 en móvil) y menú→bloque inferior grande en todas, bloque inferior visible en las 19, **0 errores de consola**.
+- **Glitch y modos**: recorrido carga → código → diseño; en código el título va a Roboto Mono `#e04643` **al mismo tamaño**, el conmutador hereda Roboto Mono, y al volver a diseño se restauran Bruno Ace, blanco y azul. Colores confirmados: píldora `rgb(35,35,35)`, resto `rgb(0,147,165)` = `#0093a5`.
+- **i18n**: `es → en → es` con el título intacto (innerHTML idéntico, 20 spans) y el conmutador traducido en los dos sentidos.
+- Capturas para el usuario en `C:\Users\alexi\AppData\Local\Temp\opencode\`: `fix_1280/fix_1536/fix_1920/fix_768/fix_375.png`, `z_titulo.png` (dos líneas) y `z_switch.png` (píldora, separadores y azul).
+- `git diff`: solo `about.html` (+80/−7, con el bloque comentado) y `js/i18n.js` (−2). **Sin commitear.**
+
+### Lo que queda fuera de esta sesión
+
+- **Artefactos amarillos** (una "e" arriba y "desarrollador" en vertical abajo, x ≈ 340-350): están en el baseline `txt_base_1280.png` y no hay ningún elemento DOM ahí — van dentro de la imagen del carrete. Preexistentes.
+- **Cuadros negros intermitentes en modo Diseño**: el `loopFx` sobre `alex-alt.webp`, vacío desde la sesión 44. Preexistente (documentado en la 45).
+- **El menú derecho cruza la banda 24-29 px** en todos los tamaños: preexistente y aprobado en la sesión 45.
+- **La píldora de 1920×1200 (+37) y las de 900×1000/2560×1440**: mandan los pisos; reducirlos más es no leer nada.
+
+### Pendiente
+
+- **Revisión visual del usuario** del título a dos líneas y del conmutador en azul (capturas en Temp).
+- Commitear cuando lo pida.
+
+---
+
 ## Para la próxima sesión
 
 **Lo primero, y es de olhar, no de código**: la capa Photographer de `about.html` (sesión 45), que solo se ha visto por capturas y sondas —el estado inicial, la salida a medio vuelo, Diseñador y Desarrollador—. Después, las cuatro galerías de Fotografía y las cuatro de Diseño, en pantalla grande y en móvil, con el carrusel quieto y con el dedo puesto. Esta sesión cambió la geometría de las tarjetas de fotografía y la forma de medir la velocidad, y **nada de eso se ha visto**. El HTML está bien, pero el CSS siempre escapa algo.
@@ -1868,6 +1950,7 @@ Capturas `fin_photo_{375,768,1280,1440}`, `fin_design_1280`, `fin_code_1280`, `f
 **Hecho, ya no hay que hacerlo**: borrar las líneas 90 a 123 de `about.html`. Se hizo en su día y la sesión 42 lo repitió; esa sección ya no existe. Hoy `about.html` son 252 líneas porque aloja la demo de Codrops (sesión 43) con el conmutador de tres estados (sesión 45), pero el copy viejo no ha vuelto.
 
 **Pendiente de mirar**:
+- **Hecho (sesión 46), PENDIENTE DE VER POR EL USUARIO: el título "Alexis / Rivera Miranda" a dos líneas y el conmutador**, los dos en Bruno Ace (blanco y azul de la página) y al mayor tamaño que cabe sin entrar en la banda de perforaciones, medido viewport por viewport. Capturas `fix_*`, `z_titulo` y `z_switch` en Temp. Si hay que retocarlo, lo que manda es el bloque `<style>` de `about.html` (factores 0,105 y 0,037 sobre la fórmula del hueco de la sesión 45); los dos únicos puntos que se tocaron de la demo son `.title__inner.mode--design { font-size: 1em }` (anula el `1.5em` de `demo.css` para que el tamaño no salte en el glitch) y el `margin-right` móvil del conmutador, que se separó de su `font-size`.
 - **Hecho (sesión 45): la capa Photographer de `about.html`, PENDIENTE DE VER POR EL USUARIO.** El conmutador es Fotógrafo | Diseñador | Desarrollador, "Work with me" está oculto (no borrado: `tympMain.js` lo toca sin null-check) y todo el texto lleva `data-i18n`. Si hay que retocar algo, lo único de la demo que se tocó es `tympMain.js:443` (selectores por clase en vez de first/last child); el resto está en `js/photographer.js`.
 - **Hecho (sesión 45, cerrado): los +10 px de abajo de la imagen del About** (`oy −10`), regeneradas las tres imágenes con la transformación compartida, `dy` de la foto incluido. Los pies se recortan 10 px en el borde inferior del lienzo, como se pidió.
 - **Hecho (sesión 44): `about.html` con la demo, ya vista y aprobada por el usuario** ("lo más difícil del About, conseguido"). Lo que quedó fijo: la foto a 530×812 centrada en el viewport, los iconos sociales **abajo a la derecha**, los controles de la esquina ocultos y las dos imágenes (foto y binario) con **la misma transformación**, de modo que al cambiar de Designer a Coder solo cambia el relleno y no se mueve la figura. Si se retoca, lo único que hay que rehacer es la transformación compartida de `alex-normal` y `alex-code` (bbox combinada de las dos fuentes), nunca por imagen aparte.
