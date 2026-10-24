@@ -1943,6 +1943,58 @@ Se miró la píldora `--current` que pasaba de `C--` a `--C` a `-C-`: **es corre
 
 ---
 
+## Sesión 47 — El título de About pasa a ser la categoría del modo activo
+
+**Lo que se pidió**: que el título "Alexis / Rivera Miranda" de About se sustituyera por **la categoría del modo** — Fotografía, Diseño gráfico o Desarrollador — manteniendo las animaciones de letra (charming) y sin cruzar la banda de perforaciones. Sobre la recta final: después de esto, pulir un par de detalles en otras páginas y cerrar.
+
+### Cómo está montado
+
+- Las tres categorías viven a la vez en el DOM dentro de `.title__inner`, cada una en un `<span class="title__cat title__cat--photo|design|code" data-i18n="about_cat_*">`. La visible la decide `setCat(cat)` (tympMain.js), que escribe `data-cat` en `.title__inner` y limpia `style.opacity` de las letras entrantes — sin eso, foto y código (que entran sin animación de letras) heredaban el opacity:0 de la salida anterior. El CSS las tiene todas en `display:none` y solo la que coincide con `data-cat` en `display:inline`.
+- `DOM.title.letters` es ahora un getter que devuelve solo las letras de la categoría visible: es lo que consumen las animaciones de salida/entrada de tymp, y por eso la demo no nota el cambio.
+- `charmTitle()` parte las tres con `charming` y es idempotente (`if (!cat.querySelector('span'))`). Se expuso `window.AboutTitle = { charm, set }`.
+- `setCat` se llama desde los cuatro puntos de cambio: `switchToCode` (tras `hideDesign` complete), `switchToDesign`, `enterPhoto` (photographer, al inicio de la entrada) y el `finish()` de photographer en la rama no-delegada y en el fallback por si el guard `isAnimating` bloquea el clic reenviado.
+- `index.js` llama `window.AboutTitle?.charm()` tras `initI18n()` y en `onLangChange`: `apply()` reescribe el `textContent` de los `data-i18n` y borra los spans de charming; volver a partirlos es lo que deja objetivos a las animaciones.
+
+### i18n
+
+Tres claves nuevas por idioma: `about_cat_photo` / `about_cat_design` / `about_cat_dev` → ES **Fotografía / Diseño gráfico / Desarrollador**, EN **Photography / Graphic design / Developer**. Paridad verificada: **383 claves = 383**. En modo código `demo.css` aplica `text-transform: lowercase`, así que se ve "desarrollador" en minúsculas: consistente con el switch, comportamiento de la demo aceptado.
+
+### Medido contra la banda: 6 viewports × 3 modos, 18 combinaciones
+
+Anchos en em (Bruno Ace, tracking −0,02em): "Graphic design" **8,75** (el más largo de los seis), "Diseño gráfico" 8,70, "Desarrollador" 8,37, "Photography" 8,07, "Fotografía" 6,50, "Developer" 6,12 — todos por debajo de los 9,0691 em de "Rivera Miranda", así que **el factor 0,105 de la sesión 46 sigue valiendo sin tocarlo** (el comentario del `<style>` quedó actualizado con estas cifras, y desapareció el `<em>` que había quedado sin rellenar).
+
+Cruce en px contra la columna de huecos (negativo = no la toca):
+
+| viewport | fs | foto | diseño | código |
+|---|---|---|---|---|
+| 1280×900 | 27,25 px | −84,0 | −24,1 | −55,7 |
+| 1536×770 (su máquina) | 31,81 px | −120,8 | −28,7 | −65,5 |
+| 1366×768 | 31,88 px | −120,4 | −28,0 | −64,9 |
+| 1920×1080 | 20,94 px | −76,1 | −15,4 | −39,6 |
+| 1600×900 | 27,25 px | −103,2 | −24,1 | −55,7 |
+| 1280×1024 | 22,91 px | −84,3 | −17,9 | −44,4 |
+
+Peor caso: **−15,4 px** (diseño, 1920×1080). La sonda corrió en ES; en EN el más largo es "Graphic design", 0,05em más que "Diseño gráfico", que en el peor viewport resta ~1 px → −14,4. Sin scroll horizontal en las 18. Móvil 375×812: "Fotografía" y "Diseño gráfico" sin overflow, fs 24 px.
+
+### Verificación (sonda, 90 OK / 0 FAIL)
+
+- Recorrido ES: carga (photo, 10 spans, opacity 1) → diseño (14) → código (13, lowercase) → foto → código directo → diseño delegado por `switchMode` → vuelta a foto con las letras visibles (sin opacity:0 residual).
+- i18n sobre el título: es → en ("Photography", 11 spans, re-charm tras `apply`) → "Graphic design" → vuelta a es con spans.
+- 0 excepciones JS (recorrido completo de about), 0 errores de consola, 0 peticiones de red fallidas.
+- Smoke de `index.html`, `gallery-photo-1.html` y `contact.html` (comparten `index.js`): sin cortina loading ni excepciones.
+
+### Tres cosas que aprendió la sonda (del instrumento, no del sitio)
+
+- **Guard `isAnimating` de `switchMode`** (`tympMain.js:591`): tras código→diseño la animación de teselas dura ~2,3 s y los clics a código se descartan en silencio. No es regresión: es el diseño original (la sonda clicaba a los 2,2 s). Ahora reintenta hasta que `.switch.mode--*` cambia de clase, que es síncrono con el modo, y chequea además `data-cat === modo`.
+- **Los spans del conmutador tienen `pointer-events: none`** (`demo.css:267`), así que un clic real llega al `<a>` y `ev.target === item` de `tympMain.js:597` sigue siendo correcto. Se comprobó antes de concluir lo contrario.
+- **Una expresión de medición sin invocar** (`(() => {...})` sin los `()`) devuelve la función serializada como `{}`: todos los campos `undefined` sin ninguna excepción. Toda medida nueva hay que mirar que el objeto tenga campos.
+
+### Estado
+
+- `git diff`: `about.html` (título por categorías + comentario actualizado), `js/i18n.js` (+3 claves ×2), `js/tympMain.js` (getter, `charmTitle`, `setCat`, `window.AboutTitle`), `js/photographer.js` (`enterPhoto`/`finish`), `js/index.js` (re-charm). **Sin commitear.**
+
+---
+
 ## Para la próxima sesión
 
 **Lo primero, y es de olhar, no de código**: la capa Photographer de `about.html` (sesión 45), que solo se ha visto por capturas y sondas —el estado inicial, la salida a medio vuelo, Diseñador y Desarrollador—. Después, las cuatro galerías de Fotografía y las cuatro de Diseño, en pantalla grande y en móvil, con el carrusel quieto y con el dedo puesto. Esta sesión cambió la geometría de las tarjetas de fotografía y la forma de medir la velocidad, y **nada de eso se ha visto**. El HTML está bien, pero el CSS siempre escapa algo.
@@ -1950,7 +2002,8 @@ Se miró la píldora `--current` que pasaba de `C--` a `--C` a `-C-`: **es corre
 **Hecho, ya no hay que hacerlo**: borrar las líneas 90 a 123 de `about.html`. Se hizo en su día y la sesión 42 lo repitió; esa sección ya no existe. Hoy `about.html` son 252 líneas porque aloja la demo de Codrops (sesión 43) con el conmutador de tres estados (sesión 45), pero el copy viejo no ha vuelto.
 
 **Pendiente de mirar**:
-- **Hecho (sesión 46), PENDIENTE DE VER POR EL USUARIO: el título "Alexis / Rivera Miranda" a dos líneas y el conmutador**, los dos en Bruno Ace (blanco y azul de la página) y al mayor tamaño que cabe sin entrar en la banda de perforaciones, medido viewport por viewport. Capturas `fix_*`, `z_titulo` y `z_switch` en Temp. Si hay que retocarlo, lo que manda es el bloque `<style>` de `about.html` (factores 0,105 y 0,037 sobre la fórmula del hueco de la sesión 45); los dos únicos puntos que se tocaron de la demo son `.title__inner.mode--design { font-size: 1em }` (anula el `1.5em` de `demo.css` para que el tamaño no salte en el glitch) y el `margin-right` móvil del conmutador, que se separó de su `font-size`.
+- **Hecho (sesión 47), PENDIENTE DE VER POR EL USUARIO: el título de About ya no es el nombre, es la categoría del modo** — Fotografía | Diseño gráfico | Desarrollador (EN: Photography | Graphic design | Developer), con charming y i18n intactos. Medido contra la banda en 6 viewports × 3 modos, peor cruce −15,4 px. Si hay que retocarlo, lo que manda es el bloque `<style>` de `about.html` (factor 0,105 sin tocar) y `setCat`/`charmTitle` de `tympMain.js` (expuestos como `window.AboutTitle`). El conmutador y el resto del título de la sesión 46 siguen como estaban. **Sin commitear** (con `about.html`, `js/i18n.js`, `js/tympMain.js`, `js/photographer.js` y `js/index.js`).
+- **El siguiente paso dicho por el usuario: pulir un par de detalles en otras páginas y cerrar.** Sin especificar cuáles; preguntar.
 - **Hecho (sesión 45): la capa Photographer de `about.html`, PENDIENTE DE VER POR EL USUARIO.** El conmutador es Fotógrafo | Diseñador | Desarrollador, "Work with me" está oculto (no borrado: `tympMain.js` lo toca sin null-check) y todo el texto lleva `data-i18n`. Si hay que retocar algo, lo único de la demo que se tocó es `tympMain.js:443` (selectores por clase en vez de first/last child); el resto está en `js/photographer.js`.
 - **Hecho (sesión 45, cerrado): los +10 px de abajo de la imagen del About** (`oy −10`), regeneradas las tres imágenes con la transformación compartida, `dy` de la foto incluido. Los pies se recortan 10 px en el borde inferior del lienzo, como se pidió.
 - **Hecho (sesión 44): `about.html` con la demo, ya vista y aprobada por el usuario** ("lo más difícil del About, conseguido"). Lo que quedó fijo: la foto a 530×812 centrada en el viewport, los iconos sociales **abajo a la derecha**, los controles de la esquina ocultos y las dos imágenes (foto y binario) con **la misma transformación**, de modo que al cambiar de Designer a Coder solo cambia el relleno y no se mueve la figura. Si se retoca, lo único que hay que rehacer es la transformación compartida de `alex-normal` y `alex-code` (bbox combinada de las dos fuentes), nunca por imagen aparte.

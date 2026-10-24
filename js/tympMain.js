@@ -454,7 +454,14 @@
 		el: document.querySelector('.contact-link')
 	};
 	DOM.title = {
-		el: document.querySelector('.title > .title__inner')
+		el: document.querySelector('.title > .title__inner'),
+		// Letras de la categoría visible (data-cat). Antes era un array fijo
+		// con las letras del nombre; el título ahora cambia de texto con el
+		// modo y el getter apunta siempre a las letras que se ven.
+		get letters() {
+			const cat = this.el && this.el.querySelector('.title__cat--' + (this.el.dataset.cat || 'photo'));
+			return cat ? [].slice.call(cat.querySelectorAll('span')) : [];
+		}
 	};
 	DOM.menuCtrl = document.querySelector('.btn--menu');
 	DOM.menu = {
@@ -489,9 +496,8 @@
 	}
 
 	function wordsToLetters() {
-		// Title.
-		charming(DOM.title.el);
-		DOM.title.letters = [].slice.call(DOM.title.el.querySelectorAll('span'));
+		// Title: las tres categorías (guarda idempotente en charmTitle).
+		charmTitle();
 		// Contact.
 		charming(DOM.contact.el);
 		DOM.contact.letters = [].slice.call(DOM.contact.el.querySelectorAll('span'));
@@ -502,6 +508,36 @@
 			DOM.menuCodeItemLetters.push([].slice.call(item.querySelectorAll('span')));
 		});
 	}
+
+	// Parte cada categoría del título en letras (charming). Idempotente:
+	// i18n.js reescribe el textContent de las categorías con data-i18n al
+	// cambiar de idioma y eso borra los spans; volver a partirlos es lo que
+	// deja las animaciones de letra con objetivos. Se expone en
+	// window.AboutTitle para que index.js lo llame después de apply() y
+	// photographer.js pueda cambiar la categoría.
+	function charmTitle() {
+		if (!DOM.title.el) return;
+		[].slice.call(DOM.title.el.querySelectorAll('.title__cat')).forEach(function(cat) {
+			if (!cat.querySelector('span')) charming(cat);
+		});
+	}
+
+	// Cambia la categoría visible del título. Lo llaman switchToCode y
+	// switchToDesign en el instante en que el título está oculto (tras la
+	// animación de salida), y photographer.js en las transiciones que no
+	// pasan por switchMode (entrada a Fotógrafo y salidas en las que la demo
+	// ya está en el modo destino).
+	function setCat(cat) {
+		if (!DOM.title.el || DOM.title.el.dataset.cat === cat) return;
+		DOM.title.el.dataset.cat = cat;
+		// Las letras de la categoría que entra pueden haber quedado con
+		// opacity:0 en la animación de salida anterior (el modo código y la
+		// foto entran sin animación de letras): se limpian para que se vean.
+		const spans = DOM.title.el.querySelectorAll('.title__cat--' + cat + ' span');
+		for (let i = 0; i < spans.length; ++i) spans[i].style.opacity = '';
+	}
+
+	window.AboutTitle = { charm: charmTitle, set: setCat };
 
 	function initEvents() {
 		DOM.switchModeCtrls.design.addEventListener('click', switchMode);
@@ -661,6 +697,7 @@
 		// Animate the title, contact, menu ctrl and menu items out and show the code mode version of these elements.
 		// Title:
 		hideDesign('title', function() {
+			setCat('code');
 			showCode('title');
 		});
 		// Contact:
@@ -730,6 +767,7 @@
 		// Title:
 		animateLetters(DOM.title.letters, 'out', {
 			complete: function() {
+				setCat('design');
 				showDesign('title');
 			}
 		});

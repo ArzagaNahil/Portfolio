@@ -9,7 +9,15 @@ let menu = null;
 
 initI18n(() => {
     if (menu) menu.restart();
+    // apply() reescribe las categorías del título de About (data-i18n) y eso
+    // borra los spans de charming: se vuelven a partir para que las
+    // animaciones de letra sigan teniendo objetivos.
+    if (window.AboutTitle) window.AboutTitle.charm();
 });
+// apply() de la carga inicial puede correr antes o después de que tympMain
+// reparta el título (depende de cuándo carguen las imágenes): en ambos
+// órdenes hace falta esta pasada de garantía. charmTitle es idempotente.
+if (window.AboutTitle) window.AboutTitle.charm();
 
 // Splitting solo se carga en las páginas con menú LetterShuffle (index/contact).
 // La guardia evita el ReferenceError que rompería todo el módulo en el resto.

@@ -134,6 +134,8 @@
 		layer.style.display = '';
 		layout();
 		setCurrent(itemPhoto);
+		// El título pasa a "Fotografía" al empezar la entrada de la capa.
+		if (window.AboutTitle) window.AboutTitle.set('photo');
 		fxSplit(false);
 	}
 
@@ -155,6 +157,9 @@
 		layer.style.display = 'none';
 		if (mode === currentMode()) {
 			setCurrent(mode === 'code' ? itemCode : itemDesign);
+			// La demo no cambia de modo, así que switchMode no corre y nadie
+			// cambiaría la categoría del título: se cambia aquí.
+			if (window.AboutTitle) window.AboutTitle.set(mode);
 		}
 		else {
 			const target = mode === 'code' ? itemCode : itemDesign;
@@ -162,6 +167,10 @@
 			// Si el click delegado cayera en el guard isAnimating de switchMode
 			// (tympMain.js:552), la demo no marcaría el ítem: lo marcamos aquí.
 			if (!target.classList.contains('switch__item--current')) setCurrent(target);
+			// Mismo guard: si switchMode no corrió, tampoco cambió la categoría
+			// (cuando corre, .switch ya lleva el modo nuevo tras el click y
+			// setCat lo hará tympMain al terminar su animación de salida).
+			if (currentMode() !== mode && window.AboutTitle) window.AboutTitle.set(mode);
 		}
 	}
 

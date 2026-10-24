@@ -164,19 +164,32 @@
        aquí se decide igual, y la rama ancha va después para que en el
        empate gane la ancha, como en pieces.css.
        ===================================================================== */
-    /* --- Título: "Alexis / Rivera Miranda" a dos líneas, como el hero del
-       index. Bruno Ace y --color-heading, igual que los .page-title de las
-       demás páginas (sin su opacidad 0.18: aquí el texto va sobre la foto y
-       tiene que leerse). "Rivera Miranda", la línea más larga, mide 9.07em
-       con el tracking de la web → factor 0.105 sobre el hueco (quedan ~10px
-       de holgura en 1280×900). Piso 0.75rem: es el 12px que ya tenía el
-       título en móvil, y por debajo de eso ya no se lee. Techo 2.6rem, el
-       mismo que el hero del index. */
+    /* --- Título: la categoría del modo activo (Fotografía | Diseño gráfico |
+       Desarrollador), en Bruno Ace y --color-heading, igual que los
+       .page-title de las demás páginas (sin su opacidad 0.18: aquí el texto
+       va sobre la foto y tiene que leerse). Las tres viven a la vez en el
+       DOM y solo se ve la que indica data-cat de .title__inner (lo escribe
+       setCat en tympMain.js y photographer.js; el glitch solo alterna las
+        clases mode--* y no toca esto). La línea más larga, "Graphic design"
+        (EN), mide 8,75 em de Bruno Ace con el tracking de la web —el más
+        ancho en ES es "Diseño gráfico", 8,70; ambos por debajo de los
+        9,07 em de "Rivera Miranda"— → factor 0.105 sobre el hueco (quedan
+        ~10px de holgura en 1280×900; medido con la sonda en los 6
+        viewports: el peor cruce es −15,4px en 1920×1080 y, con "Graphic
+        design", −14,4). Piso 0.75rem: es el
+       12px que ya tenía el título en móvil, y por debajo de eso ya no se
+       lee. Techo 2.6rem, el mismo que el hero del index. */
     .page-about .title {
         height: auto;
         line-height: 1.05;
         letter-spacing: -0.02em;
     }
+    /* Solo se ve la categoría del modo: las otras quedan display:none, así
+       que no pesan en el ancho de la caja ni en la medición contra la banda. */
+    .page-about .title__cat { display: none; }
+    .title__inner[data-cat="photo"] .title__cat--photo,
+    .title__inner[data-cat="design"] .title__cat--design,
+    .title__inner[data-cat="code"] .title__cat--code { display: inline; }
     /* demo.css pinta .title__inner.mode--design { font-size: 1.5em }: aquí el
        tamaño lo manda .title, para que el glitch y el modo código cambien de
        tipografía y de color pero nunca de tamaño. */
@@ -301,7 +314,7 @@
                 <div class="content__inner">
                     <div class="content__top">
                         <h2 class="title">
-                            <span class="title__inner mode mode--design" data-switch data-glitch>Alexis<br>Rivera Miranda</span>
+                            <span class="title__inner mode mode--design" data-switch data-glitch data-cat="photo"><span class="title__cat title__cat--photo" data-i18n="about_cat_photo">Fotografía</span><span class="title__cat title__cat--design" data-i18n="about_cat_design">Diseño gráfico</span><span class="title__cat title__cat--code" data-i18n="about_cat_dev">Desarrollador</span></span>
                         </h2>
                         <div class="controls">
                             <button class="btn btn--menu mode mode--design" data-switch>
