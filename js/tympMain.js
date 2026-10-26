@@ -449,6 +449,7 @@
 		'code' : DOM.switchCtrls.querySelector('.switch__item--code')
 	};
 	DOM.pieces = document.querySelector('.pieces');
+	DOM.aboutDesc = document.querySelector('.about-desc');
 	DOM.glitchElems = document.querySelectorAll('[data-glitch]');
 	DOM.contact = {
 		el: document.querySelector('.contact-link')
@@ -530,6 +531,8 @@
 	function setCat(cat) {
 		if (!DOM.title.el || DOM.title.el.dataset.cat === cat) return;
 		DOM.title.el.dataset.cat = cat;
+		// Sincronizar descripción dinámica
+		if (DOM.aboutDesc) DOM.aboutDesc.dataset.cat = cat;
 		// Las letras de la categoría que entra pueden haber quedado con
 		// opacity:0 en la animación de salida anterior (el modo código y la
 		// foto entran sin animación de letras): se limpian para que se vean.
@@ -710,7 +713,12 @@
 		});
 		// Menu links:
 		hideDesign(DOM.menu['design'].items, function() {
-			DOM.menu['design'].wrapper.style.display = 'none';
+			// En About el wrapper de diseño es también la descripción
+			// (.about-desc) y no tiene enlaces de menú. Debe seguir visible en
+			// modo código para mostrar el texto de esa categoría.
+			if( DOM.menu['design'].items.length ) {
+				DOM.menu['design'].wrapper.style.display = 'none';
+			}
 				
 			animateLetters(DOM.menuCodeItemLetters, 'in', {
 				delay: function(t,i) {

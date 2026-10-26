@@ -1995,15 +1995,99 @@ Peor caso: **−15,4 px** (diseño, 1920×1080). La sonda corrió en ES; en EN e
 
 ---
 
+## Sesión 48 — Descripción de About por categoría, la nota de Contacto sobre el formulario y el borde del CTA en violeta
+
+**Lo que se pidió**: cerrar el trabajo que había quedado sin commitear en About y Contacto —un `margin-top` duplicado, exceso de `!important`, un `margin-left: -13.5rem` fijo, los textos nuevos sin traducir y el salto de línea final de `contact.html`—, hacer responsive todo lo añadido y, después, dos pruebas concretas de diseño: **subir los dos spans de la nota de Contacto encima del formulario**, porque al usuario le parecía que le quitaban protagonismo a la animación del botón Enviar, y **cambiar el borde rosa que aparece en el hover del CTA** por un color de la paleta. El pulido visual de About y los dos frentes que ya venían abiertos se dejan para la próxima sesión.
+
+### About: el menú de la demo pasa a ser la descripción de la categoría
+
+- Los cuatro enlaces de menú de la demo (`about_menu_iface`, `about_menu_portfolio`, `about_menu_cases`, `about_menu_musings`) se sustituyen por **tres párrafos**, uno por categoría, dentro de un `<div class="menu about-desc" data-cat="photo">`. Se conserva la clase `menu` a propósito: es la que le da el ancho y la alineación de la demo; encima se añade `.about-desc` para poder estilizarlo sin tocar `demo.css`.
+- Cada párrafo es `<p class="about-desc__item" data-cat="photo|design|code" data-i18n="about_desc_*">`. La visibilidad es **solo CSS**: todos en `display:none` y únicamente el que coincide con `data-cat` del contenedor en `display:block`.
+- `setCat(cat)` escribe además `DOM.aboutDesc.dataset.cat = cat`. No hay una segunda ruta de cambio de modo: los puntos que ya llamaban a `setCat` (código, diseño, foto y los dos caminos de photographer) mueven título y descripción a la vez.
+- Medida del texto: `max-width: 52ch`, `margin-left: auto` (el bloque se apoya en el borde derecho de su columna), `font-size: clamp(0.8rem, 0.7rem + 0.25vw, 0.95rem)` y `line-height: 1.55`.
+- El glitch de la categoría en **modo código** pasa del rojo de la demo al azul de la página (`--color-accent`). `data-glitch` se movió de `.title__inner` a cada `.title__cat` y se añadió a los spans de Fotógrafo y Diseñador: el efecto es por palabra, no por el contenedor de las tres.
+- **El bug de fondo era el `hideDesign`**: el wrapper de diseño es ahora la descripción y no tiene enlaces, así que `switchToCode` lo dejaba en `display:none` y el párrafo de código se quedaba oculto. Se resolvió con un guard sobre `DOM.menu['design'].items.length`: si no hay items, no se oculta el wrapper.
+
+### Medido: la descripción en 8 viewports × 3 modos = 24 combinaciones
+
+| viewport | fs | ancho útil | alto foto | alto diseño | alto código |
+|---|---|---|---|---|---|
+| 1920×1080 | 15,20 px | 444,2 px | 117,8 | 117,8 | 141,4 |
+| 1536×770 | 15,04 px | 439,5 px | 116,6 | 116,6 | 139,9 |
+| 1366×768 | 14,62 px | 427,0 px | 113,2 | 113,2 | 135,8 |
+| 1280×900 | 14,40 px | 420,8 px | 111,6 | 111,6 | 134,0 |
+| 1024×768 | 13,76 px | 402,1 px | 106,6 | 106,6 | 128,0 |
+| 820×1180 | 13,25 px | 387,2 px | 102,7 | 102,7 | 123,2 |
+| 768×1024 | 13,12 px | 383,4 px | 101,7 | 101,7 | 122,1 |
+| 375×812 | 12,80 px | 343,0 px | 119,0 | 99,1 | 138,8 |
+
+En las 24: **un solo `.about-desc__item` visible**, `data-cat` del contenedor siempre igual al modo, `.menu--code` en `display:block` solo en código y **0 scroll horizontal**. A 375 el ancho lo manda el viewport (343 px = 375 − 32), no los 52ch.
+
+Ajuste vertical, que es lo que podía romperse al crecer el texto (modo código, el más alto, 8 tamaños de escritorio con `main` a `100vh` y `overflow:hidden`): el párrafo termina entre **313 y 348 px** desde arriba y el conmutador empieza entre **518 y 999 px**. **0 px de solape** en todos; el caso más justo es 900×600 (313,5 vs 518,8) y en 864×720 sobran 325 px (313,5 vs 638,8). `.link-wrap` mide 0×0 (está oculto, como en la demo).
+
+### Contacto: la nota primero debajo y, por decisión del usuario, encima del formulario
+
+- La nota son dos spans dentro de un `<p class="contact__note">`: `.contact__note--title` en Bruno Ace y `.contact__note--sub` en la tipografía de párrafo. Nació **debajo de la tarjeta** y en esta sesión pasó **encima**.
+- El borrador la alineaba con la tarjeta mediante `margin-left: -13.5rem`; eso se sustituyó por un wrapper **`.contact__stack`** (tarjeta + nota) que fija el ancho de las dos y deja que el `gap` gobierne la separación. Los offsets de escritorio (`margin-right: 220px`, `margin-top`) se movieron de la tarjeta al stack: la tarjeta se queda donde estaba y la nota se alinea con ella sin números negativos.
+- Todos los tamaños son adaptativos: `gap: clamp(0.75rem, 2vh, 1.5rem)` y `font-size` con `clamp()` en la nota y en el subtítulo; el padding vertical de `.page-contact .contact` es `clamp(1.5rem, 4vh, 4rem)` arriba y `clamp(2rem, 5vh, 4rem)` abajo, en lugar del `1rem 2rem 11rem` fijo que a 720 px de alto dejaba el stack pegado al borde.
+- Entre 54em y 56em el stack lleva `margin-right: 240px` (20 px más) porque ahí la sección es casi tan estrecha como la tarjeta más el hueco de los iconos sociales, que viven **abajo a la derecha**. Antes el roce era con la nota, que estaba abajo; ahora el que queda cerca es el botón, y con 240 px hay 46,5 px de aire a 864×720.
+
+Posición ya con la nota arriba (px desde el borde superior del viewport):
+
+| viewport | nota, de y a y | hueco nota↔tarjeta | tarjeta, de y a y | margen inferior |
+|---|---|---|---|---|
+| 375×812 | 352,6–439,2 | 24,0 | 463,2–989,7 | documento 1022 (scrollea) |
+| 768×1024 | 403,1–508,3 | 24,0 | 532,3–1030,4 | documento 1062 (scrollea) |
+| 864×720 | 75,3–149,6 | 14,4 | 164,0–680,7 | 39,3 |
+| 1280×720 | 74,8–149,2 | 14,4 | 163,6–681,2 | 38,8 |
+| 1366×768 | 87,1–186,4 | 15,4 | 201,7–719,3 | 48,7 |
+| 1440×900 | 152,2–253,3 | 18,0 | 271,3–788,8 | 111,2 |
+| 1536×770 | 88,1–187,4 | 15,4 | 202,8–720,4 | 49,6 |
+| 1920×1080 | 238,3–341,8 | 21,6 | 363,3–880,9 | 199,1 |
+
+A 1280×720 el botón ocupa 595–648,2: **446 px** por debajo de la nota, solo al pie de la tarjeta. La altura total del stack no cambia al mover la nota (606,3 px), porque el orden no altera la suma; lo que cambia es que el CTA deja de tener texto debajo.
+
+**La sospecha del usuario era visual, no técnica, y se midió para no discutirla de oído**: entre el botón y la nota había 47,4 px y `.shiny-cta` tiene `overflow:hidden`, así que la animación nunca quedó tapada. Lo que competía era el **título blanco** (`#f0f0f5`, el mismo tono que el texto del CTA) pegado a la tarjeta. Antes de mover nada se generaron **6 variantes** con CSS inyectado fuera del repo (más aire, título en gris, título pequeño, línea fina) y sus recortes con el botón en hover; el usuario, que ya venía pensando en subir la nota, la subió y dejó **la variante de dentro de la tarjeta para decidirla en la próxima sesión**. Medido en el hover, la animación cambia de verdad: **63,13 %** de píxeles distintos entre reposo y hover en la zona del botón.
+
+### El borde del CTA: del rosa al violeta
+
+- El rosa del hover no venía del `box-shadow` ni del `border`, sino de `--gradient-shine`, el color del brillo del `conic-gradient` del borde: en reposo es blanco y al pasar el cursor pasaba a `--color-accent-alt` (#ff6584).
+- Se añadió a `:root` un token propio, `--color-accent-shine: #6c63ff` (el violeta que ya usa el sitio en menú y enlaces), y el hover apunta ahí. Se podía haber reutilizado `--color-menu-hover`, pero un token con nombre propio deja escrito para qué existe; el gradiente queda teal → violeta.
+- Verificación por conteo de píxeles (no a ojo, porque las capturas no se pueden mirar desde el modelo): en el recorte del botón a 1280×720 y escala 2 (543 725 px) hay **4.087 px violetas y 15 rosados** en hover, frente a **0 y 0** en reposo. Los 15 rosados son antialiasing del borde, no el color anterior. A 1536: 2.833 / 9.
+- `--color-accent-alt` (#ff6584) **se queda en la paleta sin uso**: no se ha borrado. Decidir si se elimina o se reserva.
+
+### i18n
+
+Cinco claves nuevas por idioma: `about_desc_photo` / `about_desc_design` / `about_desc_code` y `c_note_title` / `c_note_sub`. Paridad **388 = 388** claves, sin huérfanas nuevas por el lado del contacto. Las cuatro `about_menu_*` de la demo **sí quedan huérfanas** (ya no las usa el HTML). La nota entera mide lo mismo en ES y EN a 1280×720 (74,4 px), así que el cambio de idioma no mueve el stack.
+
+### Notas del instrumento
+
+- En PowerShell `Diff` es alias de `Compare-Object`; la función de diff de píxeles hubo que llamarla `PixelDiff` o el shell interpreta los argumentos como parámetros de cmdlet.
+- Las capturas se generan, no se miran: el color del borde se validó contando píxeles y leyendo `getComputedStyle(...).getPropertyValue('--gradient-shine')` (`rgb(108, 99, 255)` en hover).
+- Las 6 variantes de la nota se probaron inyectando un `<style>` con `!important` desde el script, **sin tocar `css/style.css`**. El archivo del sitio solo recibió la variante elegida.
+
+### Estado
+
+- **Un solo commit para la sesión 48** (`feat: About con descripción por categoría y la nota de Contacto sobre el formulario`): `about.html`, `contact.html`, `css/style.css`, `js/i18n.js`, `js/tympMain.js` (158 inserciones y 48 borrados) **y esta entrada de `MEMORIAS.md`**. No se cita el hash a propósito: el mismo commit que incluye esta bitácora se reescribe al añadirla, así que cualquier hash escrito aquí nacería muerto. Se localiza por el asunto.
+- La sesión 47 se había commiteado antes de empezar esta, como **`d786d2c`**; su entrada dice "sin commitear" porque se escribió antes del commit.
+- `check.txt` sigue sin seguimiento y no se ha tocado.
+
+---
+
 ## Para la próxima sesión
 
-**Lo primero, y es de olhar, no de código**: la capa Photographer de `about.html` (sesión 45), que solo se ha visto por capturas y sondas —el estado inicial, la salida a medio vuelo, Diseñador y Desarrollador—. Después, las cuatro galerías de Fotografía y las cuatro de Diseño, en pantalla grande y en móvil, con el carrusel quieto y con el dedo puesto. Esta sesión cambió la geometría de las tarjetas de fotografía y la forma de medir la velocidad, y **nada de eso se ha visto**. El HTML está bien, pero el CSS siempre escapa algo.
+**Lo primero es una decisión de diseño, no de código**: dónde vive la nota de Contacto. Ahora está **encima de la tarjeta** dentro de `.contact__stack`, con el ancho de la tarjeta y `text-align: center`. El usuario barajó **meterla dentro de la tarjeta, entre `.contact__sub` y el `<form>`**, y no lo decidió. Mover el `<p class="contact__note">` es todo: dentro de la tarjeta el `gap` del stack deja de aplicarse y manda el `margin-bottom` de `.contact__sub`, así que el CSS también cambia un poco. Cualquier variante se mide a 375 / 768 / 1280 / 1536 antes de darla por buena.
+
+**En pantalla, que es lo que el usuario pidió**: pulir About —el título por categoría, el conmutador y la descripción nueva—. Ahí entra también la capa Photographer de `about.html` (sesión 45), que solo se ha visto por capturas y sondas: el estado inicial, la salida a medio vuelo, Diseñador y Desarrollador. Después, las cuatro galerías de Fotografía y las cuatro de Diseño, en pantalla grande y en móvil, con el carrusel quieto y con el dedo puesto. Una sesión anterior cambió la geometría de las tarjetas de fotografía y la forma de medir la velocidad, y **nada de eso se ha visto**. El HTML está bien, pero el CSS siempre escapa algo.
 
 **Hecho, ya no hay que hacerlo**: borrar las líneas 90 a 123 de `about.html`. Se hizo en su día y la sesión 42 lo repitió; esa sección ya no existe. Hoy `about.html` son 252 líneas porque aloja la demo de Codrops (sesión 43) con el conmutador de tres estados (sesión 45), pero el copy viejo no ha vuelto.
 
 **Pendiente de mirar**:
-- **Hecho (sesión 47), PENDIENTE DE VER POR EL USUARIO: el título de About ya no es el nombre, es la categoría del modo** — Fotografía | Diseño gráfico | Desarrollador (EN: Photography | Graphic design | Developer), con charming y i18n intactos. Medido contra la banda en 6 viewports × 3 modos, peor cruce −15,4 px. Si hay que retocarlo, lo que manda es el bloque `<style>` de `about.html` (factor 0,105 sin tocar) y `setCat`/`charmTitle` de `tympMain.js` (expuestos como `window.AboutTitle`). El conmutador y el resto del título de la sesión 46 siguen como estaban. **Sin commitear** (con `about.html`, `js/i18n.js`, `js/tympMain.js`, `js/photographer.js` y `js/index.js`).
-- **El siguiente paso dicho por el usuario: pulir un par de detalles en otras páginas y cerrar.** Sin especificar cuáles; preguntar.
+- **Hecho (sesión 47), PENDIENTE DE VER POR EL USUARIO: el título de About ya no es el nombre, es la categoría del modo** — Fotografía | Diseño gráfico | Desarrollador (EN: Photography | Graphic design | Developer), con charming y i18n intactos. Medido contra la banda en 6 viewports × 3 modos, peor cruce −15,4 px. Si hay que retocarlo, lo que manda es el bloque `<style>` de `about.html` (factor 0,105 sin tocar) y `setCat`/`charmTitle` de `tympMain.js` (expuestos como `window.AboutTitle`). El conmutador y el resto del título de la sesión 46 siguen como estaban. **Commiteado en `d786d2c`.**
+- **Hecho (sesión 48), PENDIENTE DE VER POR EL USUARIO: la descripción de About cambia con la categoría.** Tres párrafos en `.about-desc` (uno por modo), visibles por CSS según `data-cat`; el modo código ya no oculta el bloque. Medido en 8 viewports × 3 modos: un solo párrafo visible, 0 scroll horizontal y 0 solape con el conmutador (peor caso 900×600: el texto acaba en 313,5 y el switch empieza en 518,8). Si hay que retocarlo: `.about-desc` en el `<style>` de `about.html`, `setCat` en `tympMain.js` y el guard de `switchToCode` (sin él, el párrafo de código se queda oculto). **Commiteado con la sesión 48**, en el mismo commit que esta bitácora.
+- **El siguiente paso dicho por el usuario (sesión 48): pulir los detalles visuales de About y decidir la nota de Contacto.** Concretado en los dos primeros párrafos de esta sección; el bug y el recorte de abajo siguen abiertos.
+- **Bug pendiente (visto en la sesión 48, sin diagnosticar): pulsar Fotógrafo estando en Desarrollador deja el menú de código a la vista.** El conmutador se queda en `mode--code` aunque el título y la descripción sí cambian a foto. Reproducir: About → Desarrollador → Fotógrafo. Se dejó para la próxima a propósito.
+- **Pendiente (preexistente, no de esta sesión): las alturas cortas.** A 932×430 el contacto se recorta porque en escritorio `main` es `100vh` con `overflow: hidden`; a 812×375 el conmutador de About queda fuera de pantalla y no hay scroll. Ambas cosas ya estaban antes de la sesión 48 y no se tocaron.
 - **Hecho (sesión 45): la capa Photographer de `about.html`, PENDIENTE DE VER POR EL USUARIO.** El conmutador es Fotógrafo | Diseñador | Desarrollador, "Work with me" está oculto (no borrado: `tympMain.js` lo toca sin null-check) y todo el texto lleva `data-i18n`. Si hay que retocar algo, lo único de la demo que se tocó es `tympMain.js:443` (selectores por clase en vez de first/last child); el resto está en `js/photographer.js`.
 - **Hecho (sesión 45, cerrado): los +10 px de abajo de la imagen del About** (`oy −10`), regeneradas las tres imágenes con la transformación compartida, `dy` de la foto incluido. Los pies se recortan 10 px en el borde inferior del lienzo, como se pidió.
 - **Hecho (sesión 44): `about.html` con la demo, ya vista y aprobada por el usuario** ("lo más difícil del About, conseguido"). Lo que quedó fijo: la foto a 530×812 centrada en el viewport, los iconos sociales **abajo a la derecha**, los controles de la esquina ocultos y las dos imágenes (foto y binario) con **la misma transformación**, de modo que al cambiar de Designer a Coder solo cambia el relleno y no se mueve la figura. Si se retoca, lo único que hay que rehacer es la transformación compartida de `alex-normal` y `alex-code` (bbox combinada de las dos fuentes), nunca por imagen aparte.
@@ -2012,7 +2096,8 @@ Peor caso: **−15,4 px** (diseño, 1920×1080). La sonda corrió en ES; en EN e
 
 **Pendiente de decidir, y solo lo puede decidir el usuario**:
 - Los 117 `alt` y `aria-label` dicen "Categoría — NN". Cambiar los valores en `js/i18n.js` es lo único que hay que tocar, porque el `alt` no se ve en la tarjeta pero `lightbox.js` lo copia a la imagen grande. Son las claves `galphoto1_img_1..13`, `galphoto2_img_1..39`, `galphoto3_img_1..38` y `galphoto4_img_1..27`.
-- Las 8 claves i18n huérfanas que quedan (`galdesign1_card1`, `galdesign1_demo_1..3`, `galdesign2_card1`, `galdesign2_demo_1..3`) son de las tarjetas de ejemplo de Identidad Visual y Diseño Editorial. Ya no las usa nadie.
+- Las **12** claves i18n huérfanas que quedan: las 8 de las tarjetas de ejemplo (`galdesign1_card1`, `galdesign1_demo_1..3`, `galdesign2_card1`, `galdesign2_demo_1..3`, de Identidad Visual y Diseño Editorial) y las 4 `about_menu_*` que quedaron sin marcado en la sesión 48 al sustituir el menú de la demo por la descripción por categoría. Ya no las usa nadie.
+- El rosa `--color-accent-alt` (#ff6584) **se quedó sin uso** en la sesión 48: el brillo del CTA pasó a `--color-accent-shine` (#6c63ff). Decidir si se borra o se reserva para otra cosa; no se tocó.
 - El lema de Branding (`g_slogan_branding`) y el de Editorial (`g_slogan_editorial`) siguen siendo provisionales.
 - El copy de About está decidido y guardado en la sesión 40 y está **sin montar**, pero con la mitad del camino ya hecha, que conviene no repetir: las 13 claves `about_*` **ya están en `js/i18n.js`** (ahora huérfanas, porque no las usa ningún HTML), y en `css/style.css` están `.about`, `.about__card`, `.about__title`, `.about__text` y `.about__skills` de antes, más `.about__discs`, `.about__disc` y `.about__close` de la sesión 41, que tampoco tienen marcado. **Lo que falta es solo el HTML de la sección.** Si se vuelve a montar, reutilizar eso y no reimplementarlo. Sigue sin responder por qué no están las miniaturas de Rescate Animal en q76.
 - Las medidas de las miniaturas de Rescate Animal siguen a 1000×1000 con el resto de las de diseño, no a la caja 2000×506 de fotografía. Unificarlo es el mismo trabajo de la sesión 29.

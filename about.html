@@ -256,6 +256,25 @@
     @media screen and (max-width: 40em) and (max-aspect-ratio: 1162/1534) {
         .page-about .switch { font-size: 0.85em; }
     }
+    /* Glitch en modo código: azul de la página en vez del rojo de demo.css */
+    .page-about .title__cat.mode--code,
+    .page-about .switch__item span.mode--code {
+        color: var(--color-accent);
+    }
+    /* Descripción dinámica: solo el párrafo de la categoría activa. El
+       contenedor conserva .menu de la demo (ancho completo y alineación a la
+       derecha); aquí se le pone una medida legible y un tamaño que acompaña
+       al viewport sin llegar a los dos extremos. */
+    .page-about .about-desc .about-desc__item {
+        display: none;
+        max-width: 52ch;
+        margin-left: auto;
+        font-size: clamp(0.8rem, 0.7rem + 0.25vw, 0.95rem);
+        line-height: 1.55;
+    }
+    .page-about .about-desc[data-cat="photo"] .about-desc__item[data-cat="photo"],
+    .page-about .about-desc[data-cat="design"] .about-desc__item[data-cat="design"],
+    .page-about .about-desc[data-cat="code"] .about-desc__item[data-cat="code"] { display: block; }
     </style>
 
     <script>document.documentElement.className="js";</script>
@@ -314,7 +333,7 @@
                 <div class="content__inner">
                     <div class="content__top">
                         <h2 class="title">
-                            <span class="title__inner mode mode--design" data-switch data-glitch data-cat="photo"><span class="title__cat title__cat--photo" data-i18n="about_cat_photo">Fotografía</span><span class="title__cat title__cat--design" data-i18n="about_cat_design">Diseño gráfico</span><span class="title__cat title__cat--code" data-i18n="about_cat_dev">Desarrollador</span></span>
+                            <span class="title__inner mode mode--design" data-switch data-cat="photo"><span class="title__cat title__cat--photo" data-switch data-glitch data-i18n="about_cat_photo">Fotografía</span><span class="title__cat title__cat--design" data-switch data-glitch data-i18n="about_cat_design">Diseño gráfico</span><span class="title__cat title__cat--code" data-switch data-glitch data-i18n="about_cat_dev">Desarrollador</span></span>
                         </h2>
                         <div class="controls">
                             <button class="btn btn--menu mode mode--design" data-switch>
@@ -323,13 +342,10 @@
                             </button>
                         </div>
                     </div>
-                    <div class="menu">
-                        <ul class="menu__inner">
-                            <li class="menu__item"><a class="menu__link" data-switch data-i18n="about_menu_iface">Sobre diseño de interfaces</a></li>
-                            <li class="menu__item"><a class="menu__link" data-switch data-i18n="about_menu_portfolio">Portafolio</a></li>
-                            <li class="menu__item"><a class="menu__link" data-switch data-i18n="about_menu_cases">Casos de estudio</a></li>
-                            <li class="menu__item"><a class="menu__link" data-switch data-i18n="about_menu_musings">Reflexiones</a></li>
-                        </ul>
+                    <div class="menu about-desc" data-cat="photo">
+                        <p class="about-desc__item" data-cat="photo" data-i18n="about_desc_photo">Mi formación en fotografía se desarrolló en CIDE – Corporación Internacional para el Desarrollo Educativo en Bogotá, Colombia. Mi trabajo explora la luz, la sombra y la geometría para construir imágenes que van más allá del registro documental, buscando una narrativa visual más abstracta y contemplativa.</p>
+                        <p class="about-desc__item" data-cat="design" data-i18n="about_desc_design">Diseñador gráfico de formación autodidacta con trayectoria en entorno corporativo y como freelance. Mi aprendizaje se ha construido trabajando directamente con clientes, entendiendo necesidades reales de negocio, donde la práctica y el criterio han sido mi principal escuela.</p>
+                        <p class="about-desc__item" data-cat="code" data-i18n="about_desc_code">Mi formación en programación y en diseño y montaje de páginas y aplicaciones web se desarrolló en Stucom y en The Corner, en Barcelona, España. Una base que combina la lógica de la programación con el criterio visual del diseño web, orientada a crear proyectos que no solo se ven bien, sino que funcionan, cargan rápido y son fáciles de mantener.</p>
                     </div>
                     <div class="menu menu--code">
                         <ul class="menu__inner">
@@ -342,8 +358,8 @@
                     </div>
                     <div class="content__bottom">
                         <div class="switch mode mode--design">
-                            <a class="switch__item switch__item--photo switch__item--current"><span class="mode mode--design" data-switch data-i18n="about_sw_photo">Fotógrafo</span></a>
-                            <a class="switch__item switch__item--design"><span class="mode mode--design" data-switch data-i18n="about_sw_design">Diseñador</span></a>
+                            <a class="switch__item switch__item--photo switch__item--current"><span class="mode mode--design" data-switch data-glitch data-i18n="about_sw_photo">Fotógrafo</span></a>
+                            <a class="switch__item switch__item--design"><span class="mode mode--design" data-switch data-glitch data-i18n="about_sw_design">Diseñador</span></a>
                             <a class="switch__item switch__item--code"><span class="mode mode--design" data-switch data-glitch data-i18n="about_sw_dev">Desarrollador</span></a>
                         </div>
                         <div class="link-wrap">

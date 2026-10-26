@@ -19,6 +19,9 @@
     --color-text-alt:   #8b8b9e;
     --color-accent:     #0093a5;
     --color-accent-alt: #ff6584;
+    /* Brillo del borde del CTA al pasar el cursor: violeta de la paleta en
+       lugar del rosa, que desentonaba con el resto del sitio. */
+    --color-accent-shine: #6c63ff;
     --color-menu:       #e8e8f0;
     --color-menu-hover: #6c63ff;
     --color-menu-border: rgba(108, 99, 255, 0.15);
@@ -633,7 +636,7 @@ main {
 .shiny-cta:is(:hover, :focus-visible) {
     --gradient-percent: 20%;
     --gradient-angle-offset: 95deg;
-    --gradient-shine: var(--color-accent-alt);
+    --gradient-shine: var(--color-accent-shine);
 }
 
 .shiny-cta:is(:hover, :focus-visible),
@@ -2209,12 +2212,27 @@ body.is-lightbox-open #three-canvas {
 
     .page-contact .contact {
         grid-area: contact;
-        padding: 1rem 2rem 11rem;
+        /* El padding vertical se adapta a la altura: el stack (tarjeta + nota)
+           supera los 600 px y a 720 px de alto el margen inferior fijo de
+           11rem lo dejaba pegado al borde. */
+        padding: clamp(1.5rem, 4vh, 4rem) 2rem clamp(2rem, 5vh, 4rem);
     }
 
-    .page-contact .contact__card {
+    .page-contact .contact__stack {
         margin-right: 220px;
-        margin-top: 50px;
+        margin-top: clamp(0px, 6vh, 50px);
+        gap: clamp(0.75rem, 2vh, 1.5rem);
+    }
+
+    /* Justo en el breakpoint la sección es más estrecha que la tarjeta más el
+       hueco de los iconos sociales, que viven abajo a la derecha; 20px extra
+       mantienen el stack despejado. */
+    @media screen and (max-width: 56em) {
+        .page-contact .contact__stack { margin-right: 240px; }
+    }
+
+    .page-contact .contact__note--sub {
+        font-size: clamp(1rem, 0.9rem + 0.5vh, 1.25rem);
     }
 
     .page-development .development { grid-area: development; }
@@ -2420,3 +2438,34 @@ html.has-cursor body select {
     }
 }
 
+/* Nota + tarjeta del formulario. La nota va arriba, en el lado opuesto al
+   botón Enviar, para no competir con la animación del CTA. */
+.contact__stack {
+    display: grid;
+    gap: 1.5rem;
+    width: 100%;
+    max-width: 469px;
+}
+
+.contact__note {
+    margin: 0;
+    text-align: center;
+    font-family: var(--font-para);
+    font-size: clamp(1rem, 0.7rem + 1.2vw, 1.4rem);
+    line-height: 1.35;
+    color: var(--color-text-alt);
+}
+
+.contact__note--title {
+    display: block;
+    margin-bottom: 0.75rem;
+    font-family: var(--font-name);
+    font-size: clamp(0.7rem, 0.55rem + 0.65vw, 0.85rem);
+    font-weight: 400;
+    line-height: 1.4;
+    color: var(--color-heading);
+}
+
+.contact__note--sub {
+    display: block;
+}
