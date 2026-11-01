@@ -479,6 +479,16 @@
 	// The current mode.
 	let mode = 'design', disablePageFx, isAnimating;
 
+	// Expuesto para photographer.js: mientras la demo anima un cambio de modo
+	// no conviene entrar en Fotógrafo, porque sus animaciones de título,
+	// teselas y cortina pisarían la normalización de la capa. Antes de la
+	// primera transición `isAnimating` es undefined y esto devuelve false.
+	window.AboutDemo = {
+		isAnimating: function() {
+			return !!isAnimating;
+		}
+	};
+
 	function init() {
 		imagesLoaded(DOM.body, { background: true }, function() {
 			// Remove page loader.

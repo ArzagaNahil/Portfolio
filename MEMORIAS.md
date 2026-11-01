@@ -2129,9 +2129,39 @@ Se borraron dos restos vacíos del árbol de trabajo que habían quedado del exp
 
 ---
 
+## Sesión 50 — El conmutador de About: Fotógrafo desde Desarrollador
+
+**El bug**: About → Desarrollador → Fotógrafo dejaba la capa de foto y el título/descripción de Fotografía, pero **el conmutador seguía en `mode--code`, el menú de código a la vista y la cortina a opacidad 1**. Venía de la sesión 48 y estaba sin diagnosticar.
+
+### Por qué pasaba
+
+`photographer.js` enseña su capa sin avisar a la demo. Al entrar desde Diseño el conmutador ya estaba en `mode--design` y no se notaba nada; al entrar desde Desarrollador se quedaban las tres piezas de código (switch, `.menu--code`, `.overlay`) y el `.title__inner` en `mode--code`. El título y la descripción sí cambiaban porque los escribe `AboutTitle.set('photo')`, de ahí la mezcla.
+
+### El arreglo
+
+- `enterPhoto()` guarda el **modo real de la demo** en `demoMode` antes de tocar nada y, si es `code`, normaliza lo que la capa deja a la vista: `.switch` y `.title__inner` pasan a `mode--design`, `.menu--code` a `display: none` y `.overlay` a opacidad 0. La demo se queda internamente en código debajo de la foto.
+- `finish()` usa `demoMode` en vez de `currentMode()`: si el destino es el modo que la demo ya tenía, restaura esa interfaz normalizada sin llamar a `switchMode`; si no, reenvía el clic como antes. Así Diseñador desde esa foto sí dispara la transición real y las teselas vuelven a entrar con su animación.
+- La salida ahora se puede **invertir**: pulsar Fotógrafo durante `leaving` cancela el `pending` y vuelve a entrar conservando `demoMode`; `finish()` empieza con `if (state !== 'leaving') return;` para que una salida cancelada no reenvíe nada.
+- `tympMain.js` expone `window.AboutDemo.isAnimating()`. Si se pulsa Foto mientras la demo aún anima un cambio (el caso de un clic 800 ms después de Desarrollador), la entrada se **aplaza** y se sondea cada 80 ms hasta que la demo queda quieta; un clic posterior en Diseñador/Desarrollador cancela esa espera.
+
+### Verificado con CDP
+
+- **`about_switch_probe.mjs`**, 9 pasos en 1440×900: Foto → Desarrollador → Foto (el bug) → Diseñador → Desarrollador → Foto → Desarrollador → Foto → Diseñador. En los 9, una sola marca `--current`, y Foto desde código termina con `mode--design`, menú oculto, cortina a 0, título/descripción en `photo` y `text-transform: none`. **0 errores de JavaScript.**
+- **`about_fix_check.mjs`**, 375×812 / 768×1024 / 1440×900: inicial, Foto desde código, Diseñador desde esa foto y Desarrollador desde esa foto, todas correctas; **0 excepciones, 0 errores de consola, 0 respuestas ≥ 400 y 0 scroll horizontal** en los tres.
+- **`about_race_check.mjs`**: clics en Foto a 150, 300 y 500 ms de pulsar Desarrollador (se invierte la salida) y a 800 ms (la demo ya anima y la entrada se aplaza). Los cuatro acaban igual: capa visible, `mode--design`, menú oculto, cortina 0 y una sola marca.
+- **`about_reversal_check.mjs`**, 7 pasos: reverso durante la salida, Diseñador después del reverso, Desarrollador, Foto desde código, código → foto → código rápido y doble clic en Foto. Todos correctos, sin excepciones ni errores de consola.
+
+### Estado
+
+- **Un commit para la sesión 50** (`fix: Fotógrafo desde Desarrollador ya no deja el menú de código en About`): `js/photographer.js`, `js/tympMain.js` y esta entrada de `MEMORIAS.md`. El asunto se cita sin hash por la misma razón de siempre: el commit que incluye esta bitácora se reescribe al añadirla.
+- Los clics en Diseñador/Desarrollador que la demo se traga mientras anima ya se los tragaba antes; aquí solo se añadió la espera de Foto. No se tocó ese guard.
+- `check.txt` sigue sin seguimiento y no se ha tocado.
+
+---
+
 ## Para la próxima sesión
 
-**La nota de Contacto queda cerrada (sesión 49)**: vive **encima de la tarjeta**, centrada, y se ha bajado junto con el formulario; la variante de meterla dentro de la tarjeta no llegó a probarse y el usuario dio por buena esta. **Lo siguiente es el bug de About**: pulsar «Fotógrafo» estando en «Desarrollador» deja el menú de código a la vista; el switch se queda en `mode--code` aunque el título y la descripción cambian a foto. Reproducir: About → Desarrollador → Fotógrafo. Toca `js/photographer.js` y `js/tympMain.js`.
+**La nota de Contacto queda cerrada (sesión 49)**: vive **encima de la tarjeta**, centrada, y se ha bajado junto con el formulario; la variante de meterla dentro de la tarjeta no llegó a probarse y el usuario dio por buena esta. **El bug de About quedó arreglado (sesión 50), pendiente de ver por el usuario**: Fotógrafo desde Desarrollador ya oculta el menú de código y deja el conmutador en estilo diseño. Lo siguiente es la revisión visual de About (título por categoría, conmutador, descripción y capa Photographer), con sesiones dedicadas a las galerías.
 
 **En pantalla, que es lo que el usuario pidió**: pulir About —el título por categoría, el conmutador y la descripción nueva—. Ahí entra también la capa Photographer de `about.html` (sesión 45), que solo se ha visto por capturas y sondas: el estado inicial, la salida a medio vuelo, Diseñador y Desarrollador. Después, las cuatro galerías de Fotografía y las cuatro de Diseño, en pantalla grande y en móvil, con el carrusel quieto y con el dedo puesto. Una sesión anterior cambió la geometría de las tarjetas de fotografía y la forma de medir la velocidad, y **nada de eso se ha visto**. El HTML está bien, pero el CSS siempre escapa algo.
 
@@ -2140,8 +2170,8 @@ Se borraron dos restos vacíos del árbol de trabajo que habían quedado del exp
 **Pendiente de mirar**:
 - **Hecho (sesión 47), PENDIENTE DE VER POR EL USUARIO: el título de About ya no es el nombre, es la categoría del modo** — Fotografía | Diseño gráfico | Desarrollador (EN: Photography | Graphic design | Developer), con charming y i18n intactos. Medido contra la banda en 6 viewports × 3 modos, peor cruce −15,4 px. Si hay que retocarlo, lo que manda es el bloque `<style>` de `about.html` (factor 0,105 sin tocar) y `setCat`/`charmTitle` de `tympMain.js` (expuestos como `window.AboutTitle`). El conmutador y el resto del título de la sesión 46 siguen como estaban. **Commiteado en `d786d2c`.**
 - **Hecho (sesión 48), PENDIENTE DE VER POR EL USUARIO: la descripción de About cambia con la categoría.** Tres párrafos en `.about-desc` (uno por modo), visibles por CSS según `data-cat`; el modo código ya no oculta el bloque. Medido en 8 viewports × 3 modos: un solo párrafo visible, 0 scroll horizontal y 0 solape con el conmutador (peor caso 900×600: el texto acaba en 313,5 y el switch empieza en 518,8). Si hay que retocarlo: `.about-desc` en el `<style>` de `about.html`, `setCat` en `tympMain.js` y el guard de `switchToCode` (sin él, el párrafo de código se queda oculto). **Commiteado con la sesión 48**, en el mismo commit que esta bitácora.
-- **La nota de Contacto quedó decidida (sesión 49)**: encima de la tarjeta y centrada. El siguiente paso es pulir los detalles visuales de About (título por categoría, conmutador, descripción y capa Photographer) y resolver el bug del conmutador; el recorte de alturas cortas sigue abierto.
-- **Bug pendiente (visto en la sesión 48, sin diagnosticar): pulsar Fotógrafo estando en Desarrollador deja el menú de código a la vista.** El conmutador se queda en `mode--code` aunque el título y la descripción sí cambian a foto. Reproducir: About → Desarrollador → Fotógrafo. Se dejó para la próxima a propósito.
+- **La nota de Contacto quedó decidida (sesión 49)**: encima de la tarjeta y centrada. El siguiente paso es pulir los detalles visuales de About (título por categoría, conmutador, descripción y capa Photographer); el bug del conmutador se resolvió en la sesión 50 y el recorte de alturas cortas sigue abierto.
+- **Hecho (sesión 50), PENDIENTE DE VER POR EL USUARIO: pulsar Fotógrafo estando en Desarrollador dejaba el menú de código a la vista.** Ya no: al entrar en foto desde código, `enterPhoto()` normaliza el conmutador, el título, `.menu--code` y `.overlay`, y `finish()` sabe en qué modo real estaba la demo gracias a `demoMode`. Verificado con cuatro sondas CDP (secuencia completa, 3 viewports, carrera de clics y reverso); 0 errores. Si se retoca: `js/photographer.js` y `window.AboutDemo` en `js/tympMain.js`.
 - **Pendiente (preexistente, no de esta sesión): las alturas cortas.** A 932×430 el contacto se recorta porque en escritorio `main` es `100vh` con `overflow: hidden`; a 812×375 el conmutador de About queda fuera de pantalla y no hay scroll. Ambas cosas ya estaban antes de la sesión 48 y no se tocaron.
 - **Hecho (sesión 45): la capa Photographer de `about.html`, PENDIENTE DE VER POR EL USUARIO.** El conmutador es Fotógrafo | Diseñador | Desarrollador, "Work with me" está oculto (no borrado: `tympMain.js` lo toca sin null-check) y todo el texto lleva `data-i18n`. Si hay que retocar algo, lo único de la demo que se tocó es `tympMain.js:443` (selectores por clase en vez de first/last child); el resto está en `js/photographer.js`.
 - **Hecho (sesión 45, cerrado): los +10 px de abajo de la imagen del About** (`oy −10`), regeneradas las tres imágenes con la transformación compartida, `dy` de la foto incluido. Los pies se recortan 10 px en el borde inferior del lienzo, como se pidió.

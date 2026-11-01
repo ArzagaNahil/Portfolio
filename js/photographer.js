@@ -31,9 +31,18 @@
 	const itemCode = switchCtrl.querySelector('.switch__item--code');
 	if (!itemPhoto || !itemDesign || !itemCode) return;
 
+	const overlay = document.querySelector('.overlay');
+	const menuCode = document.querySelector('.menu--code');
+	const titleInner = document.querySelector('.title__inner');
+
 	// photo: la capa se ve | leaving: animación de salida | off: capa fuera.
 	let state = 'photo';
 	let pending = null;
+	let waitingDemo = false;
+	// Modo real de la demo por debajo de la capa. Con Foto encima el
+	// conmutador se pinta como diseño, así que no sirve currentMode() para
+	// saber si la demo quedó en código.
+	let demoMode = 'design';
 
 	const layer = document.createElement('div');
 	layer.className = 'pieces--photo';
@@ -129,10 +138,49 @@
 		});
 	}
 
-	function enterPhoto() {
+	// `fromLeaving` distingue la entrada normal (la demo está quieta) de la
+	// reentrada durante la animación de salida: en la segunda el conmutador
+	// ya está normalizado y currentMode() mentiría sobre el modo real.
+	function enterPhoto(fromLeaving) {
+		if (!fromLeaving && window.AboutDemo && window.AboutDemo.isAnimating()) {
+			// La demo aún anima un cambio (normalmente el que reenvía finish
+			// al salir). Se espera a que termine para no capturar un modo
+			// intermedio ni dejar que su animación pise el título, la cortina
+			// o el menú. Mientras tanto, los clics en Foto se ignoran.
+			if (waitingDemo) return;
+			waitingDemo = true;
+			const poll = function() {
+				if (!waitingDemo) return;
+				if (window.AboutDemo && window.AboutDemo.isAnimating()) {
+					setTimeout(poll, 80);
+					return;
+				}
+				waitingDemo = false;
+				if (state === 'off') enterPhoto();
+			};
+			setTimeout(poll, 80);
+			return;
+		}
+		waitingDemo = false;
+		pending = null;
+		// Antes de tocar el conmutador: si venimos de Desarrollador, la demo
+		// se queda en código por debajo de la capa.
+		if (!fromLeaving) demoMode = currentMode();
 		state = 'photo';
 		layer.style.display = '';
 		layout();
+		if (demoMode === 'code') {
+			// La capa tapa las teselas, pero el conmutador y el menú de código
+			// seguirían a la vista. Foto se pinta como diseño.
+			switchCtrl.classList.remove('mode--code');
+			switchCtrl.classList.add('mode--design');
+			if (titleInner) {
+				titleInner.classList.remove('mode--code');
+				titleInner.classList.add('mode--design');
+			}
+			if (menuCode) menuCode.style.display = 'none';
+			if (overlay) overlay.style.opacity = 0;
+		}
 		setCurrent(itemPhoto);
 		// El título pasa a "Fotografía" al empezar la entrada de la capa.
 		if (window.AboutTitle) window.AboutTitle.set('photo');
@@ -151,11 +199,24 @@
 	// diseño) no se vuelve a llamar a switchMode: se evitarían los parpadeos
 	// de letras y el reinicio del bucle de teselas.
 	function finish() {
+		// La salida pudo cancelarse volviendo a Fotógrafo: en ese caso
+		// enterPhoto ya dejó state en 'photo' y no hay nada que reenviar.
+		if (state !== 'leaving') return;
 		const mode = pending;
 		pending = null;
 		state = 'off';
 		layer.style.display = 'none';
-		if (mode === currentMode()) {
+		if (mode === demoMode) {
+			// La demo ya está en ese modo por debajo: no hay switchMode, así
+			// que hay que devolver la interfaz que Foto normalizó.
+			switchCtrl.classList.remove(mode === 'code' ? 'mode--design' : 'mode--code');
+			switchCtrl.classList.add('mode--' + mode);
+			if (titleInner) {
+				titleInner.classList.remove(mode === 'code' ? 'mode--design' : 'mode--code');
+				titleInner.classList.add('mode--' + mode);
+			}
+			if (menuCode) menuCode.style.display = mode === 'code' ? 'block' : 'none';
+			if (overlay) overlay.style.opacity = mode === 'code' ? 1 : 0;
 			setCurrent(mode === 'code' ? itemCode : itemDesign);
 			// La demo no cambia de modo, así que switchMode no corre y nadie
 			// cambiaría la categoría del título: se cambia aquí.
@@ -164,13 +225,14 @@
 		else {
 			const target = mode === 'code' ? itemCode : itemDesign;
 			target.click();
+			demoMode = mode;
 			// Si el click delegado cayera en el guard isAnimating de switchMode
-			// (tympMain.js:552), la demo no marcaría el ítem: lo marcamos aquí.
-			if (!target.classList.contains('switch__item--current')) setCurrent(target);
+			// (tympMain.js:604), la demo no marcaría el ítem: lo marcamos aquí.
+			const switched = target.classList.contains('switch__item--current');
+			setCurrent(target);
 			// Mismo guard: si switchMode no corrió, tampoco cambió la categoría
-			// (cuando corre, .switch ya lleva el modo nuevo tras el click y
-			// setCat lo hará tympMain al terminar su animación de salida).
-			if (currentMode() !== mode && window.AboutTitle) window.AboutTitle.set(mode);
+			// (cuando corre, setCat lo hará tympMain al terminar su animación).
+			if (!switched && window.AboutTitle) window.AboutTitle.set(mode);
 		}
 	}
 
@@ -185,6 +247,10 @@
 			ev.preventDefault();
 			ev.stopPropagation();
 			if (state === 'off') enterPhoto();
+			// Volver a Foto durante la salida invierte la animación en vez de
+			// ignorar el clic; demoMode se conserva porque el conmutador ya
+			// está normalizado como diseño.
+			else if (state === 'leaving') enterPhoto(true);
 			return;
 		}
 
@@ -199,6 +265,11 @@
 			ev.preventDefault();
 			ev.stopPropagation();
 			pending = mode;
+		}
+		else if (waitingDemo) {
+			// Un clic en Diseñador/Desarrollador mientras se esperaba a que la
+			// demo terminase cancela la entrada pendiente en Foto.
+			waitingDemo = false;
 		}
 	}, true);
 
