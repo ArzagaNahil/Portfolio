@@ -2157,9 +2157,20 @@ body.is-lightbox-open #three-canvas {
 }
 
 .page-contact .contact {
-    display: grid;
-    place-items: center;
-    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    padding: 4rem 2rem 2rem;
+    transform: translateY(-36px);
+}
+
+.page-contact .contact__stack {
+    align-self: center;
+    width: 100%;
+    max-width: 469px;
+    margin: 0 auto;
 }
 
 .page-development .development,
@@ -2212,27 +2223,17 @@ body.is-lightbox-open #three-canvas {
 
     .page-contact .contact {
         grid-area: contact;
-        /* El padding vertical se adapta a la altura: el stack (tarjeta + nota)
-           supera los 600 px y a 720 px de alto el margen inferior fijo de
-           11rem lo dejaba pegado al borde. */
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: center;
+        gap: 1rem;
         padding: clamp(1.5rem, 4vh, 4rem) 2rem clamp(2rem, 5vh, 4rem);
     }
 
     .page-contact .contact__stack {
-        margin-right: 220px;
         margin-top: clamp(0px, 6vh, 50px);
         gap: clamp(0.75rem, 2vh, 1.5rem);
-    }
-
-    /* Justo en el breakpoint la sección es más estrecha que la tarjeta más el
-       hueco de los iconos sociales, que viven abajo a la derecha; 20px extra
-       mantienen el stack despejado. */
-    @media screen and (max-width: 56em) {
-        .page-contact .contact__stack { margin-right: 240px; }
-    }
-
-    .page-contact .contact__note--sub {
-        font-size: clamp(1rem, 0.9rem + 0.5vh, 1.25rem);
     }
 
     .page-development .development { grid-area: development; }
@@ -2440,27 +2441,56 @@ html.has-cursor body select {
 
 /* Nota + tarjeta del formulario. La nota va arriba, en el lado opuesto al
    botón Enviar, para no competir con la animación del CTA. */
+.page-contact .contact {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    padding-left: 0;
+}
+
+.page-contact .contact__note {
+    margin-top: 4rem;
+    /* La columna está centrada con `justify-content: center`: un margin-top
+       real repartiría el hueco y movería también la tarjeta. El desplazamiento
+       relativo baja solo la nota; el formulario queda clavado donde está. */
+    position: relative;
+    top: 2rem;
+}
+
+@media screen and (max-width: 53.99em) {
+    /* En móvil el hueco nota↔tarjeta es solo el `gap` de 1rem: 0.75rem deja
+       4 px de caja (el interlineado añade aire visual) sin empujar la tarjeta. */
+    .page-contact .contact__note {
+        top: 0.75rem;
+    }
+}
+
 .contact__stack {
     display: grid;
     gap: 1.5rem;
     width: 100%;
     max-width: 469px;
+    margin-top: 0;
 }
 
 .contact__note {
-    margin: 0;
+    margin: 0 auto;
+    width: 100%;
+    max-width: 700px;
     text-align: center;
+    align-self: center;
     font-family: var(--font-para);
-    font-size: clamp(1rem, 0.7rem + 1.2vw, 1.4rem);
+    font-size: clamp(1rem, 0.8rem + 0.8vw, 1.25rem);
     line-height: 1.35;
     color: var(--color-text-alt);
 }
 
 .contact__note--title {
     display: block;
-    margin-bottom: 0.75rem;
     font-family: var(--font-name);
-    font-size: clamp(0.7rem, 0.55rem + 0.65vw, 0.85rem);
+    font-size: 1.1rem;
     font-weight: 400;
     line-height: 1.4;
     color: var(--color-heading);
@@ -2468,4 +2498,6 @@ html.has-cursor body select {
 
 .contact__note--sub {
     display: block;
+    margin-top: 0.25rem;
+    font-size: 1.5rem;
 }

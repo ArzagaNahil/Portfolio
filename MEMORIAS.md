@@ -2074,9 +2074,64 @@ Cinco claves nuevas por idioma: `about_desc_photo` / `about_desc_design` / `abou
 
 ---
 
+## Sesión 49 — La nota de Contacto baja y se centra, y después baja con el formulario
+
+**Lo que se pidió**, en tres pasos sobre la marcha: primero bajar los dos spans de la nota **sin mover el formulario** y centrar el texto del sub (que se veía alineado a la izquierda); después bajarlos otro poco; y al final bajar **la nota y el formulario juntos**.
+
+### Un margen real no sirve: la columna está centrada
+
+`.page-contact .contact` es un `flex` en columna con `justify-content: center`. En ese contexto un `margin-top` sobre la nota aumenta la altura total y el centrado reparte el hueco: la nota baja **la mitad** del margen y la tarjeta baja la otra mitad. Es decir, un `margin-top` de verdad habría movido el formulario, que era justo lo que no se quería.
+
+La solución es un desplazamiento que no participa del layout:
+
+```css
+.page-contact .contact__note {
+    margin-top: 4rem;
+    position: relative;
+    top: 2rem;                      /* escritorio: +32 px */
+}
+
+@media screen and (max-width: 53.99em) {
+    .page-contact .contact__note { top: 0.75rem; }  /* móvil: +12 px */
+}
+```
+
+En móvil el hueco nota↔tarjeta es solo el `gap: 1rem`, así que ahí el desplazamiento se quedó en 0,75rem: deja **4 px de caja** (el interlineado añade aire visual) sin empujar la tarjeta. El primer paso fue 1rem / 0,5rem y el segundo 2rem / 0,75rem.
+
+El texto vuelve a `text-align: center` en `.contact__note`. En el árbol de trabajo estaba en `left`, y era lo que dejaba el sub a la izquierda; el título también queda centrado.
+
+### El último paso: mover el grupo entero
+
+Para bajar nota y formulario a la vez se redujo la subida que tenía la sección: `transform: translateY(-60px)` → **`translateY(-36px)`**, o sea **24 px más abajo** para todo el bloque. La distancia nota↔tarjeta no cambia (27–34 px en escritorio; 4 px de caja en móvil).
+
+### Medido: 6 viewports, antes (sesión 48) y después
+
+| viewport | nota, antes → ahora | formulario, antes → ahora | tarjeta abajo |
+|---|---|---|---|
+| 375×812 | 388,59 → **424,59** (+36) | 707,45 → **731,45** (+24) | 1097,77 (documento 1166, scrollea) |
+| 768×1024 | 439,13 → **475,13** (+36) | 647,88 → **671,88** (+24) | 1038,19 (documento 1106, scrollea) |
+| 1280×720 | 9,52 → **65,52** (+56) | 272,98 → **296,98** (+24) | 671,30 |
+| 1366×768 | 31,83 → **87,83** (+56) | 298,19 → **322,19** (+24) | 696,50 |
+| 1536×770 | 32,77 → **88,77** (+56) | 299,23 → **323,23** (+24) | 697,55 |
+| 1920×1080 | 184,30 → **240,30** (+56) | 454,58 → **478,58** (+24) | 852,89 |
+
+La nota acumula +56 px en escritorio (+16 del primer ajuste, +16 del segundo y +24 del grupo) y +36 en móvil (+8, +4, +24). En los cuatro tamaños de escritorio la tarjeta sigue entrando completa y **no hay scroll horizontal**; en móvil la página ya scrolleaba y sigue haciéndolo.
+
+### Limpieza
+
+Se borraron dos restos vacíos del árbol de trabajo que habían quedado del experimento de la nota: el `@media screen and (max-width: 56em) {}` (con su comentario) y la regla `.page-contact .contact__note--sub {}` sin declaraciones.
+
+### Estado
+
+- **Un commit para la sesión 49** (`feat: la nota de Contacto baja y se centra sin mover el formulario`): `contact.html`, `css/style.css` y esta entrada de `MEMORIAS.md`. El asunto se cita sin hash por la misma razón de siempre: el commit que incluye esta bitácora se reescribe al añadirla.
+- La variante de **meter la nota dentro de la tarjeta** (entre `.contact__sub` y el `<form>`) no llegó a probarse: el usuario dio por buena la de encima.
+- `check.txt` sigue sin seguimiento y no se ha tocado.
+
+---
+
 ## Para la próxima sesión
 
-**Lo primero es una decisión de diseño, no de código**: dónde vive la nota de Contacto. Ahora está **encima de la tarjeta** dentro de `.contact__stack`, con el ancho de la tarjeta y `text-align: center`. El usuario barajó **meterla dentro de la tarjeta, entre `.contact__sub` y el `<form>`**, y no lo decidió. Mover el `<p class="contact__note">` es todo: dentro de la tarjeta el `gap` del stack deja de aplicarse y manda el `margin-bottom` de `.contact__sub`, así que el CSS también cambia un poco. Cualquier variante se mide a 375 / 768 / 1280 / 1536 antes de darla por buena.
+**La nota de Contacto queda cerrada (sesión 49)**: vive **encima de la tarjeta**, centrada, y se ha bajado junto con el formulario; la variante de meterla dentro de la tarjeta no llegó a probarse y el usuario dio por buena esta. **Lo siguiente es el bug de About**: pulsar «Fotógrafo» estando en «Desarrollador» deja el menú de código a la vista; el switch se queda en `mode--code` aunque el título y la descripción cambian a foto. Reproducir: About → Desarrollador → Fotógrafo. Toca `js/photographer.js` y `js/tympMain.js`.
 
 **En pantalla, que es lo que el usuario pidió**: pulir About —el título por categoría, el conmutador y la descripción nueva—. Ahí entra también la capa Photographer de `about.html` (sesión 45), que solo se ha visto por capturas y sondas: el estado inicial, la salida a medio vuelo, Diseñador y Desarrollador. Después, las cuatro galerías de Fotografía y las cuatro de Diseño, en pantalla grande y en móvil, con el carrusel quieto y con el dedo puesto. Una sesión anterior cambió la geometría de las tarjetas de fotografía y la forma de medir la velocidad, y **nada de eso se ha visto**. El HTML está bien, pero el CSS siempre escapa algo.
 
@@ -2085,7 +2140,7 @@ Cinco claves nuevas por idioma: `about_desc_photo` / `about_desc_design` / `abou
 **Pendiente de mirar**:
 - **Hecho (sesión 47), PENDIENTE DE VER POR EL USUARIO: el título de About ya no es el nombre, es la categoría del modo** — Fotografía | Diseño gráfico | Desarrollador (EN: Photography | Graphic design | Developer), con charming y i18n intactos. Medido contra la banda en 6 viewports × 3 modos, peor cruce −15,4 px. Si hay que retocarlo, lo que manda es el bloque `<style>` de `about.html` (factor 0,105 sin tocar) y `setCat`/`charmTitle` de `tympMain.js` (expuestos como `window.AboutTitle`). El conmutador y el resto del título de la sesión 46 siguen como estaban. **Commiteado en `d786d2c`.**
 - **Hecho (sesión 48), PENDIENTE DE VER POR EL USUARIO: la descripción de About cambia con la categoría.** Tres párrafos en `.about-desc` (uno por modo), visibles por CSS según `data-cat`; el modo código ya no oculta el bloque. Medido en 8 viewports × 3 modos: un solo párrafo visible, 0 scroll horizontal y 0 solape con el conmutador (peor caso 900×600: el texto acaba en 313,5 y el switch empieza en 518,8). Si hay que retocarlo: `.about-desc` en el `<style>` de `about.html`, `setCat` en `tympMain.js` y el guard de `switchToCode` (sin él, el párrafo de código se queda oculto). **Commiteado con la sesión 48**, en el mismo commit que esta bitácora.
-- **El siguiente paso dicho por el usuario (sesión 48): pulir los detalles visuales de About y decidir la nota de Contacto.** Concretado en los dos primeros párrafos de esta sección; el bug y el recorte de abajo siguen abiertos.
+- **La nota de Contacto quedó decidida (sesión 49)**: encima de la tarjeta y centrada. El siguiente paso es pulir los detalles visuales de About (título por categoría, conmutador, descripción y capa Photographer) y resolver el bug del conmutador; el recorte de alturas cortas sigue abierto.
 - **Bug pendiente (visto en la sesión 48, sin diagnosticar): pulsar Fotógrafo estando en Desarrollador deja el menú de código a la vista.** El conmutador se queda en `mode--code` aunque el título y la descripción sí cambian a foto. Reproducir: About → Desarrollador → Fotógrafo. Se dejó para la próxima a propósito.
 - **Pendiente (preexistente, no de esta sesión): las alturas cortas.** A 932×430 el contacto se recorta porque en escritorio `main` es `100vh` con `overflow: hidden`; a 812×375 el conmutador de About queda fuera de pantalla y no hay scroll. Ambas cosas ya estaban antes de la sesión 48 y no se tocaron.
 - **Hecho (sesión 45): la capa Photographer de `about.html`, PENDIENTE DE VER POR EL USUARIO.** El conmutador es Fotógrafo | Diseñador | Desarrollador, "Work with me" está oculto (no borrado: `tympMain.js` lo toca sin null-check) y todo el texto lleva `data-i18n`. Si hay que retocar algo, lo único de la demo que se tocó es `tympMain.js:443` (selectores por clase en vez de first/last child); el resto está en `js/photographer.js`.
