@@ -90,13 +90,9 @@
        capa absoluta. grid-area le colocaría dentro de la rejilla de .about. */
     .demo-page .content { grid-area: auto; }
     /* style.css define .menu/.menu__item para el menú LetterShuffle de la
-       web; la demo trae los suyos con otras reglas.
-       El :not es imprescindible: sin él, este display:block (0,2,0 y va
-       después) se comería el `display:none` de `.js .menu--code` de
-       demo.css:226 y se verían los dos menús apilados. */
-    .page-about .menu { pointer-events: auto; border-bottom: 0; }
-    .page-about .menu:not(.menu--code) { display: block; }
-    .page-about .menu__item { font-family: inherit; font-weight: inherit; font-size: inherit; line-height: inherit; color: inherit; white-space: normal; }
+       web; la demo trae los suyos con otras reglas. En About .menu es solo el
+       contenedor de la descripción, así que se muestra siempre. */
+    .page-about .menu { pointer-events: auto; border-bottom: 0; display: block; }
     /* La cortina negra de la web se aplica también al .loading de la demo
        (selector .js .loading). Esa cortina sí interesa; lo que no encaja es
        el círculo del spinner de la web sobre el texto "- - -" de la demo. */
@@ -138,9 +134,9 @@
     }
     /* Capa Photographer (js/photographer.js): 140 teselas con la foto del
        carrete superpuestas a la capa principal. inset:0 la deja a caja de
-       .pieces, z-index:10 la coloca por encima de .overlay (z auto) y por
-       debajo de .content__inner (z 100), y el ResizeObserver del script la
-       rehace cuando PieceMaker cambia el tamaño de .pieces. */
+       .pieces, z-index:10 la coloca por debajo de .content__inner (z 100), y
+       el ResizeObserver del script la rehace cuando PieceMaker cambia el
+       tamaño de .pieces. */
     .page-about .pieces--photo {
         position: absolute;
         inset: 0;
@@ -201,14 +197,14 @@
     }
     @media screen and (min-aspect-ratio: 1162/1534) {
         .page-about .title {
-            font-size: max(0.75rem, min(2.6rem,
-                calc((560px - 33.383vh) * 0.105),
-                calc((50vw - 33.383vh - 40px) * 0.105)));
+            font-size: max(1.2rem, min(4.16rem,
+                calc((560px - 33.383vh) * 0.168),
+                calc((50vw - 33.383vh - 40px) * 0.168)));
         }
     }
     /* Modo ancho: sin conflicto, se queda en el tamaño de siempre. */
     @media screen and (max-aspect-ratio: 1162/1534) {
-        .page-about .title { font-size: 1.5rem; }
+        .page-about .title { font-size: 1.2rem; }
     }
     /* --- Conmutador: Bruno Ace en --color-accent (el azul de la web).
        Las tres palabras + los dos separadores miden 24.87em desde el borde
@@ -217,13 +213,46 @@
        solape sigue siendo menor que el de los 14px actuales (52px en
        1920×1080); techo 13px. Solo en modo diseño: en modo código manda el
        Roboto Mono rojo de la demo, y durante el glitch el rojo del span. */
-    .page-about .switch.mode--design {
+    /* El conmutador se ve igual en los tres modos: Bruno Ace, acento azul para
+       los no activos y verde para el activo. El modo c�digo de la demo (Roboto
+       Mono rojo) se anula aqu� para que no rompa la coherencia visual. */
+    .page-about .switch.mode--design,
+    .page-about .switch.mode--code {
         font-family: var(--font-name);
     }
-    .page-about .switch.mode--design .switch__item:not(.switch__item--current) {
+    .page-about .switch.mode--design .switch__item:not(.switch__item--current),
+    .page-about .switch.mode--code .switch__item:not(.switch__item--current) {
         color: var(--color-accent);
     }
-    .page-about .switch.mode--design .switch__item:not(.switch__item--current):hover {
+    .page-about .switch.mode--design .switch__item:not(.switch__item--current):hover,
+    .page-about .switch.mode--code .switch__item:not(.switch__item--current):hover {
+        color: var(--color-heading);
+    }
+    /* En modo c�digo el conmutador no se pone en min�sculas: las tres palabras
+       conservan su may�scula inicial, igual que en Fotograf�a y Dise�o. */
+    .page-about .switch.mode--code {
+        text-transform: none;
+    }
+    .page-about .switch.mode--code .switch__item,
+    .page-about .switch.mode--code .switch__item span {
+        text-transform: none;
+    }
+    .page-about .switch.mode--code .switch__item span {
+        color: inherit;
+    }
+    /* El efecto de glitch del conmutador pasa a blanco (no a rojo) en todos
+       los modos, igual que el resto de la interfaz. */
+    .page-about .switch .switch__item span.mode--code {
+        color: var(--color-heading);
+    }
+    /* Se quita el "pill" (fondo verde/rojo) que marcaba el elemento activo:
+       el conmutador queda sin indicador de selecci�n visible. */
+    .page-about .switch .switch__item--current {
+        background-color: transparent;
+        color: var(--color-accent);
+        pointer-events: auto;
+    }
+    .page-about .switch .switch__item--current:hover {
         color: var(--color-heading);
     }
     /* Con tres estados el conmutador se queda sin sitio en móvil. */
@@ -244,22 +273,33 @@
        de holgura en 1280×900 y ~14px en 1536×770. */
     @media screen and (min-aspect-ratio: 1162/1534) {
         .page-about .switch {
-            font-size: max(8px, min(13px,
-                calc((560px - 33.383vh) * 0.037),
-                calc((50vw - 33.383vh - 40px) * 0.037)));
+            font-size: max(11px, min(16px,
+                calc((560px - 33.383vh) * 0.063),
+                calc((50vw - 33.383vh - 40px) * 0.063)));
         }
     }
-    /* Modo ancho: sin conflicto, el tamaño de siempre (0.875em ≈ 14px). */
+    /* Modo ancho: sin conflicto, el tamaño de siempre (0.95625em ≈ 15px). */
     @media screen and (max-aspect-ratio: 1162/1534) {
-        .page-about .switch { font-size: 0.875em; }
+        .page-about .switch { font-size: 0.95625em; }
     }
     @media screen and (max-width: 40em) and (max-aspect-ratio: 1162/1534) {
-        .page-about .switch { font-size: 0.85em; }
+        .page-about .switch { font-size: 0.9em; }
     }
     /* Glitch en modo código: azul de la página en vez del rojo de demo.css */
-    .page-about .title__cat.mode--code,
-    .page-about .switch__item span.mode--code {
+    .page-about .title__cat.mode--code {
         color: var(--color-accent);
+    }
+    /* En modo código el .title__inner lleva Roboto Mono rojo y minúsculas
+       (demo.css), así que el span que el glitch devuelve a mode--design
+       heredaría ese aspecto y el cortocircuito sería rojo↔azul. Estas reglas
+       le devuelven el blanco Bruno Ace para que Desarrollador parpadee con
+       el mismo blanco↔azul que Fotografía y Diseño. El :not cubre también
+       el estado inicial del span, que aún no tiene clase de modo. */
+    .page-about .title__inner.mode--code .title__cat:not(.mode--code) {
+        font-family: var(--font-name);
+        font-weight: 400;
+        color: var(--color-heading);
+        text-transform: none;
     }
     /* Descripción dinámica: solo el párrafo de la categoría activa. El
        contenedor conserva .menu de la demo (ancho completo y alineación a la
@@ -269,12 +309,154 @@
         display: none;
         max-width: 52ch;
         margin-left: auto;
-        font-size: clamp(0.8rem, 0.7rem + 0.25vw, 0.95rem);
-        line-height: 1.55;
+        margin-right: 1rem;
+        margin-top: 0;
+        font-family: var(--font-para);
+        font-size: 2.90rem;
+        line-height: 1.4;
+        color: var(--color-text-alt);
     }
     .page-about .about-desc[data-cat="photo"] .about-desc__item[data-cat="photo"],
     .page-about .about-desc[data-cat="design"] .about-desc__item[data-cat="design"],
     .page-about .about-desc[data-cat="code"] .about-desc__item[data-cat="code"] { display: block; }
+    /* En escritorio la descripción se acerca al borde derecho de la pantalla. */
+    @media screen and (min-width: 75em) {
+        .page-about .about-desc {
+            position: absolute;
+            top: 11.5rem;
+            right: calc(5rem - (100vw - 1200px) / 2);
+            left: auto;
+            margin: 0;
+            width: auto;
+        }
+        /* Los elementos de la izquierda se acercan al borde izquierdo,
+           igualando el margen de la descripción a la derecha. */
+        .page-about .title {
+            margin-left: calc(4vw - (100vw - 1200px) / 2 - 2.5rem);
+        }
+        .page-about .about-lead {
+            left: calc(4vw - (100vw - 1200px) / 2 - 2.5rem);
+        }
+        .page-about .switch {
+            margin-left: calc(4vw - (100vw - 1200px) / 2 - 2.5rem);
+        }
+    }
+    /* Manifiesto por categoría: columna izquierda bajo el título. Vive dentro
+       de .content__top como hijo absoluto para no empujar al .about-desc de la
+       derecha. Solo se ve el párrafo de la categoría activa (igual que
+       .about-desc). Fuente Tulpen One (--font-para), igual que el subtítulo
+       del Contacto. */
+    .page-about .content__top { position: relative; }
+    .page-about .about-lead {
+        position: absolute;
+        top: 11rem;
+        width: calc((50vw - 34.087vh - var(--lead-text-start) - 1rem) * 0.855);
+        max-width: 100%;
+        margin: 0;
+        font-family: var(--font-para);
+        font-size: 2.90rem;
+        line-height: 1.35;
+        color: var(--color-text-alt);
+        text-align: left;
+        pointer-events: none;
+        z-index: 101;
+        transition: none;
+    }
+    /* Diseño y código pueden usar el margen transparente del retrato; en foto
+       (carrete a sangre) el manifiesto se queda en el margen libre. */
+    .page-about .about-lead[data-cat="design"],
+    .page-about .about-lead[data-cat="code"] {
+        width: calc((50vw - 25.9vh - var(--lead-text-start) - 1rem) * 0.855);
+    }
+    .page-about .about-lead__item {
+        display: none;
+        margin: 0;
+    }
+    .page-about .about-lead[data-cat="photo"] .about-lead__item[data-cat="photo"],
+    .page-about .about-lead[data-cat="design"] .about-lead__item[data-cat="design"],
+    .page-about .about-lead[data-cat="code"] .about-lead__item[data-cat="code"] { display: block; }
+    /* Inicio del texto según el padding de .content__inner (2.5em por encima
+       de 40em, 1em por debajo). */
+    :root { --lead-text-start: 2.5rem; }
+    @media screen and (max-width: 40em) { :root { --lead-text-start: 1rem; } }
+    @media screen and (min-width: 75em) { :root { --lead-text-start: 4vw; } }
+    /* Modo alto: la columna izquierda se mide hasta el borde opaco del retrato.
+       Si la columna queda demasiado estrecha (viewports casi cuadrados) se cae
+       al modo overlay. */
+    /* Modo ancho (retrato m\u00e1s ancho que alto): banda superior + retrato bajado. */
+    /* Modo ancho (retrato más ancho que alto): se usa la zona transparente
+       superior-izquierda del retrato. */
+    @media screen and (max-aspect-ratio: 1162/1534) {
+        .page-about .about-lead {
+            width: calc(100% - 2rem);
+            top: calc(100% + 0.25rem);
+        }
+        .page-about .pieces {
+            align-self: start;
+            margin: 16rem 0 0 0;
+            width: 60vw;
+            height: calc(79.2vw + 14.9px);
+        }
+    }
+    /* Tamaños por viewport. */
+    @media screen and (min-width: 75em) { .page-about .about-lead, .page-about .about-desc .about-desc__item { font-size: 2.90rem; } }
+    @media screen and (min-width: 62.5em) and (max-width: 74.99em) { .page-about .about-lead, .page-about .about-desc .about-desc__item { font-size: 2.54rem; } }
+    @media screen and (min-width: 56.25em) and (max-width: 62.49em) { .page-about .about-lead, .page-about .about-desc .about-desc__item { font-size: 2.17rem; } }
+    @media screen and (max-width: 56.24em) { .page-about .about-lead, .page-about .about-desc .about-desc__item { font-size: 1.93rem; } }
+    @media screen and (max-height: 43.75em) { .page-about .about-lead, .page-about .about-desc .about-desc__item { font-size: 1.69rem; } }
+    /* En móvil el texto no puede caber en la banda libre, así que la banda
+       superior se ensancha y el retrato se baja. */
+    @media screen and (max-width: 40em) {
+        .page-about .about-lead {
+            width: calc(100% - 2rem);
+            font-size: 1.4rem;
+            top: calc(100% + 0.25rem);
+        }
+        .page-about .about-desc .about-desc__item {
+            font-size: 1.4rem;
+        }
+    }
+    /* El .about-desc pasa a la banda inferior en móvil para no solapar el
+       manifiesto. */
+    @media screen and (max-width: 40em) {
+        .page-about .about-desc {
+            position: absolute;
+            bottom: 5.5rem;
+            right: 0;
+            left: 0;
+            margin: 0;
+        }
+        .page-about .about-desc .about-desc__item {
+            margin-left: auto;
+            margin-right: 1rem;
+        }
+    }
+    /* Pantallas cortas: el manifiesto no cabe en la banda superior; se baja y
+       se reduce el retrato para que no se solape. */
+    @media screen and (max-width: 40em) and (max-height: 43.75em) {
+        .page-about .about-lead {
+            font-size: 1.26rem;
+        }
+        .page-about .about-desc .about-desc__item {
+            font-size: 1.26rem;
+        }
+        .page-about .pieces {
+            align-self: start;
+            margin-top: 6rem;
+            width: 70vw;
+            height: calc(92.4vw + 14.9px);
+        }
+    }
+    /* En móvil el retrato vuelve a su tamaño original; el manifiesto cabe en
+       la banda superior sin tocarlo. */
+    @media screen and (max-aspect-ratio: 1162/1534) and (max-width: 40em) and (min-height: 43.76em) {
+        .page-about .pieces {
+            align-self: start;
+            margin-top: 10rem;
+            width: 70vw;
+            height: calc(92.4vw + 14.9px);
+        }
+    }
     </style>
 
     <script>document.documentElement.className="js";</script>
@@ -328,7 +510,6 @@
              ampliado a tres estados: Fotógrafo | Diseñador | Desarrollador -->
         <section class="about demo-page">
             <div class="pieces" style="background-image: url(assets/IMG/about/alex-normal.webp)" data-img-alt="url(assets/IMG/about/alex-alt.webp)" data-img-code="url(assets/IMG/about/alex-code.webp)"></div>
-            <div class="overlay overlay--hidden"></div>
             <div class="content">
                 <div class="content__inner">
                     <div class="content__top">
@@ -341,20 +522,16 @@
                                 <svg class="icon icon--menu-alt"><use xlink:href="#icon-menu-alt"></use></svg>
                             </button>
                         </div>
+                        <div class="about-lead" data-cat="photo">
+                            <p class="about-lead__item" data-cat="photo" data-i18n="about_lead_photo">Este es mi portfolio, dedicado al desarrollo, la fotografía y el diseño gráfico. Impulsado por la pasión por crear narrativas visuales cautivadoras, mi propósito es trascender lo convencional y ofrecer una visión donde imaginación, luz y el diseño se entrelazan,</p>
+                            <p class="about-lead__item" data-cat="design" data-i18n="about_lead_design">Cada proyecto lo abordo con la misma base: creatividad aplicada y atención al detalle. Me interesa que el diseño no solo se vea bien, sino que funcione y cuente algo que conecte y perdure.</p>
+                            <p class="about-lead__item" data-cat="code" data-i18n="about_lead_code">Este es el punto donde convergen mis tres disciplinas: fotografía, diseño y desarrollo. El arte de lo visual y la exactitud del código unidos con un mismo propósito: crear narrativas que no solo se ven bien, sino que tienen sentido.</p>
+                        </div>
                     </div>
                     <div class="menu about-desc" data-cat="photo">
                         <p class="about-desc__item" data-cat="photo" data-i18n="about_desc_photo">Mi formación en fotografía se desarrolló en CIDE – Corporación Internacional para el Desarrollo Educativo en Bogotá, Colombia. Mi trabajo explora la luz, la sombra y la geometría para construir imágenes que van más allá del registro documental, buscando una narrativa visual más abstracta y contemplativa.</p>
                         <p class="about-desc__item" data-cat="design" data-i18n="about_desc_design">Diseñador gráfico de formación autodidacta con trayectoria en entorno corporativo y como freelance. Mi aprendizaje se ha construido trabajando directamente con clientes, entendiendo necesidades reales de negocio, donde la práctica y el criterio han sido mi principal escuela.</p>
                         <p class="about-desc__item" data-cat="code" data-i18n="about_desc_code">Mi formación en programación y en diseño y montaje de páginas y aplicaciones web se desarrolló en Stucom y en The Corner, en Barcelona, España. Una base que combina la lógica de la programación con el criterio visual del diseño web, orientada a crear proyectos que no solo se ven bien, sino que funcionan, cargan rápido y son fáciles de mantener.</p>
-                    </div>
-                    <div class="menu menu--code">
-                        <ul class="menu__inner">
-                            <li class="menu__item"><a class="menu__link" data-switch data-i18n="about_menu_coding">Sobre programación</a></li>
-                            <li class="menu__item"><a class="menu__link" data-switch data-i18n="about_menu_experiments">Experimentos</a></li>
-                            <li class="menu__item"><a class="menu__link" data-switch data-i18n="about_menu_current">Proyectos actuales</a></li>
-                            <li class="menu__item"><a class="menu__link" data-switch data-i18n="about_menu_tutorials">Tutoriales</a></li>
-                            <li class="menu__item"><a class="menu__link" data-switch data-i18n="about_menu_github">> Encuéntrame en GitHub</a></li>
-                        </ul>
                     </div>
                     <div class="content__bottom">
                         <div class="switch mode mode--design">

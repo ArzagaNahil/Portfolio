@@ -180,6 +180,8 @@
 			}
 			if (menuCode) menuCode.style.display = 'none';
 			if (overlay) overlay.style.opacity = 0;
+			if (window.AboutDemo) window.AboutDemo.stopSwitchGlitch();
+			if (window.AboutDemo) window.AboutDemo.restartGlitch();
 		}
 		setCurrent(itemPhoto);
 		// El título pasa a "Fotografía" al empezar la entrada de la capa.

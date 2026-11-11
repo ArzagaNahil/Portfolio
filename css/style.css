@@ -38,6 +38,12 @@
 html {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+    scrollbar-width: none;
+}
+
+html::-webkit-scrollbar {
+    display: none;
 }
 
 body {
@@ -47,6 +53,7 @@ body {
     font-family: var(--font-sans);
     font-weight: 300;
     min-height: 100vh;
+    overflow-x: hidden;
 }
 
 /* ---- Three.js Background ---- */
@@ -2296,7 +2303,8 @@ body.is-lightbox-open #three-canvas {
     .page-development .frame,
     .page-design .frame,
     .page-photography .frame,
-    .page-gallery .frame {
+    .page-gallery .frame,
+    .page-contact .frame {
         z-index: 3;
     }
 

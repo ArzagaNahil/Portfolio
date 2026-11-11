@@ -438,7 +438,7 @@
 	window.GlitchFx = GlitchFx;
 
 	const DOM = {}, is3DBuggy = navigator.userAgent.indexOf('Firefox') > 0;
-	let pm, gfx;
+	let pm, gfx, gfxTitle, gfxSwitch;
 	DOM.body = document.body;
 	DOM.loading = document.querySelector('.loading');
 	DOM.switchCtrls = document.querySelector('.switch');
@@ -450,7 +450,12 @@
 	};
 	DOM.pieces = document.querySelector('.pieces');
 	DOM.aboutDesc = document.querySelector('.about-desc');
+	DOM.aboutLead = document.querySelector('.about-lead');
 	DOM.glitchElems = document.querySelectorAll('[data-glitch]');
+	// Además del conjunto completo, el título se puede animar solo: en modo
+	// código la demo apaga el glitch general y este mantiene su cortocircuito.
+	DOM.glitchTitleElems = document.querySelectorAll('.title__cat[data-glitch]');
+	DOM.glitchSwitchElems = document.querySelectorAll('.switch__item span[data-glitch]');
 	DOM.contact = {
 		el: document.querySelector('.contact-link')
 	};
@@ -486,6 +491,24 @@
 	window.AboutDemo = {
 		isAnimating: function() {
 			return !!isAnimating;
+		},
+		restartGlitch: function() {
+			if( gfx && gfx.isInactive ) {
+				gfx.glitch();
+			}
+		},
+		stopSwitchGlitch: function() {
+			if( gfxSwitch && !gfxSwitch.isInactive ) {
+				gfxSwitch.stopGlitch();
+			}
+		},
+		startSwitchGlitch: function() {
+			if( !gfxSwitch ) {
+				gfxSwitch = new GlitchFx(DOM.glitchSwitchElems);
+			}
+			else if( gfxSwitch.isInactive ) {
+				gfxSwitch.glitch();
+			}
 		}
 	};
 
@@ -543,6 +566,7 @@
 		DOM.title.el.dataset.cat = cat;
 		// Sincronizar descripción dinámica
 		if (DOM.aboutDesc) DOM.aboutDesc.dataset.cat = cat;
+	if (DOM.aboutLead) DOM.aboutLead.dataset.cat = cat;
 		// Las letras de la categoría que entra pueden haber quedado con
 		// opacity:0 en la animación de salida anterior (el modo código y la
 		// foto entran sin animación de letras): se limpian para que se vean.
@@ -616,6 +640,29 @@
 			pm.removeTilt();
 			pm.stopLoopFx();
 			gfx.stopGlitch();
+			// El título no se apaga en código: al contrario que el resto,
+			// mantiene el mismo cortocircuito blanco↔azul que en Foto y Diseño.
+			if( !gfxTitle ) {
+				gfxTitle = new GlitchFx(DOM.glitchTitleElems);
+			}
+			else if( gfxTitle.isInactive ) {
+				gfxTitle.glitch();
+			}
+			// El conmutador tambien mantiene su glitch (azul"rojo) en codigo,
+			// igual que en Fotografia y Diseno.
+			if( !gfxSwitch ) {
+				gfxSwitch = new GlitchFx(DOM.glitchSwitchElems);
+			}
+			else if( gfxSwitch.isInactive ) {
+				gfxSwitch.glitch();
+			}
+		}
+		else if( gfxTitle && !gfxTitle.isInactive ) {
+			// De vuelta a diseno manda el glitch conjunto de siempre.
+			gfxTitle.stopGlitch();
+			if( gfxSwitch && !gfxSwitch.isInactive ) {
+				gfxSwitch.stopGlitch();
+			}
 		}
 		
 		// Change current class on the designer/coder links.
@@ -638,6 +685,10 @@
 	}
 
 	function switchOverlay() {
+		// About ya no dibuja la cortina; el resto de páginas con la demo sí.
+		if( !DOM.overlay ) {
+			return;
+		}
 		anime.remove(DOM.overlay);
 		anime({
 			targets: DOM.overlay,
@@ -722,23 +773,25 @@
 			showCode('menuCtrl');
 		});
 		// Menu links:
-		hideDesign(DOM.menu['design'].items, function() {
-			// En About el wrapper de diseño es también la descripción
-			// (.about-desc) y no tiene enlaces de menú. Debe seguir visible en
-			// modo código para mostrar el texto de esa categoría.
-			if( DOM.menu['design'].items.length ) {
-				DOM.menu['design'].wrapper.style.display = 'none';
-			}
-				
-			animateLetters(DOM.menuCodeItemLetters, 'in', {
-				delay: function(t,i) {
-					return i*30
-				},
-				begin: function() {
-					DOM.menu['code'].wrapper.style.display = 'block';
+		if( DOM.menu['code'].wrapper ) {
+			hideDesign(DOM.menu['design'].items, function() {
+				// En About el wrapper de diseño es también la descripción
+				// (.about-desc) y no tiene enlaces de menú. Debe seguir visible en
+				// modo código para mostrar el texto de esa categoría.
+				if( DOM.menu['design'].items.length ) {
+					DOM.menu['design'].wrapper.style.display = 'none';
 				}
+
+				animateLetters(DOM.menuCodeItemLetters, 'in', {
+					delay: function(t,i) {
+						return i*30
+					},
+					begin: function() {
+						DOM.menu['code'].wrapper.style.display = 'block';
+					}
+				});
 			});
-		});
+		}
 	}
 
 	function switchToDesign() {
@@ -799,17 +852,19 @@
 		DOM.menuCtrl.style.opacity = 0;
 		showDesign('menuCtrl');
 		// Menu links:
-		animateLetters(DOM.menuCodeItemLetters, 'out', {
-			delay: function(t,i,c) {
-				return (c-i-1)*10;
-			},
-			duration: 20,
-			complete: function() {
-				DOM.menu['code'].wrapper.style.display = 'none';
-				DOM.menu['design'].wrapper.style.display = 'block';
-				showDesign(DOM.menu['design'].items);
-			}
-		});
+		if( DOM.menu['code'].wrapper ) {
+			animateLetters(DOM.menuCodeItemLetters, 'out', {
+				delay: function(t,i,c) {
+					return (c-i-1)*10;
+				},
+				duration: 20,
+				complete: function() {
+					DOM.menu['code'].wrapper.style.display = 'none';
+					DOM.menu['design'].wrapper.style.display = 'block';
+					showDesign(DOM.menu['design'].items);
+				}
+			});
+		}
 	}
 
 	function animateLetters(letters, dir, extraAnimeOpts) {

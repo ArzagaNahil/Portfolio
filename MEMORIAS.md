@@ -2159,6 +2159,39 @@ Se borraron dos restos vacíos del árbol de trabajo que habían quedado del exp
 
 ---
 
+## Sesión 51 - Manifiesto de About, tipografía y conmutador unificados, y scrollbar global
+
+### Objetivo
+- Añadir tres párrafos de manifiesto (uno por categoría: fotografía, diseño, desarrollo) debajo del título, en la columna izquierda, sin cubrir el retrato central.
+- Unificar la tipografía (Tulpen One) y el tamaño entre manifiesto y descripción.
+- Ajustar márgenes, alineación y scroll global para que el cambio de página sea fluido.
+
+### Cambios principales
+- **`about.html`**: nuevo bloque `.about-lead` con los tres `<p>` (uno por categoría), sincronizado por `data-cat` igual que `.about-desc`. CSS responsivo: columna izquierda en escritorio (margen calculado contra el borde opaco del retrato), banda superior a ancho completo en móvil/tablet con el retrato bajado/escalado para no solapar. Tamaño de fuente unificado (14.4→22.4 px en móvil, 38.4→46.4 px en desktop). Márgenes simétricos (80 px en desktop, 16 px en móvil). Título duplicado y luego reducido un 20 %, alineado al margen del "Arzaga" (topnav). Conmutador agrandado y luego reducido un 10 %. Alineación horizontal del manifiesto con la descripción y bajada 40 px. Manifiesto con `top` fijo y `transition: none` para que no se mueva al cambiar de modo. Width reducido un 5 % + 10 % adicional (factor 0.855) en los tres manifiestos.
+- **`js/tympMain.js`**: añadido `DOM.aboutLead` y sincronización en `setCat(cat)`. `GlitchFx` independiente (`gfxSwitch`) para el conmutador en modo código, expuesto `stopSwitchGlitch`/`restartGlitch` en `window.AboutDemo`.
+- **`js/photographer.js`**: `enterPhoto()` normaliza el conmutador y detiene/reinicia el glitch del switch; `finish()` restaura según `demoMode`.
+- **`js/i18n.js`**: claves `about_lead_photo/design/code` en ES y EN.
+- **`css/style.css`**: ocultado el scrollbar (`scrollbar-width: none` + `::-webkit-scrollbar { display: none; }`) y `overflow-x: hidden` en `html`/`body` para evitar el flash de la barra al cambiar de página. `.page-contact .frame { z-index: 3; }` para que el selector de idioma sea clickeable (estaba cubierto por `.contact`).
+
+### Conmutador (switch)
+- Misma fuente (Bruno Ace), color (acento azul) y sin "pill" (fondo verde/rojo) en los tres modos.
+- Glitch conservado en todos los modos: azul ↔ blanco (antes azul ↔ rojo).
+- Hover activo en el elemento seleccionado (cambia a blanco).
+- Las tres palabras empiezan en mayúscula en modo Desarrollador.
+
+### Verificación con CDP
+- 0 % de solape con el retrato (carrete y normal/code) en los 6 viewports probados.
+- Sin scroll horizontal, 0 errores de consola/red.
+- Cambio de modo (foto/diseño/código) e idioma (ES/EN) OK.
+- Scrollbar oculto y `overflow-x: hidden` en las 6 páginas × 2 viewports.
+
+### Estado
+- **Un commit para la sesión 51**: `about.html`, `css/style.css`, `js/i18n.js`, `js/photographer.js`, `js/tympMain.js` y esta entrada de `MEMORIAS.md`.
+- `check.txt` sigue sin seguimiento y no se ha tocado.
+- Pendiente de ver por el usuario: la revisión visual final de About y las galerías.
+
+---
+
 ## Para la próxima sesión
 
 **La nota de Contacto queda cerrada (sesión 49)**: vive **encima de la tarjeta**, centrada, y se ha bajado junto con el formulario; la variante de meterla dentro de la tarjeta no llegó a probarse y el usuario dio por buena esta. **El bug de About quedó arreglado (sesión 50), pendiente de ver por el usuario**: Fotógrafo desde Desarrollador ya oculta el menú de código y deja el conmutador en estilo diseño. Lo siguiente es la revisión visual de About (título por categoría, conmutador, descripción y capa Photographer), con sesiones dedicadas a las galerías.
