@@ -286,6 +286,11 @@ if (tiles && prevBtn && nextBtn) {
                 }
             });
             this.index = nearest;
+            // Al llegar al final del desplazamiento, deshabilitar la flecha derecha.
+            const atEnd = tiles.scrollLeft + tiles.clientWidth >= tiles.scrollWidth - 4;
+            const atStart = tiles.scrollLeft <= 4;
+            if (atEnd) this.index = this.items.length - 1;
+            if (atStart) this.index = 0;
             this.update();
         },
     };

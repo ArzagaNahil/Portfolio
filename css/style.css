@@ -42,6 +42,11 @@ html {
     scrollbar-width: none;
 }
 
+::selection {
+    background: var(--color-accent);
+    color: #ffffff;
+}
+
 html::-webkit-scrollbar {
     display: none;
 }
