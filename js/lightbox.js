@@ -83,7 +83,7 @@ export function initLightbox() {
         document.body.classList.add('is-lightbox-open');
 
         show(at);
-        document.addEventListener('keydown', onKeydown);
+        document.addEventListener('keydown', onKeydown, true);
         if (closeBtn) closeBtn.focus();
     }
 
@@ -95,7 +95,7 @@ export function initLightbox() {
     function close() {
         if (!isOpen) return;
         isOpen = false;
-        document.removeEventListener('keydown', onKeydown);
+        document.removeEventListener('keydown', onKeydown, true);
 
         lightbox.classList.remove('is-open');
         lightbox.setAttribute('aria-hidden', 'true');
@@ -108,14 +108,17 @@ export function initLightbox() {
         switch (event.key) {
             case 'Escape':
                 event.preventDefault();
+                event.stopImmediatePropagation();
                 close();
                 break;
             case 'ArrowLeft':
                 event.preventDefault();
+                event.stopImmediatePropagation();
                 go(-1);
                 break;
             case 'ArrowRight':
                 event.preventDefault();
+                event.stopImmediatePropagation();
                 go(1);
                 break;
             case 'Tab': {

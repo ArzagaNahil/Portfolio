@@ -126,6 +126,7 @@ function initTopnav() {
     });
 
     document.addEventListener('keydown', (e) => {
+        if (document.body.classList.contains('is-lightbox-open')) return;
         if (e.key === 'Escape') close();
     });
 
@@ -302,6 +303,7 @@ if (tiles && prevBtn && nextBtn) {
     nextBtn.addEventListener('click', () => devNav.go(devNav.index + 1));
 
     document.addEventListener('keydown', (e) => {
+        if (document.body.classList.contains('is-lightbox-open')) return;
         if (e.target.matches('input, textarea, [contenteditable]')) return;
         if (e.key === 'ArrowRight') devNav.go(devNav.index + 1);
         if (e.key === 'ArrowLeft') devNav.go(devNav.index - 1);
