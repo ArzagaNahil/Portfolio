@@ -762,8 +762,8 @@ a:focus {
    sola columna con scroll vertical: título, manifiesto, foto, descripción y
    conmutador. Así nada se solapa y el conmutador siempre queda accesible. */
 
-@media screen and (min-width: 40.01em) and (max-width: 74.99em),
-       screen and (max-height: 37.49em) {
+@media screen and (max-width: 75em),
+       screen and (max-height: 37.5em) {
     /* La página deja de ser una sola pantalla fija y puede crecer. */
     .page-about main {
         height: auto;
@@ -816,7 +816,7 @@ a:focus {
         position: static;
         top: auto;
         width: 100%;
-        max-width: 34rem;
+        max-width: 48rem;
         margin: 1.25rem 0 0;
         font-size: clamp(1.2rem, 2.1vw, 1.7rem);
         line-height: 1.4;
@@ -842,7 +842,7 @@ a:focus {
         bottom: auto;
         left: auto;
         width: 100%;
-        max-width: 34rem;
+        max-width: 48rem;
         margin: 0 0 0 auto;
         text-align: left;
     }
@@ -871,5 +871,19 @@ a:focus {
     .page-about main {
         height: auto;
         overflow: visible;
+    }
+}
+
+/* En ventanas muy estrechas el conmutador de tres palabras no cabe en una
+   línea. Se reduce un poco y, si aun así no entra, se parte en dos. */
+@media screen and (max-width: 30em) {
+    .page-about .switch {
+        flex-wrap: wrap;
+        row-gap: 0.4rem;
+        font-size: clamp(0.72rem, 3.4vw, 0.95rem);
+    }
+
+    .page-about .switch__item {
+        margin-right: 1em;
     }
 }

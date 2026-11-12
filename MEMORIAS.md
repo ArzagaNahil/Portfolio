@@ -2250,16 +2250,49 @@ Se borraron dos restos vacíos del árbol de trabajo que habían quedado del exp
 
 ---
 
+## Sesión 54 - About al minimizar al máximo: columna apilada en todas las ventanas estrechas
+
+### Objetivo
+- Al reducir la ventana al máximo, los textos se montaban encima de la foto: un párrafo debajo de la imagen y el conmutador al final, sin solapes.
+- El primer párrafo de Diseño/Desarrollo se veía pegado al margen izquierdo; se prueba a ensancharlo para que respire.
+- Mantener intacta la composición de escritorio a pantalla completa.
+- Actualizar la bitácora.
+
+### Diagnóstico
+- La columna apilada de la sesión 53 solo se activaba entre 640px y 1200px de ancho, o con poca altura. Por debajo de 640px seguía vigente la composición móvil antigua, que coloca la descripción en `position: absolute` sobre el retrato.
+- Medido con CDP en 640×900, 600×800, 500×900, 500×700, 390×844, 390×700 y 360×640: `descPieces: true` en todos, es decir, la descripción encima de la foto.
+- El manifiesto a `max-width: 34rem` dejaba el párrafo de Diseño/Código demasiado justo contra el margen izquierdo.
+
+### Cambios principales
+- **`css/about.css`**:
+  - La media query de la sección 7 pasa de `(min-width: 40.01em) and (max-width: 74.99em)` a `(max-width: 75em), (max-height: 37.5em)`: la columna apilada cubre ya **todas** las ventanas de hasta 1200px de ancho, incluidas las móviles, y también las de poca altura con mucho ancho.
+  - `.about-lead` y `.about-desc` pasan de `max-width: 34rem` a `48rem` en la composición apilada. El manifiesto sigue a la izquierda y la descripción sigue alineada a la derecha.
+  - Nuevo bloque `@media screen and (max-width: 30em)`: el conmutador admite `flex-wrap`, con `row-gap: 0.4rem` y `font-size: clamp(0.72rem, 3.4vw, 0.95rem)`. A 320px ya no se recorta: se parte en dos líneas (unos 33-35px de alto).
+  - Las reglas antiguas de móvil quedan por debajo en cascada y ya no mandan; no se han borrado para no tocar nada más.
+
+### Verificación con CDP
+- **Español**, modos Foto/Diseño/Código donde aplica, 1200×600, 1199×700, 1024×768, 800×600, 768×1024, 640×900, 600×800, 500×900, 500×700, 480×800, 430×900, 390×844, 390×700, 360×640, 320×568 y 500×300: 0 solapes entre manifiesto, foto, descripción y conmutador, 0 scroll horizontal y conmutador alcanzable.
+- **Inglés**, modos Foto/Diseño/Código, 390×700, 500×900, 800×600, 1024×768 y 1100×700: 0 solapes, 0 scroll horizontal, `lang="en"` confirmado en cada medida.
+- **Escritorio intacto**: 1201×601 sigue mostrando `descPieces: true` y las mismas medidas que antes del cambio (manifiesto 284px de ancho, foto 410×560); no se ha tocado nada por encima de 1200px de ancho y 600px de alto.
+- Consecuencia asumida: en la columna apilada la página crece en vertical y se desplaza (por ejemplo 1200×600 necesita unos 1104px de alto). Antes entraba en una pantalla, pero con los textos encima de la foto.
+
+### Estado
+- Un commit para la sesión 54 (`css/about.css` y esta entrada).
+- Commits previos: `264cfa7` (responsive inicial de About y limpieza i18n), `0ff924c` (About nativa), `3f06466` (imágenes de Rescate Animal y limpieza).
+- Sin tocar y pendiente: los dos ajustes de posición de los títulos de las tiles y los 112 `alt`/`aria-label`.
+
+---
+
 ## Para la próxima sesión
 
-**About queda cerrado a falta de la revisión visual del usuario (sesión 53)**: es nativo desde `0ff924c`, no queda nada de la demo de Codrops, y al minimizar la ventana pasa a una columna con scroll en la que el conmutador siempre es alcanzable. La composición de escritorio (≥1200px de ancho y ≥600px de alto) no se ha tocado. Las galerías y los carruseles se dieron por buenos: no hay trabajo pendiente ahí.
+**About queda cerrado a falta de la revisión visual del usuario (sesiones 53 y 54)**: es nativo desde `0ff924c`, no queda nada de la demo de Codrops, y cualquier ventana de hasta 1200px de ancho (o de hasta 600px de alto) pasa a una columna con scroll en la que el conmutador siempre es alcanzable y ningún texto se monta sobre la foto. La composición de escritorio (≥1200px de ancho y ≥600px de alto) no se ha tocado. Las galerías y los carruseles se dieron por buenos: no hay trabajo pendiente ahí.
 
 **Histórico que ya no aplica**: las sesiones 43-51 describen la demo de Codrops dentro de About (`tympMain.js`, `photographer.js`, `demo.css`, `pieces.css`, `<style>` de `about.html`, `window.AboutDemo`, `window.AboutTitle`). Nada de eso existe desde `0ff924c`; se conserva como registro, no como mapa del código actual. Lo mismo con el copy antiguo de About y sus 14 claves: se borraron en la sesión 53.
 
 **Lo que hay ahora en About**: `about.html` (unos 120 líneas) + `css/about.css` + `js/about.js`. Si hay que retocar la composición apilada, el bloque nuevo está al final de `css/about.css` (sección 7).
 
 **Pendiente de mirar**:
-- **Hecho y pendiente de ver por el usuario (sesión 53): About al minimizar.** Por debajo de 1200px de ancho o 600px de alto, About pasa a columna con scroll (título → manifiesto → foto → descripción → conmutador). Verificado en 800×600, 1024×600, 1024×768, 390×700, 390×500, 640×360 y 812×375: 0 solapes, 0 scroll horizontal, conmutador siempre alcanzable. **Si hay que retocar algo, el bloque nuevo es la sección 7 de `css/about.css`.**
+- **Hecho y pendiente de ver por el usuario (sesiones 53 y 54): About al minimizar.** La columna apilada se activa con `(max-width: 75em)` o `(max-height: 37.5em)`, es decir, en todas las ventanas de hasta 1200px de ancho (incluidos los móviles) y en las de poca altura. Orden: título → manifiesto → foto → descripción → conmutador, sin solapes. Manifiesto y descripción a `48rem` como máximo; por debajo de 480px el conmutador se reduce y se parte en dos líneas. Verificado en español e inglés y en los tres modos. **Si hay que retocar algo, el bloque es la sección 7 de `css/about.css`.**
 - **Hecho (sesión 53): claves i18n huérfanas y eslóganes provisionales.** Se borraron las 14 claves `about_*` del copy antiguo y `g_slogan_branding` / `g_slogan_editorial`, junto con sus dos párrafos en `gallery-design-1.html` y `gallery-design-2.html`. Auditoría: ES 364 = EN 364 = claves usadas 364, 0 huérfanas.
 - **Hecho (sesión 50, pero ya sin código que lo sostenga): el bug de Fotógrafo desde Desarrollador.** Se resolvió sobre la demo de Codrops (`enterPhoto`, `demoMode`, `photographer.js`), que se eliminó en `0ff924c`; la About nativa ya no tiene ese camino. Se conserva como histórico.
 - **Hecho (sesión 45, cerrado): los +10 px de abajo de la imagen del About.** Las imágenes y la transformación compartida que menciona esa sesión ya no se usan: la About nativa trabaja con las teselas de `about.js` y `alex-photo.webp`. Histórico.
