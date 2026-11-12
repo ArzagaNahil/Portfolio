@@ -1,0 +1,745 @@
+/* ============================================================================
+   About — reescritura nativa
+   ----------------------------------------------------------------------------
+   Sustituye a css/demo.css, css/pieces.css y al <style> que la About anterior
+   llevaba embebido. Se mantienen los mismos nombres de clase, medidas y reglas de
+   cascada para que el resultado visual y el comportamiento sean idénticos,
+   pero sin cargar el demo de Codrops ni sus dependencias.
+
+   Orden de cascada: style.css -> about.css (este archivo).
+   ============================================================================ */
+
+/* ---------------------------------------------------------------------------
+   1. Cortina de carga
+   --------------------------------------------------------------------------- */
+
+.js .loading {
+    position: fixed;
+    z-index: 100;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #232323;
+    color: #585656;
+    transition: opacity 0.3s;
+}
+
+.js .loading--hide {
+    pointer-events: none;
+    opacity: 0;
+}
+
+.js .loading::after {
+    content: '- - -';
+    font-family: 'Roboto Mono', monospace;
+    font-size: 1.5em;
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    animation: animLoader 1s infinite alternate forwards;
+    /* Anulan el spinner circular que style.css pinta en .loading::after */
+    margin: 0;
+    border-radius: 0;
+    background: none;
+    opacity: 1;
+}
+
+@keyframes animLoader {
+    0% {
+        content: '- - -';
+    }
+    25% {
+        content: 'd - -';
+    }
+    50% {
+        content: '- - c';
+    }
+    75% {
+        content: '- / -';
+    }
+    100% {
+        content: 'd - c';
+    }
+}
+
+/* El demo ponía main con alto de viewport y sin desbordamiento; ese
+   comportamiento forma parte del layout de About (una sola pantalla, también
+   en móvil). En escritorio style.css ya lo repite. */
+main {
+    overflow: hidden;
+    height: 100vh;
+}
+
+/* ---------------------------------------------------------------------------
+   2. Rejilla de teselas de la fotografía
+   --------------------------------------------------------------------------- */
+
+.pieces {
+    width: 68.1747vh; /* 1162/1534 * 90vh: misma proporción que la imagen */
+    /* 14.9px extra de alto (10 arriba y 5 abajo). El alto se cuantiza a
+       múltiplos de 14 (filas): con 15 exactos el redondeo podía saltar dos
+       filas; con 14.9 el salto real es siempre de 14px. */
+    height: calc(90vh + 14.9px);
+    margin: auto;
+    flex: none;
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    /* 100% 100% y no auto: al crecer la caja la imagen se estira con ella y
+       las capas siguen cuadrando entre sí. */
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-position: 0 0;
+}
+
+.piece {
+    pointer-events: none;
+}
+
+@media screen and (max-aspect-ratio: 1162/1534) {
+    .pieces {
+        width: 80vw;
+        height: calc(105.6107vw + 14.9px);
+    }
+}
+
+/* ---------------------------------------------------------------------------
+   3. Contenido superpuesto (título, manifiesto, descripción y conmutador)
+   --------------------------------------------------------------------------- */
+
+.content,
+.content__inner {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+.content__inner {
+    z-index: 100;
+    flex-direction: column;
+    align-content: flex-start;
+    padding: 2.5em 2.5em 0;
+}
+
+.content__top {
+    display: flex;
+    align-items: center;
+    flex: none;
+    width: 100%;
+}
+
+.title {
+    font-size: 1em;
+    font-weight: normal;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    height: 1.75em;
+    margin: 0;
+}
+
+.title__inner.mode--design {
+    font-size: 1.5em;
+}
+
+.title__inner.mode--code {
+    text-transform: lowercase;
+}
+
+.mode--code,
+.menu--code .menu__link {
+    font-family: 'Roboto Mono', monospace;
+    text-transform: lowercase;
+    color: #e04643;
+}
+
+.menu {
+    font-size: 1.85em;
+    flex: none;
+    width: 100%;
+    margin: 2em 0 0 auto;
+    text-align: right;
+}
+
+.content__bottom {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    margin: auto 0 0 0;
+}
+
+.switch {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.switch__item {
+    line-height: 1;
+    position: relative;
+    display: inline-block;
+    margin: 0 1.5em 0 0;
+    padding: 0 0 0.15em;
+    color: #585656;
+}
+
+.switch__item span {
+    position: relative;
+    display: inline-block;
+    pointer-events: none;
+}
+
+.switch__item--current {
+    pointer-events: none;
+    color: #232323;
+    background-color: #6dcc9e;
+}
+
+.mode--code .switch__item--current {
+    color: #232323;
+    background-color: #e04643;
+}
+
+.switch__item:first-child::after {
+    content: '';
+    position: absolute;
+    top: -5%;
+    left: calc(100% + 0.75em);
+    width: 1px;
+    height: 110%;
+    background: #464646;
+    transform: rotate(22.5deg);
+}
+
+@media screen and (max-height: 38.5em) {
+    .menu {
+        text-align: left;
+    }
+}
+
+@media screen and (max-width: 40em) {
+    .content__top {
+        font-size: 0.5em;
+    }
+
+    .content__bottom {
+        font-size: 0.85em;
+    }
+
+    .menu {
+        font-size: 1em;
+    }
+
+    .content__inner {
+        padding: 1em 1em 0;
+    }
+}
+
+/* ---------------------------------------------------------------------------
+   4. Convivencia con style.css
+   --------------------------------------------------------------------------- */
+
+/* La demo pinta body{background:#232323}; aquí el fondo de la web manda.
+   La tipografía y el color sí se conservan tal cual venían de demo.css. */
+body {
+    font-family: 'Roboto', sans-serif;
+    color: #585656;
+    background: #000000;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Enlaces de la demo (los .switch__item y las reglas de página tienen más
+   especificidad y siguen mandando). */
+a {
+    text-decoration: none;
+    color: #6dcc9e;
+    outline: none;
+    cursor: pointer;
+}
+
+a:hover {
+    color: #fff;
+}
+
+a:focus {
+    outline: none;
+}
+
+/* El contenedor de la demo es la sección .about. El margin-top baja la caja
+   por debajo de la topnav fija: el padding de .about no sirve porque no mueve
+   a los hijos position:absolute, y .content lo es.
+
+   .about hereda además el template de dos columnas y el gap de la ficha de
+   proyecto antigua de style.css; aquí se anulan para que la foto quede
+   centrada en el viewport como una sola caja. */
+.page-about .demo-page {
+    position: relative;
+    padding: 0;
+    margin-top: 3.75rem;
+    grid-column: 1 / -1;
+    grid-template-columns: 1fr;
+    gap: 0;
+    place-items: center;
+}
+
+/* style.css define .content para su rejilla; aquí es una capa absoluta. */
+.demo-page .content {
+    grid-area: auto;
+}
+
+/* style.css define .menu para el menú LetterShuffle de la web; en About
+   .menu es solo el contenedor de la descripción. */
+.page-about .menu {
+    pointer-events: auto;
+    border-bottom: 0;
+    display: block;
+}
+
+/* La cortina negra de style.css también cubre el .loading; lo que no encaja es
+   el círculo del spinner sobre el texto "- - -".
+   (Las propiedades que anulan el spinner están en la regla de ::after de
+   arriba; esta mantiene la especificidad de la página.) */
+.page-about .loading::after {
+    margin: 0;
+    border-radius: 0;
+    background: none;
+    opacity: 1;
+}
+
+/* Iconos sociales por encima de .content (z-index 100) de la demo. */
+.page-about .frame__links {
+    position: relative;
+    z-index: 150;
+}
+
+/* Sube la fila inferior del frame para que "Work with me" (oculto) no quede
+   pegado a los iconos sociales. Solo >=54em, que es donde el frame existe. */
+@media screen and (min-width: 54em) {
+    .page-about .content__bottom {
+        margin-bottom: 4.5rem;
+    }
+}
+
+/* Separador tras el estado central: la base solo dibuja el de :first-child y
+   con tres estados hacen falta dos barras. */
+.page-about .switch__item:nth-child(2)::after {
+    content: '';
+    position: absolute;
+    top: -5%;
+    left: calc(100% + 0.75em);
+    width: 1px;
+    height: 110%;
+    background: #464646;
+    transform: rotate(22.5deg);
+}
+
+/* Capa Photographer: 140 teselas con la foto del carrete superpuestas a la
+   capa principal. inset:0 la deja a caja de .pieces, z-index:10 la coloca por
+   debajo de .content__inner (z 100). */
+.page-about .pieces--photo {
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+    pointer-events: none;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+/* ---------------------------------------------------------------------------
+   5. Título y conmutador
+   --------------------------------------------------------------------------- */
+
+/* --- Título: la categoría del modo activo, en Bruno Ace y --color-heading,
+   igual que los .page-title de las demás páginas (sin su opacidad 0.18: aquí
+   el texto va sobre la foto y tiene que leerse). Las tres viven a la vez en el
+   DOM y solo se ve la que indica data-cat de .title__inner. */
+.page-about .title {
+    height: auto;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+}
+
+/* Solo se ve la categoría del modo: las otras quedan display:none, así que no
+   pesan en el ancho de la caja ni en la medición contra la banda. */
+.page-about .title__cat {
+    display: none;
+}
+
+.title__inner[data-cat="photo"] .title__cat--photo,
+.title__inner[data-cat="design"] .title__cat--design,
+.title__inner[data-cat="code"] .title__cat--code {
+    display: inline;
+}
+
+/* La base pinta .title__inner.mode--design con font-size:1.5em; aquí el tamaño
+   lo manda .title, para que el glitch y el modo código cambien de tipografía y
+   de color pero nunca de tamaño. */
+.page-about .title__inner.mode--design {
+    font-size: 1em;
+    font-family: var(--font-name);
+    font-weight: 400;
+    color: var(--color-heading);
+}
+
+/* Modo alto: el hueco libre entre la caja de texto y la banda de perforaciones
+   de la película vale 560px − 33.383vh con la caja de 1200 centrada, y
+   50vw − 33.383vh − 40px por debajo de 1200px. El factor 0.168 deja el título
+   dentro de ese hueco en todos los viewports. */
+@media screen and (min-aspect-ratio: 1162/1534) {
+    .page-about .title {
+        font-size: max(1.2rem, min(4.16rem,
+            calc((560px - 33.383vh) * 0.168),
+            calc((50vw - 33.383vh - 40px) * 0.168)));
+    }
+}
+
+/* Modo ancho: sin conflicto, se queda en el tamaño de siempre. */
+@media screen and (max-aspect-ratio: 1162/1534) {
+    .page-about .title {
+        font-size: 1.2rem;
+    }
+}
+
+/* --- Conmutador: Bruno Ace en --color-accent (el azul de la web). Las tres
+   palabras + los dos separadores miden 24.87em desde el borde de .switch hasta
+   el final de "Desarrollador" → factor 0.063 sobre el hueco. Piso 11px, techo
+   16px. */
+.page-about .switch.mode--design,
+.page-about .switch.mode--code {
+    font-family: var(--font-name);
+}
+
+.page-about .switch.mode--design .switch__item:not(.switch__item--current),
+.page-about .switch.mode--code .switch__item:not(.switch__item--current) {
+    color: var(--color-accent);
+}
+
+.page-about .switch.mode--design .switch__item:not(.switch__item--current):hover,
+.page-about .switch.mode--code .switch__item:not(.switch__item--current):hover {
+    color: var(--color-heading);
+}
+
+/* En modo código el conmutador no se pone en minúsculas: las tres palabras
+   conservan su mayúscula inicial, igual que en Fotografía y Diseño. */
+.page-about .switch.mode--code {
+    text-transform: none;
+}
+
+.page-about .switch.mode--code .switch__item,
+.page-about .switch.mode--code .switch__item span {
+    text-transform: none;
+}
+
+.page-about .switch.mode--code .switch__item span {
+    color: inherit;
+}
+
+/* El efecto de glitch del conmutador pasa a blanco (no a rojo) en todos los
+   modos, igual que el resto de la interfaz. */
+.page-about .switch .switch__item span.mode--code {
+    color: var(--color-heading);
+}
+
+/* Se quita el "pill" (fondo verde/rojo) que marcaba el elemento activo: el
+   conmutador queda sin indicador de selección visible. */
+.page-about .switch .switch__item--current {
+    background-color: transparent;
+    color: var(--color-accent);
+    pointer-events: auto;
+}
+
+.page-about .switch .switch__item--current:hover {
+    color: var(--color-heading);
+}
+
+/* Con tres estados el conmutador se queda sin sitio en móvil. */
+@media screen and (max-width: 40em) {
+    .page-about .switch__item {
+        margin-right: 0.9em;
+    }
+}
+
+/* La caja crece 10px hacia arriba y 5px hacia abajo: el alto extra va en
+   .pieces (14.9px, para que el redondeo a múltiplos de 14 salte siempre 14) y
+   aquí se ajusta el desplazamiento. Como .demo-page centra la caja, al crecer
+   14px el borde superior ya sube solo 7px: con top:7px la subida neta es 10px
+   y la bajada ~4-5px en todos los viewports. position:relative ya lo trae
+   .pieces; top no altera el layout ni el resize, y el transform del tilt
+   (inline) no lo pisa. */
+.page-about .pieces {
+    top: 7px;
+}
+
+@media screen and (min-aspect-ratio: 1162/1534) {
+    .page-about .switch {
+        font-size: max(11px, min(16px,
+            calc((560px - 33.383vh) * 0.063),
+            calc((50vw - 33.383vh - 40px) * 0.063)));
+    }
+}
+
+/* Modo ancho: sin conflicto, el tamaño de siempre (0.95625em ≈ 15px). */
+@media screen and (max-aspect-ratio: 1162/1534) {
+    .page-about .switch {
+        font-size: 0.95625em;
+    }
+}
+
+@media screen and (max-width: 40em) and (max-aspect-ratio: 1162/1534) {
+    .page-about .switch {
+        font-size: 0.9em;
+    }
+}
+
+/* Glitch en modo código: azul de la página en vez del rojo del demo. */
+.page-about .title__cat.mode--code {
+    color: var(--color-accent);
+}
+
+/* En modo código el .title__inner lleva Roboto Mono rojo y minúsculas, así que
+   el span que el glitch devuelve a mode--design heredaría ese aspecto y el
+   cortocircuito sería rojo↔azul. Estas reglas le devuelven el blanco Bruno Ace
+   para que Desarrollador parpadee con el mismo blanco↔azul que Fotografía y
+   Diseño. El :not cubre también el estado inicial del span, que aún no tiene
+   clase de modo. */
+.page-about .title__inner.mode--code .title__cat:not(.mode--code) {
+    font-family: var(--font-name);
+    font-weight: 400;
+    color: var(--color-heading);
+    text-transform: none;
+}
+
+/* ---------------------------------------------------------------------------
+   6. Descripción dinámica y manifiesto
+   --------------------------------------------------------------------------- */
+
+/* Descripción dinámica: solo el párrafo de la categoría activa. El contenedor
+   conserva .menu (ancho completo y alineación a la derecha); aquí se le pone
+   una medida legible y un tamaño que acompaña al viewport. */
+.page-about .about-desc .about-desc__item {
+    display: none;
+    max-width: 52ch;
+    margin-left: auto;
+    margin-right: 1rem;
+    margin-top: 0;
+    font-family: var(--font-para);
+    font-size: 2.90rem;
+    line-height: 1.4;
+    color: var(--color-text-alt);
+}
+
+.page-about .about-desc[data-cat="photo"] .about-desc__item[data-cat="photo"],
+.page-about .about-desc[data-cat="design"] .about-desc__item[data-cat="design"],
+.page-about .about-desc[data-cat="code"] .about-desc__item[data-cat="code"] {
+    display: block;
+}
+
+/* En escritorio la descripción se acerca al borde derecho de la pantalla. */
+@media screen and (min-width: 75em) {
+    .page-about .about-desc {
+        position: absolute;
+        top: 11.5rem;
+        right: calc(5rem - (100vw - 1200px) / 2);
+        left: auto;
+        margin: 0;
+        width: auto;
+    }
+
+    /* Los elementos de la izquierda se acercan al borde izquierdo, igualando
+       el margen de la descripción a la derecha. */
+    .page-about .title {
+        margin-left: calc(4vw - (100vw - 1200px) / 2 - 2.5rem);
+    }
+
+    .page-about .about-lead {
+        left: calc(4vw - (100vw - 1200px) / 2 - 2.5rem);
+    }
+
+    .page-about .switch {
+        margin-left: calc(4vw - (100vw - 1200px) / 2 - 2.5rem);
+    }
+}
+
+/* Manifiesto por categoría: columna izquierda bajo el título. Vive dentro de
+   .content__top como hijo absoluto para no empujar al .about-desc de la
+   derecha. Solo se ve el párrafo de la categoría activa (igual que
+   .about-desc). Fuente Tulpen One (--font-para), igual que el subtítulo del
+   Contacto. */
+.page-about .content__top {
+    position: relative;
+}
+
+.page-about .about-lead {
+    position: absolute;
+    top: 11rem;
+    width: calc((50vw - 34.087vh - var(--lead-text-start) - 1rem) * 0.855);
+    max-width: 100%;
+    margin: 0;
+    font-family: var(--font-para);
+    font-size: 2.90rem;
+    line-height: 1.35;
+    color: var(--color-text-alt);
+    text-align: left;
+    pointer-events: none;
+    z-index: 101;
+    transition: none;
+}
+
+/* Diseño y código pueden usar el margen transparente del retrato; en foto
+   (carrete a sangre) el manifiesto se queda en el margen libre. */
+.page-about .about-lead[data-cat="design"],
+.page-about .about-lead[data-cat="code"] {
+    width: calc((50vw - 25.9vh - var(--lead-text-start) - 1rem) * 0.855);
+}
+
+.page-about .about-lead__item {
+    display: none;
+    margin: 0;
+}
+
+.page-about .about-lead[data-cat="photo"] .about-lead__item[data-cat="photo"],
+.page-about .about-lead[data-cat="design"] .about-lead__item[data-cat="design"],
+.page-about .about-lead[data-cat="code"] .about-lead__item[data-cat="code"] {
+    display: block;
+}
+
+/* Inicio del texto según el padding de .content__inner (2.5em por encima de
+   40em, 1em por debajo). */
+:root {
+    --lead-text-start: 2.5rem;
+}
+
+@media screen and (max-width: 40em) {
+    :root {
+        --lead-text-start: 1rem;
+    }
+}
+
+@media screen and (min-width: 75em) {
+    :root {
+        --lead-text-start: 4vw;
+    }
+}
+
+/* Modo ancho (retrato más ancho que alto): banda superior + retrato bajado. */
+@media screen and (max-aspect-ratio: 1162/1534) {
+    .page-about .about-lead {
+        width: calc(100% - 2rem);
+        top: calc(100% + 0.25rem);
+    }
+
+    .page-about .pieces {
+        align-self: start;
+        margin: 16rem 0 0 0;
+        width: 60vw;
+        height: calc(79.2vw + 14.9px);
+    }
+}
+
+/* Tamaños por viewport. */
+@media screen and (min-width: 75em) {
+    .page-about .about-lead,
+    .page-about .about-desc .about-desc__item {
+        font-size: 2.90rem;
+    }
+}
+
+@media screen and (min-width: 62.5em) and (max-width: 74.99em) {
+    .page-about .about-lead,
+    .page-about .about-desc .about-desc__item {
+        font-size: 2.54rem;
+    }
+}
+
+@media screen and (min-width: 56.25em) and (max-width: 62.49em) {
+    .page-about .about-lead,
+    .page-about .about-desc .about-desc__item {
+        font-size: 2.17rem;
+    }
+}
+
+@media screen and (max-width: 56.24em) {
+    .page-about .about-lead,
+    .page-about .about-desc .about-desc__item {
+        font-size: 1.93rem;
+    }
+}
+
+@media screen and (max-height: 43.75em) {
+    .page-about .about-lead,
+    .page-about .about-desc .about-desc__item {
+        font-size: 1.69rem;
+    }
+}
+
+/* En móvil el texto no cabe en la banda libre, así que la banda superior se
+   ensancha y el retrato se baja. */
+@media screen and (max-width: 40em) {
+    .page-about .about-lead {
+        width: calc(100% - 2rem);
+        font-size: 1.4rem;
+        top: calc(100% + 0.25rem);
+    }
+
+    .page-about .about-desc .about-desc__item {
+        font-size: 1.4rem;
+    }
+}
+
+/* El .about-desc pasa a la banda inferior en móvil para no solapar el
+   manifiesto. */
+@media screen and (max-width: 40em) {
+    .page-about .about-desc {
+        position: absolute;
+        bottom: 5.5rem;
+        right: 0;
+        left: 0;
+        margin: 0;
+    }
+
+    .page-about .about-desc .about-desc__item {
+        margin-left: auto;
+        margin-right: 1rem;
+    }
+}
+
+/* Pantallas cortas: el manifiesto no cabe en la banda superior; se baja y se
+   reduce el retrato para que no se solape. */
+@media screen and (max-width: 40em) and (max-height: 43.75em) {
+    .page-about .about-lead {
+        font-size: 1.26rem;
+    }
+
+    .page-about .about-desc .about-desc__item {
+        font-size: 1.26rem;
+    }
+
+    .page-about .pieces {
+        align-self: start;
+        margin-top: 6rem;
+        width: 70vw;
+        height: calc(92.4vw + 14.9px);
+    }
+}
+
+/* En móvil el retrato vuelve a su tamaño original; el manifiesto cabe en la
+   banda superior sin tocarlo. */
+@media screen and (max-aspect-ratio: 1162/1534) and (max-width: 40em) and (min-height: 43.76em) {
+    .page-about .pieces {
+        align-self: start;
+        margin-top: 10rem;
+        width: 70vw;
+        height: calc(92.4vw + 14.9px);
+    }
+}
