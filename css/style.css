@@ -1981,8 +1981,11 @@ body.is-lightbox-open #three-canvas {
         position: relative;
     }
 
-    .topnav__toggle-inner::before { top: -7px; }
-    .topnav__toggle-inner::after { top: 7px; }
+    /* Separación de 8px (no 7): así las tres líneas caen en la misma fase de
+       píxel también al 125 % y al 150 % de escalado de Windows, donde con 7px
+       la superior y la inferior se rasterizaban más finas que la central. */
+    .topnav__toggle-inner::before { top: -8px; }
+    .topnav__toggle-inner::after { top: 8px; }
 
     .topnav.is-open .topnav__toggle-inner { background: transparent; }
     .topnav.is-open .topnav__toggle-inner::before { top: 0; transform: rotate(45deg); }

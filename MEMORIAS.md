@@ -2281,6 +2281,12 @@ Se borraron dos restos vacíos del árbol de trabajo que habían quedado del exp
 - Commits previos: `264cfa7` (responsive inicial de About y limpieza i18n), `0ff924c` (About nativa), `3f06466` (imágenes de Rescate Animal y limpieza).
 - Sin tocar y pendiente: los dos ajustes de posición de los títulos de las tiles y los 112 `alt`/`aria-label`.
 
+### Ajuste posterior - la línea superior del menú hamburguesa
+- El usuario vio la línea superior del icono ligeramente cortada o más fina al minimizar la ventana.
+- Causa: las tres líneas usaban separación de 7px. A escalado de Windows al 125 % o 150 % eso deja la línea superior y la inferior en una fase de píxel distinta que la central: la central se rasteriza en 4 filas de dispositivo y la superior en 3, así que parece recortada. Medido con capturas a 100 %, 125 %, 150 %, 200 % y 250 %.
+- **`css/style.css`**: la separación del icono pasa de 7px a **8px** (24×18 en total) en `.topnav__toggle-inner::before` y `::after`. Con 8px las tres líneas caen en la misma fase a 125 % y 150 % y se rasterizan idénticas, sin tocar el tamaño de las barras ni el resto del botón.
+- Verificado en 390×844, 320×568, 500×400, 800×500, 860×300 y 390×300: las tres barras con la misma longitud y el mismo número de filas de píxel en todas las densidades. El estado abierto (X) y la posición del botón no cambian.
+
 ---
 
 ## Para la próxima sesión
