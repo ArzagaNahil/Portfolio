@@ -80,8 +80,6 @@ export const I18N = {
 
         g_hire: 'Trabajemos juntos',
         g_slogan_rescate: 'Únete a esta causa, ellos aún te necesitan!',
-        g_slogan_branding: 'Marcas que se reconocen de un vistazo.',
-        g_slogan_editorial: 'Cada página, una decisión de diseño.',
         g_slogan_retrato: 'Una persona, un instante que no se repite.',
         g_slogan_paisaje: 'Lugares que se quedan en silencio.',
         g_slogan_producto: 'El objeto, en su mejor versión.',
@@ -334,23 +332,6 @@ export const I18N = {
         galphoto4_img_21: 'Artística — 21',
         galphoto4_img_22: 'Artística — 22',
 
-        /* Texto del About rescatado del portafolio de Wix y reescrito en primera
-           persona. Lo de Wix venía en plural, para un estudio, y con relleno de
-           plantilla ("Company X", "Event Y", "Client Z"). */
-        about_rol: 'diseño gráfico, fotografía y desarrollo web',
-        about_intro: 'Diseño, fotografía y desarrollo web. Me interesa dar forma a una idea hasta que se entienda de un vistazo, y la imagen que tenga intención además de impacto.',
-        about_diseno_t: 'Diseño gráfico',
-        about_diseno_p: 'Identidad visual, diseño editorial, catálogos y tarjetas, diagramado de logotipos. Sistemas que funcionan igual de bien en papel que en pantalla.',
-        about_foto_t: 'Fotografía',
-        about_foto_p: 'Retrato, paisaje, producto y escena. Nada de banco de imagen: cada foto se hace para el proyecto que la pide.',
-        about_dev_t: 'Desarrollo web',
-        about_dev_p: 'Páginas, landings y extensiones. Front y back con el mismo cuidado que el diseño: lo que se ve tiene que funcionar.',
-        about_wip_t: 'Fuera del encargo',
-        about_wip_p: 'Rescate Animal: identidad y piezas para una asociación. Cuando sobra tiempo, proyectos propios.',
-        about_close: 'Barcelona, España. Abierto a proyectos, colaboraciones y oportunidades.',
-        about_figcaption: 'Barcelona, España',
-        about_foto_alt: 'Retrato de Arzaga Nahil',
-
         c_over: 'Contacto',
         c_title: 'Trabajemos juntos',
         c_sub: 'Estoy abierto a nuevos proyectos, colaboraciones y oportunidades. Cuéntame de tu idea.',
@@ -373,7 +354,6 @@ export const I18N = {
     about_lead_photo: 'Este es mi portfolio, dedicado al desarrollo, la fotografía y el diseño gráfico. Impulsado por la pasión por crear narrativas visuales cautivadoras, mi propósito es trascender lo convencional y ofrecer una visión donde imaginación, luz y el diseño se entrelazan,',
     about_lead_design: 'Cada proyecto lo abordo con la misma base: creatividad aplicada y atención al detalle. Me interesa que el diseño no solo se vea bien, sino que funcione y cuente algo que conecte y perdure.',
     about_lead_code: 'Este es el punto donde convergen mis tres disciplinas: fotografía, diseño y desarrollo. El arte de lo visual y la exactitud del código unidos con un mismo propósito: crear narrativas que no solo se ven bien, sino que tienen sentido.',
-        about_contact: 'Trabajemos juntos',
 
         meta_title_index: 'Arzaga Nahil — Portafolio',
         meta_desc_index: 'Portafolio profesional de Arzaga Nahil. Diseño moderno, desarrollo web y marketing digital.',
@@ -488,8 +468,6 @@ export const I18N = {
 
         g_hire: "Let's work together",
         g_slogan_rescate: "Join this cause, they still need you!",
-        g_slogan_branding: "Brands you recognize at a glance.",
-        g_slogan_editorial: "Every page, a design decision.",
         g_slogan_retrato: "One person, one moment that never repeats.",
         g_slogan_paisaje: "Places that fall silent.",
         g_slogan_producto: "The object, at its best.",
@@ -742,20 +720,6 @@ export const I18N = {
         galphoto4_img_21: 'Artistic — 21',
         galphoto4_img_22: 'Artistic — 22',
 
-        about_rol: 'graphic design, photography and web development',
-        about_intro: 'Design, photography and web development. I like shaping an idea until it reads at a glance, and images with intent as well as impact.',
-        about_diseno_t: 'Graphic design',
-        about_diseno_p: 'Visual identity, editorial design, catalogues and cards, logo layout. Systems that work as well on paper as on screen.',
-        about_foto_t: 'Photography',
-        about_foto_p: 'Portrait, landscape, product and scene. No stock imagery: every frame is made for the project that asks for it.',
-        about_dev_t: 'Web development',
-        about_dev_p: 'Sites, landing pages and extensions. Front and back with the same care as the design: what you see has to work.',
-        about_wip_t: 'Off the clock',
-        about_wip_p: 'Animal Rescue: identity and pieces for an organisation. Spare time goes to projects of my own.',
-        about_close: 'Barcelona, Spain. Open to projects, collaborations and opportunities.',
-        about_figcaption: 'Barcelona, Spain',
-        about_foto_alt: 'Portrait of Arzaga Nahil',
-
         c_over: 'Contact',
         c_title: "Let's work together",
         c_sub: "I'm open to new projects, collaborations and opportunities. Tell me about your idea.",
@@ -778,7 +742,6 @@ export const I18N = {
     about_lead_photo: 'This is my portfolio, dedicated to development, photography and graphic design. Driven by a passion for creating captivating visual narratives, my purpose is to transcend the conventional and offer a vision where imagination, light and design intertwine,',
     about_lead_design: 'I approach every project from the same foundation: applied creativity and attention to detail. I want design not only to look good, but to work and tell something that connects and endures.',
     about_lead_code: 'This is the point where my three disciplines converge: photography, design and development. The art of the visual and the precision of code united with a single purpose: to create narratives that not only look good, but make sense.',
-        about_contact: 'Work with me',
 
         meta_title_index: 'Arzaga Nahil — Portfolio',
         meta_desc_index: 'Professional portfolio of Arzaga Nahil. Modern design, web development and digital marketing.',

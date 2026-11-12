@@ -2221,32 +2221,57 @@ Se borraron dos restos vacíos del árbol de trabajo que habían quedado del exp
 
 ---
 
+## Sesión 53 - About legible al minimizar la ventana, claves huérfanas y eslóganes provisionales fuera
+
+### Objetivo
+- Que About siga siendo usable al minimizar la ventana: el conmutador siempre accesible y ningún texto encima de la foto.
+- Limpiar las claves i18n huérfanas.
+- Eliminar los dos eslóganes provisionales.
+- Actualizar la bitácora.
+
+### Contexto
+- About ya es nativa desde `0ff924c`: la demo de Codrops y sus ficheros (`js/tympMain.js`, `js/photographer.js`, `css/demo.css`, `css/pieces.css`, `anime`, `charming`, `imagesloaded`) ya no existen. Las referencias a ellos en las sesiones 43-51 son históricas.
+- La composición de escritorio aprobada se conserva intacta: **≥1200px de ancho y ≥600px de alto** sigue siendo la de una sola pantalla.
+
+### Cambios principales
+- **`css/about.css`**: nueva composición apilada y con scroll vertical por debajo de 1200px de ancho o 600px de alto (y para móviles con poca altura). Orden: título → manifiesto → foto → descripción → conmutador. `.content` y `.content__inner` pasan a `display: contents`; el retrato se limita con `clamp(15rem, 52vw, 30rem)` y `aspect-ratio: 1162 / 1534`; los textos quedan por encima (`z-index: 2`). En móvil apaisado la foto se limita también por altura (`min(70vw, 60vh)`). Se corrigió además el ancho del manifiesto de Diseño/Código en móvil (la fórmula de escritorio daba 0 o negativo) y el `bottom: 5.5rem` heredado de `.about-desc` en la composición apilada.
+- **`js/i18n.js`**: eliminadas las 14 claves `about_*` huérfanas del copy antiguo y las claves `g_slogan_branding` / `g_slogan_editorial`. Paridad ES/EN: **364 = 364**, 0 claves sin usar.
+- **`gallery-design-1.html` / `gallery-design-2.html`**: retirados los párrafos con los dos eslóganes provisionales. Los eslóganes de fotografía y Rescate Animal se quedan.
+
+### Verificación con CDP
+- 800×600, 1024×600, 1024×768, 390×700, 390×500, 640×360, 812×375: sin solapes entre manifiesto, foto, descripción y conmutador; sin scroll horizontal; el conmutador queda siempre dentro del alto desplazable.
+- Modos Fotógrafo / Diseñador / Desarrollador en 800×600, 1024×768, 390×700 y 390×500: 0 errores de consola, 0 solapes.
+- Escritorio sin cambios en 1280×800, 1366×768, 1440×900, 1536×770 y 1920×1080.
+
+### Estado
+- Un commit para la sesión 53 (CSS, i18n, galerías de diseño y esta entrada).
+- Commits previos: `0ff924c` (About nativa), `3f06466` (imágenes de Rescate Animal en alta resolución y limpieza).
+- Pendiente y fuera de alcance: los dos ajustes de posición de los títulos de las tiles (el usuario no sabe aún a qué se refieren) y los 112 `alt`/`aria-label`, que siguen como "Categoría — NN".
+
+---
+
 ## Para la próxima sesión
 
-**La nota de Contacto queda cerrada (sesión 49)**: vive **encima de la tarjeta**, centrada, y se ha bajado junto con el formulario; la variante de meterla dentro de la tarjeta no llegó a probarse y el usuario dio por buena esta. **El bug de About quedó arreglado (sesión 50), pendiente de ver por el usuario**: Fotógrafo desde Desarrollador ya oculta el menú de código y deja el conmutador en estilo diseño. Lo siguiente es la revisión visual de About (título por categoría, conmutador, descripción y capa Photographer), con sesiones dedicadas a las galerías.
+**About queda cerrado a falta de la revisión visual del usuario (sesión 53)**: es nativo desde `0ff924c`, no queda nada de la demo de Codrops, y al minimizar la ventana pasa a una columna con scroll en la que el conmutador siempre es alcanzable. La composición de escritorio (≥1200px de ancho y ≥600px de alto) no se ha tocado. Las galerías y los carruseles se dieron por buenos: no hay trabajo pendiente ahí.
 
-**En pantalla, que es lo que el usuario pidió**: pulir About —el título por categoría, el conmutador y la descripción nueva—. Ahí entra también la capa Photographer de `about.html` (sesión 45), que solo se ha visto por capturas y sondas: el estado inicial, la salida a medio vuelo, Diseñador y Desarrollador. Después, las cuatro galerías de Fotografía y las cuatro de Diseño, en pantalla grande y en móvil, con el carrusel quieto y con el dedo puesto. Una sesión anterior cambió la geometría de las tarjetas de fotografía y la forma de medir la velocidad, y **nada de eso se ha visto**. El HTML está bien, pero el CSS siempre escapa algo.
+**Histórico que ya no aplica**: las sesiones 43-51 describen la demo de Codrops dentro de About (`tympMain.js`, `photographer.js`, `demo.css`, `pieces.css`, `<style>` de `about.html`, `window.AboutDemo`, `window.AboutTitle`). Nada de eso existe desde `0ff924c`; se conserva como registro, no como mapa del código actual. Lo mismo con el copy antiguo de About y sus 14 claves: se borraron en la sesión 53.
 
-**Hecho, ya no hay que hacerlo**: borrar las líneas 90 a 123 de `about.html`. Se hizo en su día y la sesión 42 lo repitió; esa sección ya no existe. Hoy `about.html` son 252 líneas porque aloja la demo de Codrops (sesión 43) con el conmutador de tres estados (sesión 45), pero el copy viejo no ha vuelto.
+**Lo que hay ahora en About**: `about.html` (unos 120 líneas) + `css/about.css` + `js/about.js`. Si hay que retocar la composición apilada, el bloque nuevo está al final de `css/about.css` (sección 7).
 
 **Pendiente de mirar**:
-- **Hecho (sesión 47), PENDIENTE DE VER POR EL USUARIO: el título de About ya no es el nombre, es la categoría del modo** — Fotografía | Diseño gráfico | Desarrollador (EN: Photography | Graphic design | Developer), con charming y i18n intactos. Medido contra la banda en 6 viewports × 3 modos, peor cruce −15,4 px. Si hay que retocarlo, lo que manda es el bloque `<style>` de `about.html` (factor 0,105 sin tocar) y `setCat`/`charmTitle` de `tympMain.js` (expuestos como `window.AboutTitle`). El conmutador y el resto del título de la sesión 46 siguen como estaban. **Commiteado en `d786d2c`.**
-- **Hecho (sesión 48), PENDIENTE DE VER POR EL USUARIO: la descripción de About cambia con la categoría.** Tres párrafos en `.about-desc` (uno por modo), visibles por CSS según `data-cat`; el modo código ya no oculta el bloque. Medido en 8 viewports × 3 modos: un solo párrafo visible, 0 scroll horizontal y 0 solape con el conmutador (peor caso 900×600: el texto acaba en 313,5 y el switch empieza en 518,8). Si hay que retocarlo: `.about-desc` en el `<style>` de `about.html`, `setCat` en `tympMain.js` y el guard de `switchToCode` (sin él, el párrafo de código se queda oculto). **Commiteado con la sesión 48**, en el mismo commit que esta bitácora.
-- **La nota de Contacto quedó decidida (sesión 49)**: encima de la tarjeta y centrada. El siguiente paso es pulir los detalles visuales de About (título por categoría, conmutador, descripción y capa Photographer); el bug del conmutador se resolvió en la sesión 50 y el recorte de alturas cortas sigue abierto.
-- **Hecho (sesión 50), PENDIENTE DE VER POR EL USUARIO: pulsar Fotógrafo estando en Desarrollador dejaba el menú de código a la vista.** Ya no: al entrar en foto desde código, `enterPhoto()` normaliza el conmutador, el título, `.menu--code` y `.overlay`, y `finish()` sabe en qué modo real estaba la demo gracias a `demoMode`. Verificado con cuatro sondas CDP (secuencia completa, 3 viewports, carrera de clics y reverso); 0 errores. Si se retoca: `js/photographer.js` y `window.AboutDemo` en `js/tympMain.js`.
-- **Pendiente (preexistente, no de esta sesión): las alturas cortas.** A 932×430 el contacto se recorta porque en escritorio `main` es `100vh` con `overflow: hidden`; a 812×375 el conmutador de About queda fuera de pantalla y no hay scroll. Ambas cosas ya estaban antes de la sesión 48 y no se tocaron.
-- **Hecho (sesión 45): la capa Photographer de `about.html`, PENDIENTE DE VER POR EL USUARIO.** El conmutador es Fotógrafo | Diseñador | Desarrollador, "Work with me" está oculto (no borrado: `tympMain.js` lo toca sin null-check) y todo el texto lleva `data-i18n`. Si hay que retocar algo, lo único de la demo que se tocó es `tympMain.js:443` (selectores por clase en vez de first/last child); el resto está en `js/photographer.js`.
-- **Hecho (sesión 45, cerrado): los +10 px de abajo de la imagen del About** (`oy −10`), regeneradas las tres imágenes con la transformación compartida, `dy` de la foto incluido. Los pies se recortan 10 px en el borde inferior del lienzo, como se pidió.
-- **Hecho (sesión 44): `about.html` con la demo, ya vista y aprobada por el usuario** ("lo más difícil del About, conseguido"). Lo que quedó fijo: la foto a 530×812 centrada en el viewport, los iconos sociales **abajo a la derecha**, los controles de la esquina ocultos y las dos imágenes (foto y binario) con **la misma transformación**, de modo que al cambiar de Designer a Coder solo cambia el relleno y no se mueve la figura. Si se retoca, lo único que hay que rehacer es la transformación compartida de `alex-normal` y `alex-code` (bbox combinada de las dos fuentes), nunca por imagen aparte.
-- Los dos ajustes de posición de los títulos de las tiles, `.devtile:first-child .tile__content { bottom: 1.8rem }` y `.devtile:nth-child(2) .tile__content { bottom: 2.6rem }`. Estaban afinados a ojo para Retrato (1.ª) y Paisaje (2.ª); con Foto artística primera se aplican a Foto artística y Retrato. Si la 3.ª y la 4.ª se ven con el título pegado, hay que decidir si el ajuste pasa a ser por galería en vez de por posición, que es lo que en realidad significa.
-- Si alguna de las 117 fotos queda cortada en la tarjeta. Ya no hay `object-fit: cover`, así que debería estar entero, pero la miniatura es la que se ve y no la grande.
+- **Hecho y pendiente de ver por el usuario (sesión 53): About al minimizar.** Por debajo de 1200px de ancho o 600px de alto, About pasa a columna con scroll (título → manifiesto → foto → descripción → conmutador). Verificado en 800×600, 1024×600, 1024×768, 390×700, 390×500, 640×360 y 812×375: 0 solapes, 0 scroll horizontal, conmutador siempre alcanzable. **Si hay que retocar algo, el bloque nuevo es la sección 7 de `css/about.css`.**
+- **Hecho (sesión 53): claves i18n huérfanas y eslóganes provisionales.** Se borraron las 14 claves `about_*` del copy antiguo y `g_slogan_branding` / `g_slogan_editorial`, junto con sus dos párrafos en `gallery-design-1.html` y `gallery-design-2.html`. Auditoría: ES 364 = EN 364 = claves usadas 364, 0 huérfanas.
+- **Hecho (sesión 50, pero ya sin código que lo sostenga): el bug de Fotógrafo desde Desarrollador.** Se resolvió sobre la demo de Codrops (`enterPhoto`, `demoMode`, `photographer.js`), que se eliminó en `0ff924c`; la About nativa ya no tiene ese camino. Se conserva como histórico.
+- **Hecho (sesión 45, cerrado): los +10 px de abajo de la imagen del About.** Las imágenes y la transformación compartida que menciona esa sesión ya no se usan: la About nativa trabaja con las teselas de `about.js` y `alex-photo.webp`. Histórico.
+- **Hecho (sesión 44, cerrado): la demo de About aprobada por el usuario** ("lo más difícil del About, conseguido"). Esa demo se sustituyó por la versión nativa en `0ff924c`; la referencia sirve para entender de dónde viene el diseño, no para editar el código actual.
+- **Pendiente y sin tocar (el usuario no sabe todavía a qué se refiere):** los dos ajustes de posición de los títulos de las tiles, `.devtile:first-child .tile__content { bottom: 1.8rem }` y `.devtile:nth-child(2) .tile__content { bottom: 2.6rem }`. Estaban afinados a ojo para Retrato (1.ª) y Paisaje (2.ª); con Foto artística primera se aplican a Foto artística y Retrato. No se han tocado en la sesión 53.
+- Si alguna de las 112 fotos queda cortada en la tarjeta. Ya no hay `object-fit: cover`, así que debería estar entero, pero la miniatura es la que se ve y no la grande.
 
 **Pendiente de decidir, y solo lo puede decidir el usuario**:
-- Los 117 `alt` y `aria-label` dicen "Categoría — NN". Cambiar los valores en `js/i18n.js` es lo único que hay que tocar, porque el `alt` no se ve en la tarjeta pero `lightbox.js` lo copia a la imagen grande. Son las claves `galphoto1_img_1..13`, `galphoto2_img_1..39`, `galphoto3_img_1..38` y `galphoto4_img_1..27`.
-- Las **12** claves i18n huérfanas que quedan: las 8 de las tarjetas de ejemplo (`galdesign1_card1`, `galdesign1_demo_1..3`, `galdesign2_card1`, `galdesign2_demo_1..3`, de Identidad Visual y Diseño Editorial) y las 4 `about_menu_*` que quedaron sin marcado en la sesión 48 al sustituir el menú de la demo por la descripción por categoría. Ya no las usa nadie.
+- Los 112 `alt` y `aria-label` dicen "Categoría — NN", y así se quedan por ahora (decisión de la sesión 53). Cambiar los valores en `js/i18n.js` es lo único que hay que tocar, porque el `alt` no se ve en la tarjeta pero `lightbox.js` lo copia a la imagen grande. Son las claves `galphoto1_img_*`, `galphoto2_img_*`, `galphoto3_img_*`, `galphoto4_img_*` y las equivalentes de diseño.
+- **Claves i18n huérfanas: 0** tras la sesión 53 (se borraron las 14 `about_*` y los dos eslóganes). Ya no hay nada que limpiar aquí.
 - El rosa `--color-accent-alt` (#ff6584) **se quedó sin uso** en la sesión 48: el brillo del CTA pasó a `--color-accent-shine` (#6c63ff). Decidir si se borra o se reserva para otra cosa; no se tocó.
-- El lema de Branding (`g_slogan_branding`) y el de Editorial (`g_slogan_editorial`) siguen siendo provisionales.
-- El copy de About está decidido y guardado en la sesión 40 y está **sin montar**, pero con la mitad del camino ya hecha, que conviene no repetir: las 13 claves `about_*` **ya están en `js/i18n.js`** (ahora huérfanas, porque no las usa ningún HTML), y en `css/style.css` están `.about`, `.about__card`, `.about__title`, `.about__text` y `.about__skills` de antes, más `.about__discs`, `.about__disc` y `.about__close` de la sesión 41, que tampoco tienen marcado. **Lo que falta es solo el HTML de la sección.** Si se vuelve a montar, reutilizar eso y no reimplementarlo. Sigue sin responder por qué no están las miniaturas de Rescate Animal en q76.
+- Sigue sin responder por qué no están las miniaturas de Rescate Animal en q76.
 - Las medidas de las miniaturas de Rescate Animal siguen a 1000×1000 con el resto de las de diseño, no a la caja 2000×506 de fotografía. Unificarlo es el mismo trabajo de la sesión 29.
 
 **Lo que no se rompe**: `gallery-photo-4.html` es la primera aunque su número sea el 4, porque renombrar los ficheros publicados habría roto las URL de Retrato, Paisaje y Producto. Lo mismo que con el sufijo `_3` de UI/UX en la sesión 32.

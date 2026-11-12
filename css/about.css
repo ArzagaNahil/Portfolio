@@ -686,7 +686,13 @@ a:focus {
 /* En móvil el texto no cabe en la banda libre, así que la banda superior se
    ensancha y el retrato se baja. */
 @media screen and (max-width: 40em) {
-    .page-about .about-lead {
+    /* La regla de diseño/código de más arriba calcula un ancho a partir del
+       viewport de escritorio y en móvil se queda en cero (o negativo): el
+       párrafo se convertía en una columna de un carácter. Aquí se iguala la
+       especificidad para que también ellos usen el ancho completo. */
+    .page-about .about-lead,
+    .page-about .about-lead[data-cat="design"],
+    .page-about .about-lead[data-cat="code"] {
         width: calc(100% - 2rem);
         font-size: 1.4rem;
         top: calc(100% + 0.25rem);
@@ -725,11 +731,14 @@ a:focus {
         font-size: 1.26rem;
     }
 
+    /* En un móvil apaisado (poca altura y mucho ancho) la foto a 70vw se
+       vuelve enorme. Se limita también por la altura disponible para que la
+       página no se alargue más de la cuenta. */
     .page-about .pieces {
         align-self: start;
         margin-top: 6rem;
-        width: 70vw;
-        height: calc(92.4vw + 14.9px);
+        width: min(70vw, 60vh);
+        height: calc(min(70vw, 60vh) * 1.3201 + 14.9px);
     }
 }
 
@@ -741,5 +750,126 @@ a:focus {
         margin-top: 10rem;
         width: 70vw;
         height: calc(92.4vw + 14.9px);
+    }
+}
+
+/* ---------------------------------------------------------------------------
+   7. Ventanas estrechas o de poca altura
+   ---------------------------------------------------------------------------
+   Por debajo de 1200px el reparto en dos columnas deja el manifiesto en una
+   tira de 10-12 caracteres y el conmutador acaba debajo de él; en pantallas de
+   poca altura pasa lo mismo aunque haya ancho. En esos casos About pasa a una
+   sola columna con scroll vertical: título, manifiesto, foto, descripción y
+   conmutador. Así nada se solapa y el conmutador siempre queda accesible. */
+
+@media screen and (min-width: 40.01em) and (max-width: 74.99em),
+       screen and (max-height: 37.49em) {
+    /* La página deja de ser una sola pantalla fija y puede crecer. */
+    .page-about main {
+        height: auto;
+        min-height: 100vh;
+        overflow: visible;
+        grid-template-rows: auto;
+    }
+
+    /* .demo-page pasa a dirigir la composición. .content y .content__inner
+       dejan de ser capas absolutas (display:contents) y sus hijos se colocan
+       como filas de la misma rejilla, con .pieces entre el manifiesto y la
+       descripción. */
+    .page-about .demo-page {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-rows: auto;
+        align-content: start;
+        justify-items: stretch;
+        row-gap: 1.75rem;
+        padding: 2.5rem 2rem 3rem;
+    }
+
+    .page-about .content,
+    .page-about .content__inner {
+        display: contents;
+    }
+
+    .page-about .content__top,
+    .page-about .about-desc,
+    .page-about .content__bottom {
+        position: relative;
+        z-index: 2;
+        width: 100%;
+    }
+
+    .page-about .content__top {
+        grid-row: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .page-about .title {
+        margin: 0;
+    }
+
+    .page-about .about-lead,
+    .page-about .about-lead[data-cat="design"],
+    .page-about .about-lead[data-cat="code"] {
+        position: static;
+        top: auto;
+        width: 100%;
+        max-width: 34rem;
+        margin: 1.25rem 0 0;
+        font-size: clamp(1.2rem, 2.1vw, 1.7rem);
+        line-height: 1.4;
+    }
+
+    /* La foto queda entre el manifiesto y la descripción. El ancho se limita
+       por la vista y por una medida máxima para que no domine la columna. */
+    .page-about .pieces {
+        grid-row: 2;
+        top: 0;
+        z-index: 0;
+        justify-self: center;
+        width: clamp(15rem, 52vw, 30rem);
+        height: auto;
+        aspect-ratio: 1162 / 1534;
+        margin: 0;
+    }
+
+    .page-about .about-desc {
+        grid-row: 3;
+        top: auto;
+        right: auto;
+        bottom: auto;
+        left: auto;
+        width: 100%;
+        max-width: 34rem;
+        margin: 0 0 0 auto;
+        text-align: left;
+    }
+
+    .page-about .about-desc .about-desc__item {
+        max-width: none;
+        margin: 0;
+        font-size: clamp(1.2rem, 2.1vw, 1.7rem);
+    }
+
+    .page-about .content__bottom {
+        grid-row: 4;
+        margin: 0;
+    }
+
+    .page-about .switch {
+        margin-left: 0;
+        font-size: 0.95rem;
+    }
+}
+
+/* En móvil la composición sigue siendo la de siempre, pero si la pantalla se
+   queda corta (un móvil apaisado, por ejemplo) la página puede desplazarse en
+   vertical en lugar de recortar el conmutador. */
+@media screen and (max-width: 40em) {
+    .page-about main {
+        height: auto;
+        overflow: visible;
     }
 }
