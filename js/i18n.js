@@ -108,6 +108,7 @@ export const I18N = {
         g_desc_photo_artistica: 'Composición, textura y luz. Una serie personal de imágenes donde lo cotidiano se mira con diferente óptica, buscando el segundo en que lo cotidiano se vuelva imposible de olvidar.',
 
         g1_card1: 'Ranking tracker local observacional: mide tu posición real en Google por distrito y ciudad, con IPs residenciales reales, desktop y móvil, sin manipulación.',
+        g1_card2: 'App Android de higiene digital: mide la salud real de la batería y el almacenamiento, y guía la limpieza de caché app por app. En desarrollo.',
         g2_card1: 'Página web de viajes: destinos, inspiración y planes para organizar tu próximo viaje.',
         g2_card2: 'Ranking tracker local: tu posición real en Google por distrito y ciudad, con IPs residenciales, desktop y móvil.',
         g2_card3: 'Web de la extensión que extrae propiedades de los portales de inmobiliarias de España.',
@@ -116,6 +117,7 @@ export const I18N = {
         g3_card2: 'Extensión de Chrome para creadores de YouTube: analiza el rendimiento del canal y optimiza títulos SEO anti-clickbait sin spoilers.',
 
         g1_demo_1: 'Ver demo de Distrito-R (se abre en una pestaña nueva)',
+        g1_demo_2: 'Ver la página de Driva (se abre en una pestaña nueva)',
         g2_demo_1: 'Ver demo de Aurora Travel (se abre en una pestaña nueva)',
         g2_demo_2: 'Ver demo de Distrito-R (se abre en una pestaña nueva)',
         g2_demo_3: 'Ver demo de Property Scraper (se abre en una pestaña nueva)',
@@ -123,7 +125,7 @@ export const I18N = {
         g3_demo_1: 'Ver Property Scraper en la Chrome Web Store (se abre en una pestaña nueva)',
 
         g1_img_1: 'Desarrollo Web — imagen 1',
-        g1_img_2: 'Desarrollo Web — imagen 2',
+        g1_img_2: 'Driva — app Android de higiene digital',
         g1_img_3: 'Desarrollo Web — imagen 3',
         g2_img_1: 'Páginas Web — imagen 1',
         g2_img_2: 'Páginas Web — imagen 2',
@@ -491,6 +493,7 @@ export const I18N = {
         g_desc_photo_artistica: 'Composition, texture and light. A personal series of images where the everyday is seen with a different eye, seeking the moment when the everyday becomes impossible to forget.',
 
         g1_card1: 'Observational local rank tracker: measures your real position on Google by district and city, using real residential IPs, desktop and mobile, without manipulation.',
+        g1_card2: 'Android digital hygiene app: measures real battery and storage health and guides cache cleanup app by app. In development.',
         g2_card1: 'Travel website: destinations, inspiration and plans to organize your next trip.',
         g2_card2: 'Local rank tracker: your real position on Google by district and city, with residential IPs, desktop and mobile.',
         g2_card3: 'Website of the extension that extracts listings from Spanish real estate portals.',
@@ -499,6 +502,7 @@ export const I18N = {
         g3_card2: 'Chrome extension for YouTube creators: analyzes channel performance and optimizes anti-clickbait SEO titles without spoilers.',
 
         g1_demo_1: 'View the Distrito-R demo (opens in a new tab)',
+        g1_demo_2: 'View the Driva page (opens in a new tab)',
         g2_demo_1: 'View the Aurora Travel demo (opens in a new tab)',
         g2_demo_2: 'View the Distrito-R demo (opens in a new tab)',
         g2_demo_3: 'View the Property Scraper demo (opens in a new tab)',
@@ -506,7 +510,7 @@ export const I18N = {
         g3_demo_1: 'View Property Scraper on the Chrome Web Store (opens in a new tab)',
 
         g1_img_1: 'Web Development — image 1',
-        g1_img_2: 'Web Development — image 2',
+        g1_img_2: 'Driva — Android digital hygiene app',
         g1_img_3: 'Web Development — image 3',
         g2_img_1: 'Web Pages — image 1',
         g2_img_2: 'Web Pages — image 2',

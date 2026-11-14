@@ -2332,11 +2332,43 @@ Se borraron dos restos vacíos del árbol de trabajo que habían quedado del exp
 
 ---
 
+## Sesión 56 - Driva: app Android con página propia y tarjeta en Desarrollo Web
+
+### Objetivo
+- Incorporar Driva como un proyecto más: tarjeta en la galería de Desarrollo Web y página propia en una URL de GitHub Pages.
+- No tocar las galerías/carruseles aprobados, el escritorio de About ni los 112 `alt`/`aria-label` pendientes.
+
+### Contexto
+- Driva vivía en `Apps\Driva`: Flutter + Kotlin con canales nativos (`MethodChannel('driva/device')`), sin repositorio git, sin carpeta `web/` y sin assets de imagen. No se puede ejecutar en el navegador.
+- Es una app Android de higiene digital: salud de batería, almacenamiento real, limpieza guiada (Android prohíbe a terceros borrar la caché de otras apps desde API 30 y de forma definitiva en SDK 36), favoritos e historial.
+- Se acordó con el usuario colocarla en **Desarrollo Web** (uno de los dos huecos "En desarrollo") y enlazar la tarjeta a una **página propia**, no al repo ni a una tienda.
+
+### Cambios
+- **Repo nuevo `ArzagaNahil/Driva`** (público): código Flutter/Kotlin + documentación técnica en `docs/tecnico/`. Fuera del repo `android/local.properties` y la bitácora interna.
+- **Landing en `docs/`** (ES/EN con conmutador y `localStorage`): hero con mockup CSS del dashboard, 4 funciones del MVP, cómo funciona, bloque de transparencia sobre la restricción de Android, fases del proyecto, stack y footer. Favicon SVG y `og-image.png` 1200×630 generada con Chrome; `og:url`, `og:image` y `twitter:card` correctos.
+- **`.github/workflows/pages.yml`** con `path: docs`; Pages habilitado por API (`build_type: workflow`) y primer despliegue en `success`.
+- **`gallery-proyecto-1.html`**: el hueco de `02-portada.webp` pasa a tarjeta de Driva (`<a>` a la página, `<strong>Driva</strong>` y descripción breve). Imagen **temporal** `02-driva.webp`, copia de `02-portada.webp`, hasta que el usuario entregue el render definitivo.
+- **`js/i18n.js`**: nuevas claves `g1_card2` y `g1_demo_2`; `g1_img_2` deja de ser genérica ("Desarrollo Web — imagen 2") y pasa a describir la imagen de Driva. Paridad **ES 361 = EN 361 = HTML 361**, 0 huérfanas.
+- Quedan **1** tarjeta `--soon` en Desarrollo Web (eran 2), 1 en Páginas Web, 2 en Extensiones; Viralizer sigue sin destino.
+
+### Verificación
+- `https://arzaganahil.github.io/Driva/`: 200, con `styles.css`, `script.js`, `favicon.svg` y `og-image.png` en 200 (PNG de 1200×630).
+- Landing local y publicada a 1366×768 y 390×844 en Chrome real: sin errores de consola, sin recursos 404, sin scroll horizontal, 0 enlaces vacíos. El conmutador cambia textos, título, badge, CTA y `lang` en ambos sentidos.
+- Galería 1 en Chrome local: 2 tarjetas enlazadas (Distrito-R y Driva) + 1 `--soon`, también en los clones del carrusel; las dos imágenes cargan (312 px de ancho); hover con elevación y borde acento en las enlazadas, inerte en la `--soon`; el cursor personalizado solo marca las enlazadas; `aria-label` traducido al inglés.
+- Destinos de las 3 galerías: 200 salvo Chrome Web Store, que desde este entorno redirige a su portada (no es un fallo del enlace).
+
+### Estado
+- `Driva`: commit inicial (código + landing + workflow) y despliegue correcto.
+- Portfolio: commit de la sesión 56 con `gallery-proyecto-1.html`, `js/i18n.js`, `assets/IMG/dev/desarrollo-web/thumbs/02-driva.webp` y esta entrada.
+- **Pendiente del usuario**: imagen definitiva de Driva (4:5, ideal ≥1248×1700, WebP/PNG, sujeto en los 2/3 superiores por el degradado del pie) para sustituir `02-driva.webp`.
+
+---
+
 ## Para la próxima sesión
 
 **About queda cerrado a falta de la revisión visual del usuario (sesiones 53 y 54)**: es nativo desde `0ff924c`, no queda nada de la demo de Codrops, y cualquier ventana de hasta 1200px de ancho (o de hasta 600px de alto) pasa a una columna con scroll en la que el conmutador siempre es alcanzable y ningún texto se monta sobre la foto. La composición de escritorio (≥1200px de ancho y ≥600px de alto) no se ha tocado. Las galerías y los carruseles se dieron por buenos: no hay trabajo pendiente ahí.
 
-**Demos de Desarrollo (sesión 55)**: las 6 tarjetas con destino ya enlazan a algo real (Distrito-R y Aurora Travel a sus Pages; Property Scraper y ¿Qué Harías? a sus repositorios propios, `Property-Scraper-LP` y `que-harias-podcast`; Property Scraper, en Extensiones, a la Chrome Web Store). Cada proyecto vive en su propia URL de GitHub Pages, no dentro del Portfolio. Las 5 tarjetas sin destino —4 sin nombre y Viralizer— se quedan visibles como `div.gallery__item__link--soon`, sin enlace ni aspecto interactivo. Si en el futuro aparece una URL para Viralizer o para las 4 sin nombre, basta cambiar el `div` por un `<a href="…" target="_blank" rel="noopener noreferrer">` y devolverle su clave de `aria-label`.
+**Demos de Desarrollo (sesiones 55 y 56)**: las 7 tarjetas con destino ya enlazan a algo real (Distrito-R y Aurora Travel a sus Pages; Property Scraper y ¿Qué Harías? a sus repositorios propios, `Property-Scraper-LP` y `que-harias-podcast`; Driva a su página propia, `Driva`; Property Scraper, en Extensiones, a la Chrome Web Store). Cada proyecto vive en su propia URL de GitHub Pages, no dentro del Portfolio. Las 4 tarjetas sin destino —3 sin nombre y Viralizer— se quedan visibles como `div.gallery__item__link--soon`, sin enlace ni aspecto interactivo. Si en el futuro aparece una URL para Viralizer o para las 3 sin nombre, basta cambiar el `div` por un `<a href="…" target="_blank" rel="noopener noreferrer">` y devolverle su clave de `aria-label`.
 
 **Histórico que ya no aplica**: las sesiones 43-51 describen la demo de Codrops dentro de About (`tympMain.js`, `photographer.js`, `demo.css`, `pieces.css`, `<style>` de `about.html`, `window.AboutDemo`, `window.AboutTitle`). Nada de eso existe desde `0ff924c`; se conserva como registro, no como mapa del código actual. Lo mismo con el copy antiguo de About y sus 14 claves: se borraron en la sesión 53.
 
