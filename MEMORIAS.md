@@ -2347,20 +2347,21 @@ Se borraron dos restos vacíos del árbol de trabajo que habían quedado del exp
 - **Repo nuevo `ArzagaNahil/Driva`** (público): código Flutter/Kotlin + documentación técnica en `docs/tecnico/`. Fuera del repo `android/local.properties` y la bitácora interna.
 - **Landing en `docs/`** (ES/EN con conmutador y `localStorage`): hero con mockup CSS del dashboard, 4 funciones del MVP, cómo funciona, bloque de transparencia sobre la restricción de Android, fases del proyecto, stack y footer. Favicon SVG y `og-image.png` 1200×630 generada con Chrome; `og:url`, `og:image` y `twitter:card` correctos.
 - **`.github/workflows/pages.yml`** con `path: docs`; Pages habilitado por API (`build_type: workflow`) y primer despliegue en `success`.
-- **`gallery-proyecto-1.html`**: el hueco de `02-portada.webp` pasa a tarjeta de Driva (`<a>` a la página, `<strong>Driva</strong>` y descripción breve). Imagen **temporal** `02-driva.webp`, copia de `02-portada.webp`, hasta que el usuario entregue el render definitivo.
+- **`gallery-proyecto-1.html`**: el hueco de `02-portada.webp` pasa a tarjeta de Driva (`<a>` a la página, `<strong>Driva</strong>` y descripción breve). Imagen `02-driva.webp` a partir del render aportado por el usuario (`Driva page.jpg`, 1296×1776), convertida a WebP 624×850.
 - **`js/i18n.js`**: nuevas claves `g1_card2` y `g1_demo_2`; `g1_img_2` deja de ser genérica ("Desarrollo Web — imagen 2") y pasa a describir la imagen de Driva. Paridad **ES 361 = EN 361 = HTML 361**, 0 huérfanas.
 - Quedan **1** tarjeta `--soon` en Desarrollo Web (eran 2), 1 en Páginas Web, 2 en Extensiones; Viralizer sigue sin destino.
 
 ### Verificación
 - `https://arzaganahil.github.io/Driva/`: 200, con `styles.css`, `script.js`, `favicon.svg` y `og-image.png` en 200 (PNG de 1200×630).
 - Landing local y publicada a 1366×768 y 390×844 en Chrome real: sin errores de consola, sin recursos 404, sin scroll horizontal, 0 enlaces vacíos. El conmutador cambia textos, título, badge, CTA y `lang` en ambos sentidos.
-- Galería 1 en Chrome local: 2 tarjetas enlazadas (Distrito-R y Driva) + 1 `--soon`, también en los clones del carrusel; las dos imágenes cargan (312 px de ancho); hover con elevación y borde acento en las enlazadas, inerte en la `--soon`; el cursor personalizado solo marca las enlazadas; `aria-label` traducido al inglés.
+- **`02-driva.webp`**: render del usuario (`Driva page.jpg`, 1296×1776, relación 0,7297) convertido con Chrome a WebP de 624×850 (2× la tarjeta, 56,9 KB). El recorte para ajustar a la caja 312×425 es de 5 px arriba y abajo; no se pierde nada relevante.
+- Galería 1 en Chrome local: 2 tarjetas enlazadas (Distrito-R y Driva) + 1 `--soon`, también en los clones del carrusel; las dos imágenes cargan (Driva a 624 px de ancho); hover con elevación y borde acento en las enlazadas, inerte en la `--soon`; el cursor personalizado solo marca las enlazadas; `aria-label` traducido al inglés.
 - Destinos de las 3 galerías: 200 salvo Chrome Web Store, que desde este entorno redirige a su portada (no es un fallo del enlace).
 
 ### Estado
 - `Driva`: commit inicial (código + landing + workflow) y despliegue correcto.
 - Portfolio: commit de la sesión 56 con `gallery-proyecto-1.html`, `js/i18n.js`, `assets/IMG/dev/desarrollo-web/thumbs/02-driva.webp` y esta entrada.
-- **Pendiente del usuario**: imagen definitiva de Driva (4:5, ideal ≥1248×1700, WebP/PNG, sujeto en los 2/3 superiores por el degradado del pie) para sustituir `02-driva.webp`.
+- La imagen de Driva ya es la definitiva que aportó el usuario; no queda nada pendiente por ese lado.
 
 ---
 
