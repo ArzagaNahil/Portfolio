@@ -2371,7 +2371,7 @@ Se borraron dos restos vacíos del árbol de trabajo que habían quedado del exp
 - Añadir `Ichi-retrato.jpg` a la galería de Retrato sin tocar el resto de fotos, el carrusel ni el visor.
 
 ### Cambios
-- **`gallery-photo-1.html`** (la galería de Retrato; su número no coincide con el orden de las tiles): nueva tarjeta con `data-index="13"`, `data-full` a `full/14-ichi-retrato.webp`, `aria-label`/`alt` "Retrato — 14" y clave `galphoto1_img_14`.
+- **`gallery-photo-1.html`** (la galería de Retrato; su número no coincide con el orden de las tiles, corregido en la sesión 58): nueva tarjeta con `data-index="13"`, `data-full` a `full/14-ichi-retrato.webp`, `aria-label`/`alt` "Retrato — 14" y clave `galphoto1_img_14`.
 - **`assets/IMG/photo/retrato/`**: `thumbs/14-ichi-retrato.webp` (382×506, 17,6 KB) y `full/14-ichi-retrato.webp` (1376×1824, 147,6 KB), generados con Chrome desde el JPG original (1376×1824). Sin recorte: solo escalado a la altura 506 de las miniaturas y calidad 0,82/0,90.
 - **`js/i18n.js`**: `galphoto1_img_14` en ES ("Retrato — 14") y EN ("Portrait — 14"). Paridad **ES 362 = EN 362 = HTML 362**, 0 huérfanas.
 
@@ -2380,6 +2380,29 @@ Se borraron dos restos vacíos del árbol de trabajo que habían quedado del exp
 - Visor: la tarjeta 14 abre "14 / 14", la imagen grande carga a 1376×1824; `ArrowRight` da la vuelta a "1 / 14" y `ArrowLeft` vuelve a "14 / 14".
 - La miniatura y la grande coinciden (diferencia media 2,14/255 al comparar ambas a 382×506) y la relación de aspecto se mantiene (0,7544).
 - En inglés el `aria-label` pasa a "Portrait — 14"; el `alt` de la miniatura se queda en español, igual que en las otras 13 tarjetas.
+
+---
+
+## Sesión 58 - Las cuatro galerías de fotografía se renumeran en el orden de las tiles
+
+### Objetivo
+- Que el número de `gallery-photo-N.html` coincida con el orden de las tiles de `photography.html` y no con el orden en que se crearon: **1** Artística, **2** Retrato, **3** Paisajismo, **4** Publicitaria.
+
+### Cambios
+- **Renombrado** con `git mv` en dos pasos para no pisarse (1→2, 2→3, 3→4, 4→1): `gallery-photo-4.html` pasa a `-1` (Artística), `-1` a `-2` (Retrato), `-2` a `-3` (Paisajismo) y `-3` a `-4` (Publicitaria).
+- **`photography.html`**: mismas cuatro tiles y mismo orden; solo cambian los `href`, que ahora son `-1`, `-2`, `-3` y `-4`. Las claves `alt_photo_N` se renumeran igual (Artística `alt_photo_1`, Retrato `alt_photo_2`, Paisajismo `alt_photo_3`, Publicitaria `alt_photo_4`).
+- **`js/i18n.js`**: permutadas `galphotoN_img_*`, `meta_title_galphotoN`, `meta_desc_galphotoN`, `pt_galphotoN` y `alt_photo_N`, en ES y EN. Paridad **ES 362 = EN 362 = HTML 362**, 0 huérfanas.
+- **`canonical` y `og:url`** de cada galería apuntan ya a su propio fichero nuevo.
+
+### Aviso sobre las URLs antiguas
+- No hay página puente posible: al ser una permutación, cada nombre viejo vuelve a existir con otro contenido. `gallery-photo-1.html` sirve ahora Artística, y la antigua Retrato vive en `gallery-photo-2.html`. Un enlace externo a una URL anterior a esta sesión aterrizará en otra categoría.
+
+### Verificación
+- Chrome local a 1366×768, las cuatro galerías: `title` y `h1` correctos, **22 / 14 / 38 / 39** tarjetas, índices `0..n-1` sin huecos, ninguna imagen rota, ningún 404, ninguna excepción y sin scroll horizontal.
+- Visor: abre en "22 / 22", "14 / 14", "38 / 38" y "39 / 39" según la galería, carga la imagen grande y cierra; la etiqueta del diálogo coincide con la categoría (salvo Publicitaria, que conserva la clave `lb_gallery_producto` de siempre).
+- Retrato a 390×844: 14 tarjetas, sin scroll horizontal y la foto de Ichi sigue cargando (`14-ichi-retrato.webp`).
+- **326** rutas locales de las cinco páginas revisadas, **0** inexistentes. `photography.html` mantiene el orden Artística, Retrato, Paisajismo, Publicitaria con enlaces a `-1`, `-2`, `-3` y `-4`.
+- Las entradas de MEMORIAS anteriores a esta sesión usan la numeración antigua: Retrato era `-1`, Paisaje `-2`, Publicitaria `-3` y Artística `-4`.
 
 ---
 
@@ -2409,4 +2432,4 @@ Se borraron dos restos vacíos del árbol de trabajo que habían quedado del exp
 - Sigue sin responder por qué no están las miniaturas de Rescate Animal en q76.
 - Las medidas de las miniaturas de Rescate Animal siguen a 1000×1000 con el resto de las de diseño, no a la caja 2000×506 de fotografía. Unificarlo es el mismo trabajo de la sesión 29.
 
-**Lo que no se rompe**: `gallery-photo-4.html` es la primera aunque su número sea el 4, porque renombrar los ficheros publicados habría roto las URL de Retrato, Paisaje y Producto. Lo mismo que con el sufijo `_3` de UI/UX en la sesión 32.
+**Numeración de las galerías**: desde la sesión 58, `gallery-photo-1..4.html` siguen el orden de las tiles de `photography.html` (1 Artística, 2 Retrato, 3 Paisajismo, 4 Publicitaria) y las claves `galphotoN_*` / `alt_photo_N` usan esa misma numeración. Las URLs anteriores a ese cambio ahora sirven otra categoría y no se pueden redirigir; las entradas viejas de MEMORIAS están en la numeración antigua. El sufijo `_3` de UI/UX de la sesión 32 sigue igual.
