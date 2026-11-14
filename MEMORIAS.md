@@ -2299,21 +2299,24 @@ Se borraron dos restos vacíos del árbol de trabajo que habían quedado del exp
 ### Diagnóstico
 - Las 11 tarjetas de `gallery-proyecto-1/2/3.html` eran `<a href="#" target="_blank">`: al pulsarlas abrían una pestaña nueva con la misma página. No había demo detrás.
 - El carrusel clona las tarjetas con `cloneNode`, así que cada enlace muerto se repetía en los clones.
-- Sin `gh` ni token no se podía activar GitHub Pages en `Property-Scraper-LP` ni en `que-harias-podcast`; por eso sus webs se publican dentro del Portfolio, que ya tiene Pages activo.
+- `Property-Scraper-LP` y `que-harias-podcast` existían en GitHub con Pages desactivado. El `GITHUB_TOKEN` de Actions **no puede crear** el sitio (`Resource not accessible by integration`): solo despliega en uno ya habilitado.
+- Sí se pudo habilitar Pages por API con la credencial que ya usa `git push` (scopes `repo` y `workflow`), sin pedir ningún token nuevo. Los despliegues van con un workflow de Actions desde la raíz de cada repo.
 
 ### Cambios
-- **`projects/property-scraper/`**: landing estática copiada (index, css, js y assets). Se añadió `<link rel="icon">` con `assets/img/icon128.png` para evitar el 404 de `favicon.ico`.
-- **`projects/que-harias/`**: web del podcast copiada (index, script.js, styles.css y assets). Sin `BITACORA.md` ni `.git`; `script.js` usa los capítulos estáticos porque las claves de YouTube son placeholders.
+- **`Property-Scraper-LP`** (repo propio): la web vivía en la subcarpeta `Property_Scraper_LP/`; se movió a la raíz para que `https://arzaganahil.github.io/Property-Scraper-LP/` tenga su `index.html`. Se añadió `<link rel="icon">` y el workflow `.github/workflows/pages.yml`. Ya no hay copia dentro del Portfolio.
+- **`que-harias-podcast`** (repo propio): workflow de Pages añadido; la web ya estaba en la raíz. `script.js` usa los capítulos estáticos porque las claves de YouTube son placeholders.
 - **`gallery-proyecto-1.html`**: Distrito-R → `https://arzaganahil.github.io/Distrito-R/`; sus 2 tarjetas sin nombre pasan a `div.gallery__item__link--soon`.
-- **`gallery-proyecto-2.html`**: Aurora Travel y Distrito-R → sus Pages; Property Scraper → `projects/property-scraper/`; ¿Qué Harías? → `projects/que-harias/`; 1 tarjeta sin nombre a soon.
+- **`gallery-proyecto-2.html`**: Aurora Travel y Distrito-R → sus Pages; Property Scraper → `https://arzaganahil.github.io/Property-Scraper-LP/`; ¿Qué Harías? → `https://arzaganahil.github.io/que-harias-podcast/`; 1 tarjeta sin nombre a soon.
 - **`gallery-proyecto-3.html`**: Property Scraper → Chrome Web Store; Viralizer y la tarjeta sin nombre pasan a soon. Viralizer es una extensión MV3 en progreso, sin web ni ficha en la Store, así que no hay destino visitable.
 - **`js/i18n.js`**: 6 `aria-label` reescritos con el nombre del proyecto y "se abre en una pestaña nueva"; se borran las 5 claves `g1_demo_2/3`, `g2_demo_5` y `g3_demo_2/3` que dejaron de usarse. Queda **ES 359 = EN 359 = HTML 359**, 0 huérfanas.
 - **`css/style.css`**: bloque `.gallery__item__link--soon` que anula `cursor`, `translateY` y el borde acento al pasar el ratón.
 - **`js/index.js`**: el cursor personalizado excluye `.gallery__item__link--soon` del selector `interactive`, para que el anillo no se encoja sobre una tarjeta que no se puede pulsar.
+- **`projects/`**: las copias internas que se habían publicado en el Portfolio se eliminaron al quedar vivas las URLs propias.
 
 ### Verificación
-- Referencias locales de los dos proyectos con grafía exacta (mayúsculas incluidas): OK en 14 archivos.
-- `projects/property-scraper/` y `projects/que-harias/` a 1366×768 y 390×844: sin errores de consola, sin imágenes rotas, sin scroll horizontal y sin `href="#"`.
+- `https://arzaganahil.github.io/Property-Scraper-LP/` y `https://arzaganahil.github.io/que-harias-podcast/`: 200, con CSS, JS, imágenes y fondos de CSS en 200 (grafía exacta incluida).
+- Ambas a 1366×768 y 390×844 en Chrome real: sin errores de consola, sin imágenes rotas, sin scroll horizontal y sin `href="#"`. El 404 de `/favicon.ico` se corrigió añadiendo el `<link rel="icon">` al repo de Property y volviendo a desplegar.
+- Workflows de Pages: `completed / success` en los dos repos.
 - Las 3 galerías a 1366×768 y 390×844: sin scroll horizontal; los clones mantienen la estructura (anclas y tarjetas soon); los destinos internos responden 200; Distrito-R y Aurora responden 200.
 - Hover: las tarjetas soon no se levantan ni cambian el borde; las enlazadas sí conservan la elevación y el acento. Con el cursor personalizado, soon no activa el anillo y las enlazadas sí.
 - Inglés: los `aria-label` se traducen ("View the … demo (opens in a new tab)").
@@ -2321,7 +2324,9 @@ Se borraron dos restos vacíos del árbol de trabajo que habían quedado del exp
 - `href="#"`: quedan **16**, todos de Instagram; las tarjetas de demo ya no aportan ninguno.
 
 ### Estado
-- Un commit para la sesión 55 (3 HTML, `css/style.css`, `js/i18n.js`, `js/index.js`, `projects/` y esta entrada).
+- Portfolio: commit `0f8a8f8` (tarjetas, CSS, i18n, cursor y `projects/`) y un segundo commit que apunta las dos tarjetas a las URLs propias y elimina `projects/`.
+- `Property-Scraper-LP`: commit de reestructuración + workflow, commit del favicon y despliegue correcto.
+- `que-harias-podcast`: commit del workflow y despliegue correcto.
 - Viralizer queda sin enlace hasta que tenga web o ficha en la Store.
 - Sin tocar: los dos ajustes de posición de los títulos de las tiles y los 112 `alt`/`aria-label`.
 
@@ -2331,7 +2336,7 @@ Se borraron dos restos vacíos del árbol de trabajo que habían quedado del exp
 
 **About queda cerrado a falta de la revisión visual del usuario (sesiones 53 y 54)**: es nativo desde `0ff924c`, no queda nada de la demo de Codrops, y cualquier ventana de hasta 1200px de ancho (o de hasta 600px de alto) pasa a una columna con scroll en la que el conmutador siempre es alcanzable y ningún texto se monta sobre la foto. La composición de escritorio (≥1200px de ancho y ≥600px de alto) no se ha tocado. Las galerías y los carruseles se dieron por buenos: no hay trabajo pendiente ahí.
 
-**Demos de Desarrollo (sesión 55)**: las 6 tarjetas con destino ya enlazan a algo real (Distrito-R y Aurora Travel a sus Pages; Property Scraper y ¿Qué Harías? a `projects/…`; Property Scraper, en Extensiones, a la Chrome Web Store). Las 5 tarjetas sin destino —4 sin nombre y Viralizer— se quedan visibles como `div.gallery__item__link--soon`, sin enlace ni aspecto interactivo. Si en el futuro aparece una URL para Viralizer o para las 4 sin nombre, basta cambiar el `div` por un `<a href="…" target="_blank" rel="noopener noreferrer">` y devolverle su clave de `aria-label`.
+**Demos de Desarrollo (sesión 55)**: las 6 tarjetas con destino ya enlazan a algo real (Distrito-R y Aurora Travel a sus Pages; Property Scraper y ¿Qué Harías? a sus repositorios propios, `Property-Scraper-LP` y `que-harias-podcast`; Property Scraper, en Extensiones, a la Chrome Web Store). Cada proyecto vive en su propia URL de GitHub Pages, no dentro del Portfolio. Las 5 tarjetas sin destino —4 sin nombre y Viralizer— se quedan visibles como `div.gallery__item__link--soon`, sin enlace ni aspecto interactivo. Si en el futuro aparece una URL para Viralizer o para las 4 sin nombre, basta cambiar el `div` por un `<a href="…" target="_blank" rel="noopener noreferrer">` y devolverle su clave de `aria-label`.
 
 **Histórico que ya no aplica**: las sesiones 43-51 describen la demo de Codrops dentro de About (`tympMain.js`, `photographer.js`, `demo.css`, `pieces.css`, `<style>` de `about.html`, `window.AboutDemo`, `window.AboutTitle`). Nada de eso existe desde `0ff924c`; se conserva como registro, no como mapa del código actual. Lo mismo con el copy antiguo de About y sus 14 claves: se borraron en la sesión 53.
 
