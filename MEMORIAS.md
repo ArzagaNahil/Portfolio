@@ -2469,3 +2469,13 @@ Se borraron dos restos vacíos del árbol de trabajo que habían quedado del exp
 
 ### Nota sobre la app
 - Vía Legal no tendrá demo ejecutable en Pages (necesita Python + Ollama); la tarjeta apunta a la landing. Correr la app requiere backend en el puerto 3001 y frontend en el 5173 (Vite redirige `/api` al backend).
+
+---
+
+## Sesión 60 - Ajustes en la tarjeta de Vía Legal y Distrito-R
+
+### Cambios
+- **Desarrollo Web vuelve a tener 4 tarjetas**: se restauró el hueco `--soon` (imagen `04-portada.webp`, clave `g1_img_4`) después de Vía Legal, para que la sección mantenga una tarjeta vacía como antes.
+- **Imagen de Vía Legal** sustituida por la captura real de su página (`03-vialegal.webp`, 624×850) a partir de `Via legal page.jpg`.
+- **Imagen de Distrito-R** sustituida por la captura real de su página (`01-distrito-r.webp`, 624×850) a partir de `distrito-r page.jpg`; su `alt` pasó de genérico a descriptivo.
+- Auditoría i18n: **ES 365 = EN 365 = 365**, 0 huérfanas (se añadió `g1_img_4`).

@@ -126,9 +126,10 @@ export const I18N = {
         g2_demo_4: 'Ver demo de ¿Qué Harías? (se abre en una pestaña nueva)',
         g3_demo_1: 'Ver Property Scraper en la Chrome Web Store (se abre en una pestaña nueva)',
 
-        g1_img_1: 'Desarrollo Web — imagen 1',
+        g1_img_1: 'Distrito-R — ranking tracker local',
         g1_img_2: 'Driva — app Android de higiene digital',
         g1_img_3: 'Vía Legal — consultas legales con IA local',
+        g1_img_4: 'Desarrollo Web — imagen 4',
         g2_img_1: 'Páginas Web — imagen 1',
         g2_img_2: 'Páginas Web — imagen 2',
         g2_img_3: 'Páginas Web — imagen 3',
@@ -514,9 +515,10 @@ export const I18N = {
         g2_demo_4: 'View the ¿Qué Harías? demo (opens in a new tab)',
         g3_demo_1: 'View Property Scraper on the Chrome Web Store (opens in a new tab)',
 
-        g1_img_1: 'Web Development — image 1',
+        g1_img_1: 'Distrito-R — local rank tracker',
         g1_img_2: 'Driva — Android digital hygiene app',
         g1_img_3: 'Vía Legal — legal answers with local AI',
+        g1_img_4: 'Web Development — image 4',
         g2_img_1: 'Web Pages — image 1',
         g2_img_2: 'Web Pages — image 2',
         g2_img_3: 'Web Pages — image 3',
