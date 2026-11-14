@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Property Scraper — Extrae propiedades de portales inmobiliarios</title>
+
+    <meta name="description" content="Extensión gratuita para Chrome y Edge que extrae datos de propiedades de Idealista, Fotocasa, Habitaclia, YaEncontré y Pisos.com con un clic. Filtra por precio, m² y habitaciones.">
+    <meta name="keywords" content="property scraper, extractor propiedades, idealista, fotocasa, habitaclia, yaencontre, pisos.com, extensión chrome, extension edge">
+    <meta name="author" content="Arzaga Nahil">
+    <meta name="robots" content="index, follow">
+
+    <meta property="og:title" content="Property Scraper — Extrae propiedades de portales inmobiliarios">
+    <meta property="og:description" content="Extrae datos de propiedades de 5 portales inmobiliarios españoles con un clic. Filtra y exporta a CSV/JSON.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://property-scraper.alexisnahil963.workers.dev">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" type="image/png" href="assets/img/icon128.png">
+</head>
+<body>
+
+    <!-- NAV -->
+    <nav class="nav">
+        <div class="nav__inner">
+            <div class="nav__logo">
+                <img src="assets/img/icon128.png" alt="Property Scraper" class="nav__icon-img">
+                <span class="nav__name">Property Scraper</span>
+            </div>
+            <div class="nav__links">
+                <a href="#portales">Portales</a>
+                <a href="#como-funciona">Cómo funciona</a>
+                <a href="#features">Características</a>
+                <a href="#download" class="nav__cta">Descargar</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="hero__inner">
+            <div class="hero__content">
+                <span class="hero__badge">Chrome &amp; Edge — Gratis</span>
+                <h1 class="hero__title">Extrae propiedades de portales inmobiliarios con un clic</h1>
+                <p class="hero__subtitle">Idealista, Fotocasa, Habitaclia, YaEncontré y Pisos.com. Filtra por precio, m² y habitaciones. Exporta a CSV y JSON.</p>
+                <div class="hero__ctas">
+                    <a href="https://chromewebstore.google.com/detail/property-scraper-extrac/pkklagfemhiggfdjdcmijaepppomclo" target="_blank" class="btn btn--primary">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20M2 12h20"/></svg>
+                        Chrome Web Store
+                    </a>
+                    <a href="https://microsoftedge.microsoft.com/addons/detail/pkpklagfemhiggfdjdcmijaepppomclo" target="_blank" class="btn btn--secondary">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20M2 12h20"/></svg>
+                        Edge Add-ons
+                    </a>
+                </div>
+            </div>
+            <div class="hero__visual">
+                <img src="assets/img/Extencion.png" alt="Property Scraper extensión" class="hero__screenshot">
+            </div>
+        </div>
+    </section>
+
+    <!-- PORTALES -->
+    <section class="portals" id="portales">
+        <h2 class="section__title">5 portales soportados</h2>
+        <p class="section__subtitle">Los portales inmobiliarios más usados en España, en una sola extensión</p>
+        <div class="portals__grid">
+            <div class="portal__card">
+                <h3>Idealista</h3>
+                <span class="portal__tag">El más grande de España</span>
+            </div>
+            <div class="portal__card">
+                <h3>Fotocasa</h3>
+                <span class="portal__tag">Scroll infinito automático</span>
+            </div>
+            <div class="portal__card">
+                <h3>Habitaclia</h3>
+                <span class="portal__tag">Cataluña y más</span>
+            </div>
+            <div class="portal__card">
+                <h3>YaEncontré</h3>
+                <span class="portal__tag">Enfoque hispanohablante</span>
+            </div>
+            <div class="portal__card">
+                <h3>Pisos.com</h3>
+                <span class="portal__tag">Todo España</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- CÓMO FUNCIONA -->
+    <section class="how" id="como-funciona">
+        <h2 class="section__title">Cómo funciona en 6 pasos</h2>
+        <div class="how__grid">
+            <div class="how__step">
+                <span class="how__number">1</span>
+                <h3>Instala</h3>
+                <p>Descarga la extensión desde Chrome Web Store o Edge Add-ons con un clic</p>
+            </div>
+            <div class="how__step">
+                <span class="how__number">2</span>
+                <h3>Abre un portal</h3>
+                <p>Navega a Idealista, Fotocasa, Habitaclia, YaEncontré o Pisos.com</p>
+            </div>
+            <div class="how__step">
+                <span class="how__number">3</span>
+                <h3>Clic en el icono</h3>
+                <p>Abre la extensión desde la barra de herramientas de tu navegador</p>
+            </div>
+            <div class="how__step">
+                <span class="how__number">4</span>
+                <h3>Extrae</h3>
+                <p>Pulsa "Extraer propiedades" y la extensión lee automáticamente todos los anuncios</p>
+            </div>
+            <div class="how__step">
+                <span class="how__number">5</span>
+                <h3>Filtra y exporta</h3>
+                <p>Refina por precio, m² o habitaciones, luego exporta a CSV o JSON</p>
+            </div>
+            <div class="how__step">
+                <span class="how__number">6</span>
+                <h3>Guarda</h3>
+                <p>Los datos se guardan automáticamente en tu navegador para consultarlos después</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- CARACTERÍSTICAS -->
+    <section class="features" id="features">
+        <h2 class="section__title">Todo lo que necesitas</h2>
+        <div class="features__grid">
+            <div class="feature__card">
+                <div class="feature__icon">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                </div>
+                <h3>Extracción automática</h3>
+                <p>Título, precio, metros, habitaciones, planta, dirección y URL de cada propiedad</p>
+            </div>
+            <div class="feature__card">
+                <div class="feature__icon">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/><circle cx="12" cy="12" r="2"/></svg>
+                </div>
+                <h3>Scroll infinito</h3>
+                <p>Fotocasa se carga automáticamente todas las propiedades sin intervención manual</p>
+            </div>
+            <div class="feature__card">
+                <div class="feature__icon">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+                </div>
+                <h3>Filtros inteligentes</h3>
+                <p>Rangos predefinidos o personalizados por precio, m² y habitaciones</p>
+            </div>
+            <div class="feature__card">
+                <div class="feature__icon">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                </div>
+                <h3>Exportación</h3>
+                <p>Copia los datos como CSV para Excel o JSON para integración con otros sistemas</p>
+            </div>
+            <div class="feature__card">
+                <div class="feature__icon">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1-2 2h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2z"/><polyline points="16 8 12 12 8 8"/></svg>
+                </div>
+                <h3>Persistencia local</h3>
+                <p>Las propiedades se guardan en tu navegador y persisten entre sesiones</p>
+            </div>
+            <div class="feature__card">
+                <div class="feature__icon">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                </div>
+                <h3>Privacidad total</h3>
+                <p>Solo funciona en tu navegador. No se envían datos a servidores externos</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- CAPTURAS -->
+    <section class="screenshots">
+        <h2 class="section__title">Así se ve</h2>
+        <p class="section__subtitle">Diseño oscuro y moderno, integrado en tu navegador</p>
+        <div class="screenshots__wrapper">
+            <img src="assets/img/asi_se_ve.png" alt="Property Scraper en acción" class="screenshots__img">
+        </div>
+    </section>
+
+    <!-- PRIVACIDAD -->
+    <section class="privacy">
+        <h2 class="section__title">Tu privacidad es primero</h2>
+        <div class="privacy__content">
+            <div class="privacy__item">
+                <span class="privacy__icon">✓</span>
+                <div>
+                    <strong>Sin recopilación de datos</strong>
+                    <p>La extensión no recopila, almacena ni transmite ningún dato personal, información de navegación o datos identificables del usuario.</p>
+                </div>
+            </div>
+            <div class="privacy__item">
+                <span class="privacy__icon">✓</span>
+                <div>
+                    <strong>Sin servidores externos</strong>
+                    <p>Toda la operación se realiza localmente en tu navegador. No existen conexiones a servidores externos, APIs o servicios de análisis.</p>
+                </div>
+            </div>
+            <div class="privacy__item">
+                <span class="privacy__icon">✓</span>
+                <div>
+                    <strong>Almacenamiento 100% local</strong>
+                    <p>Los datos extraídos se almacenan únicamente en el almacenamiento local del navegador y no son accesibles por ninguna otra extensión o servicio.</p>
+                </div>
+            </div>
+            <div class="privacy__item">
+                <span class="privacy__icon">✓</span>
+                <div>
+                    <strong>Permisos mínimos</strong>
+                    <p>Solo solicita activeTab (leer la página activa) y storage (guardar propiedades). No necesita permisos adicionales para funcionar.</p>
+                </div>
+            </div>
+            <div class="privacy__item">
+                <span class="privacy__icon">✓</span>
+                <div>
+                    <strong>Acceso limitado a portales</strong>
+                    <p>La extensión solo se activa en Idealista, Fotocasa, Habitaclia, YaEncontré y Pisos.com. No tiene acceso a ningún otro sitio web.</p>
+                </div>
+            </div>
+            <div class="privacy__item">
+                <span class="privacy__icon">✓</span>
+                <div>
+                    <strong>Código abierto y transparente</strong>
+                    <p>El código fuente está disponible para revisión. Puedes verificar exactamente qué hace la extensión antes de instalarla.</p>
+                </div>
+            </div>
+        </div>
+        <a href="https://arzaganahil.github.io/property-scraper-privacy/" target="_blank" class="privacy__link">Leer política de privacidad completa →</a>
+    </section>
+
+    <!-- DOWNLOAD CTA -->
+    <section class="download" id="download">
+        <h2>¿Listo para extraer propiedades?</h2>
+        <p>Descarga Property Scraper gratis y empieza a ahorrar tiempo hoy</p>
+        <div class="download__ctas">
+            <a href="https://chromewebstore.google.com/detail/property-scraper-extrac/pkklagfemhiggfdjdcmijaepppomclo" target="_blank" class="btn btn--primary btn--large">Descargar para Chrome</a>
+            <a href="https://microsoftedge.microsoft.com/addons/detail/pkpklagfemhiggfdjdcmijaepppomclo" target="_blank" class="btn btn--secondary btn--large">Descargar para Edge</a>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="footer__content">
+            <div class="footer__brand">
+                <div class="footer__logo">
+                    <img src="assets/img/icon128.png" alt="Property Scraper" class="footer__icon-img">
+                    <span>Property Scraper</span>
+                </div>
+                <p>Extensión para extraer datos de propiedades inmobiliarias</p>
+            </div>
+            <div class="footer__links">
+                <a href="https://chromewebstore.google.com/detail/property-scraper-extrac/pkklagfemhiggfdjdcmijaepppomclo" target="_blank">Chrome Web Store</a>
+                <a href="https://microsoftedge.microsoft.com/addons/detail/pkpklagfemhiggfdjdcmijaepppomclo" target="_blank">Edge Add-ons</a>
+                <a href="https://arzaganahil.github.io/property-scraper-privacy/" target="_blank">Privacidad</a>
+                <a href="https://github.com/ArzagaNahil" target="_blank">GitHub</a>
+            </div>
+        </div>
+        <div class="footer__bottom">
+            <p>&copy; 2026 Property Scraper. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+</html>

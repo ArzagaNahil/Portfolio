@@ -89,7 +89,10 @@ function initCustomCursor() {
         if (rafId === null) rafId = requestAnimationFrame(animate);
     }, { passive: true });
 
-    const interactive = 'a, button, .menu__item, .tile__link, .gallery__item__link, .dev-nav__arrow, .lang__toggle, .topnav__toggle, .shiny-cta, input, textarea, select';
+    /* Las tarjetas sin demo llevan .gallery__item__link--soon y no son
+       interactivas: si el anillo se encogiera sobre ellas prometería un clic
+       que no existe. */
+    const interactive = 'a, button, .menu__item, .tile__link, .gallery__item__link:not(.gallery__item__link--soon), .dev-nav__arrow, .lang__toggle, .topnav__toggle, .shiny-cta, input, textarea, select';
     const isInteractive = (node) => node instanceof Element && node.closest(interactive);
     const setHover = (on) => cursor.classList.toggle('cursor-hover', on);
 
