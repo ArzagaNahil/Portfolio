@@ -109,6 +109,7 @@ export const I18N = {
 
         g1_card1: 'Ranking tracker local observacional: mide tu posición real en Google por distrito y ciudad, con IPs residenciales reales, desktop y móvil, sin manipulación.',
         g1_card2: 'App Android de higiene digital: mide la salud real de la batería y el almacenamiento, y guía la limpieza de caché app por app. En desarrollo.',
+        g1_card3: 'Consultas legales en lenguaje natural sobre tránsito y convivencia: 446 artículos de las leyes 769/2002 y 1801/2016, con IA local y cita del artículo. En desarrollo.',
         g2_card1: 'Página web de viajes: destinos, inspiración y planes para organizar tu próximo viaje.',
         g2_card2: 'Ranking tracker local: tu posición real en Google por distrito y ciudad, con IPs residenciales, desktop y móvil.',
         g2_card3: 'Web de la extensión que extrae propiedades de los portales de inmobiliarias de España.',
@@ -118,6 +119,7 @@ export const I18N = {
 
         g1_demo_1: 'Ver demo de Distrito-R (se abre en una pestaña nueva)',
         g1_demo_2: 'Ver la página de Driva (se abre en una pestaña nueva)',
+        g1_demo_3: 'Ver la página de Vía Legal (se abre en una pestaña nueva)',
         g2_demo_1: 'Ver demo de Aurora Travel (se abre en una pestaña nueva)',
         g2_demo_2: 'Ver demo de Distrito-R (se abre en una pestaña nueva)',
         g2_demo_3: 'Ver demo de Property Scraper (se abre en una pestaña nueva)',
@@ -126,7 +128,7 @@ export const I18N = {
 
         g1_img_1: 'Desarrollo Web — imagen 1',
         g1_img_2: 'Driva — app Android de higiene digital',
-        g1_img_3: 'Desarrollo Web — imagen 3',
+        g1_img_3: 'Vía Legal — consultas legales con IA local',
         g2_img_1: 'Páginas Web — imagen 1',
         g2_img_2: 'Páginas Web — imagen 2',
         g2_img_3: 'Páginas Web — imagen 3',
@@ -495,6 +497,7 @@ export const I18N = {
 
         g1_card1: 'Observational local rank tracker: measures your real position on Google by district and city, using real residential IPs, desktop and mobile, without manipulation.',
         g1_card2: 'Android digital hygiene app: measures real battery and storage health and guides cache cleanup app by app. In development.',
+        g1_card3: 'Natural-language legal answers on traffic and public conduct: 446 articles from laws 769/2002 and 1801/2016, with local AI and article citations. In development.',
         g2_card1: 'Travel website: destinations, inspiration and plans to organize your next trip.',
         g2_card2: 'Local rank tracker: your real position on Google by district and city, with residential IPs, desktop and mobile.',
         g2_card3: 'Website of the extension that extracts listings from Spanish real estate portals.',
@@ -504,6 +507,7 @@ export const I18N = {
 
         g1_demo_1: 'View the Distrito-R demo (opens in a new tab)',
         g1_demo_2: 'View the Driva page (opens in a new tab)',
+        g1_demo_3: 'View the Vía Legal page (opens in a new tab)',
         g2_demo_1: 'View the Aurora Travel demo (opens in a new tab)',
         g2_demo_2: 'View the Distrito-R demo (opens in a new tab)',
         g2_demo_3: 'View the Property Scraper demo (opens in a new tab)',
@@ -512,7 +516,7 @@ export const I18N = {
 
         g1_img_1: 'Web Development — image 1',
         g1_img_2: 'Driva — Android digital hygiene app',
-        g1_img_3: 'Web Development — image 3',
+        g1_img_3: 'Vía Legal — legal answers with local AI',
         g2_img_1: 'Web Pages — image 1',
         g2_img_2: 'Web Pages — image 2',
         g2_img_3: 'Web Pages — image 3',

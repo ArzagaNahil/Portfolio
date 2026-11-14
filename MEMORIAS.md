@@ -2433,3 +2433,39 @@ Se borraron dos restos vacíos del árbol de trabajo que habían quedado del exp
 - Las medidas de las miniaturas de Rescate Animal siguen a 1000×1000 con el resto de las de diseño, no a la caja 2000×506 de fotografía. Unificarlo es el mismo trabajo de la sesión 29.
 
 **Numeración de las galerías**: desde la sesión 58, `gallery-photo-1..4.html` siguen el orden de las tiles de `photography.html` (1 Artística, 2 Retrato, 3 Paisajismo, 4 Publicitaria) y las claves `galphotoN_*` / `alt_photo_N` usan esa misma numeración. Las URLs anteriores a ese cambio ahora sirven otra categoría y no se pueden redirigir; las entradas viejas de MEMORIAS están en la numeración antigua. El sufijo `_3` de UI/UX de la sesión 32 sigue igual.
+
+---
+
+## Sesión 59 - Vía Legal se suma a Desarrollo Web con su propia página pública
+
+### Objetivo
+- Incorporar la app en desarrollo **Vía Legal** al portafolio replicando el proceso de Driva: repo público con código ejecutable, landing bilingüe en `docs/`, GitHub Pages propia y tarjeta en Desarrollo Web apuntando a la landing.
+
+### Verificación de la app
+- FastAPI + React 19 + Vite + Tailwind 4 + SQLite (446 artículos: 194 tránsito, 249 policía, 3 sanciones) + Ollama `llama3.2`. Sin secretos ni `.env`; 2,8 MB sin `node_modules`.
+- La app arranca y responde de verdad: `/api/health` ok, búsqueda `moto` → 20 resultados (detecta TRÁNSITO), chat real citando el artículo 131 de la Ley 769/2002.
+- `pdfplumber` solo hace falta para extraer PDFs, no para ejecutar; la base ya viene generada.
+
+### Repo público
+- Creado `ArzagaNahil/ViaLegal` (público, default branch `main`) y publicado en `https://github.com/ArzagaNahil/ViaLegal`.
+- Contiene código + `backend/vialegal.db` + PDFs/HTML de ambas leyes + `docs/` + workflow. `.gitignore` excluye `node_modules`, `__pycache__`, `*.pyc`, `MEMORIA.md`, `bitacora.txt`, `.env`. Commit `97bfedb`.
+- README y `docs/tecnico/ARQUITECTURA.md` y `docs/tecnico/DATOS.md` documentan la arquitectura, los endpoints y la extracción.
+
+### Landing
+- `docs/index.html` bilingüe (ES/EN), dark índigo/violeta + oro, capturas reales de la app a 1440×900 y 390×844 convertidas a WebP (`app-inicial`, `app-chat`, `app-chat-top`, `app-movil`).
+- `docs/styles.css` (sin scroll horizontal, foco visible, `prefers-reduced-motion`), `docs/script.js` con diccionario ES/EN y `data-i18n`/`data-i18n-attr`, `docs/favicon.svg`, `docs/og-image.png` 1200×630.
+- GitHub Pages habilitado por workflow (`build_type: workflow`); despliegue exitoso y verificado en `https://arzaganahil.github.io/ViaLegal/` (200, todos los assets 200).
+
+### Tarjeta en Desarrollo Web
+- Sustituido el hueco `--soon` de `gallery-proyecto-1.html` por un `<a>` a la landing, con `03-vialegal.webp` (624×850) y las claves `g1_card3`, `g1_demo_3`, `g1_img_3` actualizadas en ES y EN.
+- `gallery-proyecto-1.html` queda completa (6 tarjetas, 0 huecos `--soon`); `g_soon` sigue usándose en las galerías 2 y 3.
+- Auditoría i18n: **ES 364 = EN 364 = claves usadas 364**, 0 huérfanas (eran 362 antes de añadir `g1_card3` y `g1_demo_3`).
+- Se eliminó el placeholder `assets/IMG/dev/desarrollo-web/thumbs/03-portada.webp`, ya sin referencias.
+
+### Verificación
+- Landing local a 1366×768 y 390×844: sin 404, sin errores de consola, sin scroll horizontal, conmutador ES/EN correcto, imágenes cargan, anclas a 90 px del borde superior.
+- Tarjeta en local y publicado: imagen 624×850, enlace a la landing, textos ES/EN.
+- About, galerías y carruseles no se tocaron.
+
+### Nota sobre la app
+- Vía Legal no tendrá demo ejecutable en Pages (necesita Python + Ollama); la tarjeta apunta a la landing. Correr la app requiere backend en el puerto 3001 y frontend en el 5173 (Vite redirige `/api` al backend).
