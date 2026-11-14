@@ -2365,6 +2365,24 @@ Se borraron dos restos vacíos del árbol de trabajo que habían quedado del exp
 
 ---
 
+## Sesión 57 - Retrato: la foto de Ichi entra en la galería
+
+### Objetivo
+- Añadir `Ichi-retrato.jpg` a la galería de Retrato sin tocar el resto de fotos, el carrusel ni el visor.
+
+### Cambios
+- **`gallery-photo-1.html`** (la galería de Retrato; su número no coincide con el orden de las tiles): nueva tarjeta con `data-index="13"`, `data-full` a `full/14-ichi-retrato.webp`, `aria-label`/`alt` "Retrato — 14" y clave `galphoto1_img_14`.
+- **`assets/IMG/photo/retrato/`**: `thumbs/14-ichi-retrato.webp` (382×506, 17,6 KB) y `full/14-ichi-retrato.webp` (1376×1824, 147,6 KB), generados con Chrome desde el JPG original (1376×1824). Sin recorte: solo escalado a la altura 506 de las miniaturas y calidad 0,82/0,90.
+- **`js/i18n.js`**: `galphoto1_img_14` en ES ("Retrato — 14") y EN ("Portrait — 14"). Paridad **ES 362 = EN 362 = HTML 362**, 0 huérfanas.
+
+### Verificación
+- Chrome local a 1366×768 y 390×844: 14 tarjetas únicas (28 en el track por los clones), todas las miniaturas cargan (382×506 reales), sin scroll horizontal y sin errores ni 404.
+- Visor: la tarjeta 14 abre "14 / 14", la imagen grande carga a 1376×1824; `ArrowRight` da la vuelta a "1 / 14" y `ArrowLeft` vuelve a "14 / 14".
+- La miniatura y la grande coinciden (diferencia media 2,14/255 al comparar ambas a 382×506) y la relación de aspecto se mantiene (0,7544).
+- En inglés el `aria-label` pasa a "Portrait — 14"; el `alt` de la miniatura se queda en español, igual que en las otras 13 tarjetas.
+
+---
+
 ## Para la próxima sesión
 
 **About queda cerrado a falta de la revisión visual del usuario (sesiones 53 y 54)**: es nativo desde `0ff924c`, no queda nada de la demo de Codrops, y cualquier ventana de hasta 1200px de ancho (o de hasta 600px de alto) pasa a una columna con scroll en la que el conmutador siempre es alcanzable y ningún texto se monta sobre la foto. La composición de escritorio (≥1200px de ancho y ≥600px de alto) no se ha tocado. Las galerías y los carruseles se dieron por buenos: no hay trabajo pendiente ahí.
