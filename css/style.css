@@ -332,6 +332,29 @@ main {
     margin: 0 0 1.5rem;
 }
 
+/* Correo directo: alternativa al formulario mientras no hay backend. */
+.contact__email {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: var(--color-text-alt);
+    margin: -0.75rem 0 1.5rem;
+}
+
+.contact__email a {
+    color: var(--color-accent);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+    text-decoration-thickness: 1px;
+    overflow-wrap: anywhere;
+    transition: color 0.3s ease;
+}
+
+.contact__email a:hover,
+.contact__email a:focus-visible {
+    color: var(--color-accent-shine);
+}
+
 /* ---- About Section ---- */
 .about {
     display: grid;

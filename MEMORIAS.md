@@ -2519,3 +2519,17 @@ Se borraron dos restos vacíos del árbol de trabajo que habían quedado del exp
 ### Estado
 - Sin commit ni push: `css/about.css`, `css/style.css` y `js/index.js` quedan modificados sobre `54f5aee`.
 - Galerías, carruseles, `alt`/`aria-label` genéricos y las 4 tarjetas de Desarrollo Web no se han tocado.
+
+---
+
+## Sesión 62 - Correo de contacto directo en la página de Contacto
+
+### Cambio
+- **`contact.html`**: nueva línea `.contact__email` entre el subtítulo de la tarjeta y el formulario, con enlace `mailto:contact@arzagastudio.com`. Clave i18n nueva `c_email_pre`: ES "O escríbeme a", EN "Or email me at".
+- **`css/style.css`**: `.contact__email` en mono a `0.85rem` y color secundario; el enlace usa `--color-accent`, subrayado de 1 px y `overflow-wrap: anywhere`; en hover/focus pasa a `--color-accent-shine`.
+- El formulario se queda como estaba (`action="#"`): sigue sin backend, el correo es la vía directa por ahora.
+
+### Verificación
+- 1366×768, 1920×1080, 390×844 y 360×640, en ES y EN: `href="mailto:contact@arzagastudio.com"` correcto, texto traducido, sin scroll horizontal y 0 errores de consola.
+- 1280×720, 1200×800 y 1024×768: la tarjeta sigue entrando en una pantalla (borde inferior en 688,2 / 730,2 / 713,4 px).
+- i18n: **ES 366 = EN 366**, 0 claves usadas sin traducir.
