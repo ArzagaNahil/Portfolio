@@ -131,11 +131,12 @@
                     <h2 class="contact__title" data-i18n="c_title">Trabajemos juntos</h2>
                     <p class="contact__sub" data-i18n="c_sub">Estoy abierto a nuevos proyectos, colaboraciones y
                         oportunidades. Cuéntame de tu idea.</p>
-                    <p class="contact__email">
-                        <span data-i18n="c_email_pre">O escríbeme a</span>
-                        <a href="mailto:contact@arzagastudio.com">contact@arzagastudio.com</a>
-                    </p>
-                    <form class="contact__form" action="#" method="POST">
+                    <form class="contact__form" id="contact-form" action="https://formsubmit.co/ajax/contact@arzagastudio.com"
+                        method="POST">
+                        <input type="hidden" name="_subject" value="Nuevo mensaje desde arzagastudio.com" />
+                        <input type="hidden" name="_template" value="table" />
+                        <input type="hidden" name="_captcha" value="false" />
+                        <input type="text" name="_honey" class="form-honey" tabindex="-1" autocomplete="off" aria-hidden="true" />
                         <div class="form-group">
                             <label class="form-label" for="name" data-i18n="c_label_name">Nombre</label>
                             <input class="form-input" type="text" id="name" name="name" required />
@@ -150,6 +151,7 @@
                                 required></textarea>
                         </div>
                         <button class="shiny-cta" type="submit"><span data-i18n="c_submit">Enviar mensaje</span></button>
+                        <p class="form-status" role="status" aria-live="polite" hidden></p>
                     </form>
                 </div>
             </div>
@@ -164,6 +166,7 @@
     <script src="js/ease.min.js"></script>
 
     <script type="module" src="js/index.js"></script>
+    <script type="module" src="js/contactForm.js"></script>
 </body>
 
 </html>

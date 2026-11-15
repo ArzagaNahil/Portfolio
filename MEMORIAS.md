@@ -2522,14 +2522,20 @@ Se borraron dos restos vacíos del árbol de trabajo que habían quedado del exp
 
 ---
 
-## Sesión 62 - Correo de contacto directo en la página de Contacto
+## Sesión 62 - Formulario de contacto envía al correo (FormSubmit)
 
 ### Cambio
-- **`contact.html`**: nueva línea `.contact__email` entre el subtítulo de la tarjeta y el formulario, con enlace `mailto:contact@arzagastudio.com`. Clave i18n nueva `c_email_pre`: ES "O escríbeme a", EN "Or email me at".
-- **`css/style.css`**: `.contact__email` en mono a `0.85rem` y color secundario; el enlace usa `--color-accent`, subrayado de 1 px y `overflow-wrap: anywhere`; en hover/focus pasa a `--color-accent-shine`.
-- El formulario se queda como estaba (`action="#"`): sigue sin backend, el correo es la vía directa por ahora.
+- **`contact.html`**: el formulario ahora apunta a `https://formsubmit.co/ajax/contact@arzagastudio.com` (POST AJAX). Campos ocultos `_subject`, `_template=table`, `_captcha=false` y un honeypot `_honey` (`.form-honey`, fuera de pantalla). Se añade `<p class="form-status" role="status" aria-live="polite">` para el resultado.
+- **`js/contactForm.js`** (nuevo): intercepta el envío, valida con `reportValidity()`, ignora envíos en menos de 2,5 s (bot) y el honeypot, hace `fetch` con `FormData`, muestra “Enviando… / Mensaje enviado / No se pudo enviar” (claves `c_status_sending/ok/error`) y reactiva el botón. Si FormSubmit responde “needs Activation”, muestra `c_status_activate` en su lugar.
+- **`css/style.css`**: `.form-honey` (fuera de pantalla) y `.form-status` con colores por estado (ok en acento, error en `--color-accent-alt`).
+- **`js/i18n.js`**: claves `c_status_sending`, `c_status_ok`, `c_status_error` y `c_status_activate` en ES y EN.
+- Se eliminó la línea visible con el correo (`c_email_pre` / `.contact__email`) de la sesión anterior: el correo no se muestra en la página.
+- Servicio elegido: FormSubmit (sin cuenta). Limitación: el primer envío queda pendiente hasta activar el formulario desde el correo de contacto; por eso se lanzó un envío de prueba que ya disparó el correo de activación.
 
 ### Verificación
-- 1366×768, 1920×1080, 390×844 y 360×640, en ES y EN: `href="mailto:contact@arzagastudio.com"` correcto, texto traducido, sin scroll horizontal y 0 errores de consola.
-- 1280×720, 1200×800 y 1024×768: la tarjeta sigue entrando en una pantalla (borde inferior en 688,2 / 730,2 / 713,4 px).
-- i18n: **ES 366 = EN 366**, 0 claves usadas sin traducir.
+- Envío local (ES): respuesta de FormSubmit 200 con `{success:false, message:"needs Activation"}`; el JS muestra el estado de activación, 0 errores de consola.
+- i18n: **ES 369 = EN 369**, 0 claves usadas sin traducir.
+
+### Pendiente del usuario
+- Abrir la bandeja de `contact@arzagastudio.com`, pulsar el enlace “Activate Form” del correo de FormSubmit. A partir de ahí los envíos del formulario llegarán a esa dirección.
+- (Opcional, para ocultar el correo también del código fuente) en el panel de FormSubmit generar el “random string” y sustituir `contact@arzagastudio.com` por ese identificador en `contact.html` y en `contactForm.js`.

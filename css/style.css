@@ -332,29 +332,6 @@ main {
     margin: 0 0 1.5rem;
 }
 
-/* Correo directo: alternativa al formulario mientras no hay backend. */
-.contact__email {
-    font-family: var(--font-mono);
-    font-size: 0.85rem;
-    line-height: 1.6;
-    color: var(--color-text-alt);
-    margin: -0.75rem 0 1.5rem;
-}
-
-.contact__email a {
-    color: var(--color-accent);
-    text-decoration: underline;
-    text-underline-offset: 0.2em;
-    text-decoration-thickness: 1px;
-    overflow-wrap: anywhere;
-    transition: color 0.3s ease;
-}
-
-.contact__email a:hover,
-.contact__email a:focus-visible {
-    color: var(--color-accent-shine);
-}
-
 /* ---- About Section ---- */
 .about {
     display: grid;
@@ -510,6 +487,38 @@ main {
     resize: vertical;
     min-height: 100px;
     line-height: 1.5;
+}
+
+/* Honeypot anti-spam: invisible para humanos, el CSS lo saca de pantalla. */
+.form-honey {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+    tab-index: -1;
+}
+
+/* Estado del envío del formulario (visible solo al enviar). */
+.form-status {
+    margin: 0.25rem 0 0;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    line-height: 1.5;
+    color: var(--color-text-alt);
+}
+
+.form-status[data-state="ok"] {
+    color: var(--color-accent);
+}
+
+.form-status[data-state="error"] {
+    color: var(--color-accent-alt);
+}
+
+.form-status[data-state="sending"] {
+    color: var(--color-text-alt);
 }
 
 /* ---- Shiny CTA Button (adapted from https://codepen.io/hexagoncircle/full/MWMqXbK) ---- */
