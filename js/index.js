@@ -133,7 +133,7 @@ function initTopnav() {
         if (e.key === 'Escape') close();
     });
 
-    window.matchMedia('(min-width: 54em)')
+    window.matchMedia('(min-width: 864px)')
         .addEventListener('change', (e) => { if (e.matches) close(); });
 }
 initTopnav();
@@ -216,7 +216,7 @@ function initGalleryCarousel() {
 initGalleryCarousel();
 initLightbox();
 
-const desktop = window.matchMedia('(min-width: 54em)');
+const desktop = window.matchMedia('(min-width: 864px)');
 const tiles = document.querySelector('.devtiles');
 
 /* La rueda del ratón no desplaza contenedores horizontales por sí sola. La

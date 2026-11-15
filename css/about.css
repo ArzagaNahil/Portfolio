@@ -221,13 +221,13 @@ main {
     transform: rotate(22.5deg);
 }
 
-@media screen and (max-height: 38.5em) {
+@media screen and (max-height: 616px) {
     .menu {
         text-align: left;
     }
 }
 
-@media screen and (max-width: 40em) {
+@media screen and (max-width: 640px) {
     .content__top {
         font-size: 0.5em;
     }
@@ -324,8 +324,8 @@ a:focus {
 }
 
 /* Sube la fila inferior del frame para que "Work with me" (oculto) no quede
-   pegado a los iconos sociales. Solo >=54em, que es donde el frame existe. */
-@media screen and (min-width: 54em) {
+   pegado a los iconos sociales. Solo >=864px, que es donde el frame existe. */
+@media screen and (min-width: 864px) {
     .page-about .content__bottom {
         margin-bottom: 4.5rem;
     }
@@ -464,7 +464,7 @@ a:focus {
 }
 
 /* Con tres estados el conmutador se queda sin sitio en móvil. */
-@media screen and (max-width: 40em) {
+@media screen and (max-width: 640px) {
     .page-about .switch__item {
         margin-right: 0.9em;
     }
@@ -496,7 +496,7 @@ a:focus {
     }
 }
 
-@media screen and (max-width: 40em) and (max-aspect-ratio: 1162/1534) {
+@media screen and (max-width: 640px) and (max-aspect-ratio: 1162/1534) {
     .page-about .switch {
         font-size: 0.9em;
     }
@@ -546,7 +546,7 @@ a:focus {
 }
 
 /* En escritorio la descripción se acerca al borde derecho de la pantalla. */
-@media screen and (min-width: 75em) {
+@media screen and (min-width: 1200px) {
     .page-about .about-desc {
         position: absolute;
         top: 11.5rem;
@@ -615,18 +615,18 @@ a:focus {
 }
 
 /* Inicio del texto según el padding de .content__inner (2.5em por encima de
-   40em, 1em por debajo). */
+   640px, 1em por debajo). */
 :root {
     --lead-text-start: 2.5rem;
 }
 
-@media screen and (max-width: 40em) {
+@media screen and (max-width: 640px) {
     :root {
         --lead-text-start: 1rem;
     }
 }
 
-@media screen and (min-width: 75em) {
+@media screen and (min-width: 1200px) {
     :root {
         --lead-text-start: 4vw;
     }
@@ -648,35 +648,35 @@ a:focus {
 }
 
 /* Tamaños por viewport. */
-@media screen and (min-width: 75em) {
+@media screen and (min-width: 1200px) {
     .page-about .about-lead,
     .page-about .about-desc .about-desc__item {
         font-size: 2.90rem;
     }
 }
 
-@media screen and (min-width: 62.5em) and (max-width: 74.99em) {
+@media screen and (min-width: 1000px) and (max-width: 1199.84px) {
     .page-about .about-lead,
     .page-about .about-desc .about-desc__item {
         font-size: 2.54rem;
     }
 }
 
-@media screen and (min-width: 56.25em) and (max-width: 62.49em) {
+@media screen and (min-width: 900px) and (max-width: 999.84px) {
     .page-about .about-lead,
     .page-about .about-desc .about-desc__item {
         font-size: 2.17rem;
     }
 }
 
-@media screen and (max-width: 56.24em) {
+@media screen and (max-width: 899.84px) {
     .page-about .about-lead,
     .page-about .about-desc .about-desc__item {
         font-size: 1.93rem;
     }
 }
 
-@media screen and (max-height: 43.75em) {
+@media screen and (max-height: 700px) {
     .page-about .about-lead,
     .page-about .about-desc .about-desc__item {
         font-size: 1.69rem;
@@ -685,7 +685,7 @@ a:focus {
 
 /* En móvil el texto no cabe en la banda libre, así que la banda superior se
    ensancha y el retrato se baja. */
-@media screen and (max-width: 40em) {
+@media screen and (max-width: 640px) {
     /* La regla de diseño/código de más arriba calcula un ancho a partir del
        viewport de escritorio y en móvil se queda en cero (o negativo): el
        párrafo se convertía en una columna de un carácter. Aquí se iguala la
@@ -705,7 +705,7 @@ a:focus {
 
 /* El .about-desc pasa a la banda inferior en móvil para no solapar el
    manifiesto. */
-@media screen and (max-width: 40em) {
+@media screen and (max-width: 640px) {
     .page-about .about-desc {
         position: absolute;
         bottom: 5.5rem;
@@ -722,7 +722,7 @@ a:focus {
 
 /* Pantallas cortas: el manifiesto no cabe en la banda superior; se baja y se
    reduce el retrato para que no se solape. */
-@media screen and (max-width: 40em) and (max-height: 43.75em) {
+@media screen and (max-width: 640px) and (max-height: 700px) {
     .page-about .about-lead {
         font-size: 1.26rem;
     }
@@ -744,7 +744,7 @@ a:focus {
 
 /* En móvil el retrato vuelve a su tamaño original; el manifiesto cabe en la
    banda superior sin tocarlo. */
-@media screen and (max-aspect-ratio: 1162/1534) and (max-width: 40em) and (min-height: 43.76em) {
+@media screen and (max-aspect-ratio: 1162/1534) and (max-width: 640px) and (min-height: 700.16px) {
     .page-about .pieces {
         align-self: start;
         margin-top: 10rem;
@@ -762,8 +762,8 @@ a:focus {
    sola columna con scroll vertical: título, manifiesto, foto, descripción y
    conmutador. Así nada se solapa y el conmutador siempre queda accesible. */
 
-@media screen and (max-width: 75em),
-       screen and (max-height: 37.5em) {
+@media screen and (max-width: 1199.98px),
+       screen and (max-height: 600px) {
     /* La página deja de ser una sola pantalla fija y puede crecer. */
     .page-about main {
         height: auto;
@@ -867,7 +867,7 @@ a:focus {
 /* En móvil la composición sigue siendo la de siempre, pero si la pantalla se
    queda corta (un móvil apaisado, por ejemplo) la página puede desplazarse en
    vertical en lugar de recortar el conmutador. */
-@media screen and (max-width: 40em) {
+@media screen and (max-width: 640px) {
     .page-about main {
         height: auto;
         overflow: visible;
@@ -876,7 +876,7 @@ a:focus {
 
 /* En ventanas muy estrechas el conmutador de tres palabras no cabe en una
    línea. Se reduce un poco y, si aun así no entra, se parte en dos. */
-@media screen and (max-width: 30em) {
+@media screen and (max-width: 480px) {
     .page-about .switch {
         flex-wrap: wrap;
         row-gap: 0.4rem;
@@ -885,5 +885,83 @@ a:focus {
 
     .page-about .switch__item {
         margin-right: 1em;
+    }
+}
+
+/* ---------------------------------------------------------------------------
+   8. Refinamiento de escritorio (una sola pantalla y composición simétrica)
+   ---------------------------------------------------------------------------
+   Por encima de 1200px de ancho y 600px de alto se conserva la composición
+   aprobada de una sola pantalla. Para que se vea igual en todos los
+   navegadores:
+   - Todos los puntos de ruptura del archivo están en px: las media queries
+     en em dependen del tamaño de fuente por defecto del navegador.
+   - La tipografía se escala con el alto de la ventana (4.296vh = 46.4px a
+     1080px) y con el ancho de la banda libre, con techo en 2.9rem (46.4px).
+     Así no se recorta en portátiles ni crece de más en pantallas grandes.
+   - Manifiesto y descripción comparten ancho y márgenes (4vw): las dos
+     columnas quedan simétricas alrededor de la foto centrada. */
+
+@media screen and (min-width: 1200px) and (min-height: 601px) and (min-aspect-ratio: 1162/1534) {
+    :root {
+        --about-text-size: max(
+            1.2rem,
+            min(
+                2.9rem,
+                4.296vh,
+                calc((50vw - 34.087vh - var(--lead-text-start) - 1rem) * 0.12)
+            )
+        );
+    }
+
+    .page-about .about-lead,
+    .page-about .about-lead[data-cat="design"],
+    .page-about .about-lead[data-cat="code"],
+    .page-about .about-desc .about-desc__item {
+        font-size: var(--about-text-size);
+    }
+
+    /* Columna izquierda: sube con la ventana para que el texto no se salga
+       por abajo en portátiles (a 1080px de alto queda donde estaba). */
+    .page-about .about-lead,
+    .page-about .about-lead[data-cat="design"],
+    .page-about .about-lead[data-cat="code"] {
+        top: calc(25.55vh - 6.25rem);
+        width: calc((50vw - 34.087vh - var(--lead-text-start) - 1rem) * 0.855);
+    }
+
+    /* Columna derecha: mismo ancho y mismos márgenes que la izquierda. */
+    .page-about .about-desc {
+        top: calc(22.6vh - 3.75rem);
+        right: calc(4vw - (100vw - 1200px) / 2);
+    }
+
+    .page-about .about-desc .about-desc__item {
+        width: calc((50vw - 34.087vh - var(--lead-text-start) - 1rem) * 0.855);
+        max-width: 100%;
+        margin-left: auto;
+        margin-right: 0;
+    }
+
+    /* .pieces tiene margin:auto; cuando la foto es más ancha que .about
+       (alturas superiores a ~1760px) los márgenes automáticos se anulan y la
+       caja desbordaba solo hacia la derecha. El desplazamiento negativo la
+       recentra. */
+    .page-about .pieces {
+        left: min(0px, calc((1200px - 68.1747vh) / 2));
+    }
+
+    /* Título: proporcional al texto, con el hueco libre como tope y un techo
+       de 6.5vh para que no pise el manifiesto en ventanas bajas. */
+    .page-about .title {
+        font-size: max(
+            min(4.16rem, calc(var(--about-text-size) * 1.3)),
+            min(
+                4.16rem,
+                6.5vh,
+                calc((560px - 33.383vh) * 0.168),
+                calc((50vw - 33.383vh - 40px) * 0.168)
+            )
+        );
     }
 }

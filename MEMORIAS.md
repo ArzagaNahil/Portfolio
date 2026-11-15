@@ -2479,3 +2479,43 @@ Se borraron dos restos vacíos del árbol de trabajo que habían quedado del exp
 - **Imagen de Vía Legal** sustituida por la captura real de su página (`03-vialegal.webp`, 624×850) a partir de `Via legal page.jpg`.
 - **Imagen de Distrito-R** sustituida por la captura real de su página (`01-distrito-r.webp`, 624×850) a partir de `distrito-r page.jpg`; su `alt` pasó de genérico a descriptivo.
 - Auditoría i18n: **ES 365 = EN 365 = 365**, 0 huérfanas (se añadió `g1_img_4`).
+
+---
+
+## Sesión 61 - About igual en todos los navegadores: media queries en px y composición simétrica
+
+### Objetivo
+- Que About se vea igual en Chrome, Edge y Brave, y en portátil y TV: primer párrafo a la izquierda, segundo a la derecha y foto centrada, todo en una sola pantalla.
+- En el portátil los párrafos se veían "muy grandes"; en la TV se achicaban pero seguían "un poco más grandes que la configuración adecuada". Además la foto "se corría un poco a la izquierda" y la columna derecha "se veía un poco más pequeña".
+
+### Diagnóstico
+- Los `@media` de `css/about.css` y `css/style.css`, y los dos `matchMedia` de `js/index.js`, estaban en `em`. En una media query el `em` se resuelve contra el **tamaño de fuente por defecto del navegador**, no contra el `:root { font-size: 16px }` de `style.css`: con la fuente por defecto a 20-24 px, `54em` vale 1080-1296 px en vez de 864 px. El mismo viewport caía en tramos distintos según el navegador y su configuración, de ahí la diferencia portátil/TV.
+- El manifiesto y la descripción no compartían anchura ni márgenes, así que la columna derecha quedaba más estrecha.
+- `.pieces` tiene `margin: auto`; cuando la foto (`68.1747vh`) supera los 1200 px de `.about` —alturas por encima de ~1760 px— los márgenes automáticos se anulan y la caja desborda hacia la derecha. Eso empujaba el centro de la foto: a 3840×2160 estaba en `x=2055` frente a 1920.
+
+### Cambios
+- **`css/about.css`**: todos los `@media` pasan a `px` (16 px de base): `40em→640px`, `54em→864px`, `38.5em→616px`, `43.75em→700px`, `30em→480px`, y los tramos `62.5/74.99/56.25/62.49/56.24em` a `1000/1199.84/900/999.84/899.84px`. El umbral apilado queda en `(max-width: 1199.98px), (max-height: 600px)`, de modo que 1200 px exactos sigue siendo escritorio.
+- **Sección 8 nueva** (refinamiento de escritorio, `min-width: 1200px and min-height: 601px and min-aspect-ratio: 1162/1534`):
+  - `--about-text-size: max(1.2rem, min(2.9rem, 4.296vh, calc((50vw - 34.087vh - var(--lead-text-start) - 1rem) * 0.12)))`. El techo `2.9rem` = 46,4 px es exactamente el valor que ya se veía a 1920×1080, así que la referencia no cambia.
+  - Manifiesto y descripción con la misma anchura, `calc((50vw - 34.087vh - var(--lead-text-start) - 1rem) * 0.855)`, y márgenes laterales de `4vw`; la descripción lleva `right: calc(4vw - (100vw - 1200px) / 2)` y su ítem `margin-left: auto`.
+  - Topes proporcionales al alto: manifiesto `calc(25.55vh - 6.25rem)`, descripción `calc(22.6vh - 3.75rem)`. En portátiles el texto sube con la ventana y deja de recortarse por abajo.
+  - `.pieces`: `left: min(0px, calc((1200px - 68.1747vh) / 2))` para recentrar la foto cuando es más ancha que `.about`.
+  - Título: `max(min(4.16rem, calc(var(--about-text-size) * 1.3)), min(4.16rem, 6.5vh, …))`, con suelo ligado al texto y techo de `6.5vh`.
+- **`css/style.css`**: mismos cambios en los breakpoints globales: `60em→960px`, `54em→864px`, `40em→640px`, `53.99em→863.84px`, `39.99em→639.84px`, y los comentarios que los citaban.
+- **`js/index.js`**: los dos `matchMedia('(min-width: 54em)')` (cierre del menú móvil y rueda de `.devtiles`) pasan a `864px`, para que coincidan con el CSS.
+
+### Verificación
+- Matriz CDP de **15 viewports × 4 tamaños de fuente por defecto** (16, 18, 20 y 24 px): 1200×601, 1200×700, 1280×720, 1366×768, 1440×900, 1536×864, 1920×1080, 2560×1440, 3840×2160, 1200×900/1000/1200, 1300×1800, 1199×768 y 1366×600. Resultados **idénticos entre las cuatro fuentes** en cada viewport: sin recortes verticales, sin scroll horizontal, columnas simétricas (`eq=0`) y foto centrada (`off=0`, salvo `-1,3 px` a 3840×2160).
+- Tamaños resultantes: 1200×601 → 25,819 px; 1366×768 → 32,9933 px; 1440×900 → 38,664 px; 1536×864 → 37,1174 px; 1920×1080 → 46,3968 px; 2560 y 3840 → 46,4 px.
+- A 1366×768 el manifiesto pasa de empezar en `y=276` y acabar en `839,8` (recortado por `main`) a `y=196,22`–`463,5`, sin recorte. A 3840×2160 la foto queda en `x=1918,7` (antes 2055) y las columnas miden 867,06 px cada una (antes 867 vs 631,5).
+- **ES/EN × Foto/Diseño/Código** en 1200×601, 1366×768, 1920×1080, 3840×2160 y 1200×900: párrafos y conmutador visibles, sin solapes texto-texto ni texto-conmutador, 0 errores. El único solape que marca la sonda es el del título con el margen transparente izquierdo de `.pieces` en Diseño (el texto no llega a la foto).
+- **Composición apilada** (1199×768, 1024×768, 800×600, 640×900, 390×844, 360×640, 1366×600 y 500×300): orden título → manifiesto → foto → descripción → conmutador, sin solapes y sin scroll horizontal.
+- Capturas nuevas en Temp: `new-1200x601.png`, `new-1366x768.png`, `new-1366x768-design.png`, `new-1920x1080.png`, `new-3840x2160.png`.
+
+### Casos extremos que siguen con el comportamiento antiguo
+- El "modo ancho" de `about.css` (aspecto menor que `1162/1534`) conserva la composición anterior: a 1300×1800 el título baja a 19,2 px y las columnas no son simétricas.
+- A 1200×1200 la banda libre deja columnas de 108,55 px y texto a 19,2 px. No se ha ajustado porque es un caso de ventana casi cuadrada que el usuario no usa.
+
+### Estado
+- Sin commit ni push: `css/about.css`, `css/style.css` y `js/index.js` quedan modificados sobre `54f5aee`.
+- Galerías, carruseles, `alt`/`aria-label` genéricos y las 4 tarjetas de Desarrollo Web no se han tocado.
