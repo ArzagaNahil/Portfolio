@@ -465,13 +465,27 @@ main {
     border: none;
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     padding: 0.45rem 0;
-    font-family: var(--font-sans);
+    font-family: var(--font-name);
     font-size: 0.9rem;
     font-weight: 300;
     color: var(--color-heading);
     outline: none;
     transition: border-color 0.3s ease;
     border-radius: 0;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+/* Chrome pinta los campos autocompletados con un fondo claro aunque el CSS
+   diga transparent. Congelar la transición del background evita ese color y
+   conserva el texto legible sobre el fondo oscuro de la tarjeta. */
+.form-input:-webkit-autofill,
+.form-input:-webkit-autofill:hover,
+.form-input:-webkit-autofill:focus,
+.form-input:-webkit-autofill:active {
+    -webkit-text-fill-color: var(--color-heading);
+    transition: background-color 9999s ease-in-out 0s;
+    caret-color: var(--color-heading);
 }
 
 .form-input::placeholder {
@@ -503,9 +517,10 @@ main {
 /* Estado del envío del formulario (visible solo al enviar). */
 .form-status {
     margin: 0.25rem 0 0;
-    font-family: var(--font-mono);
-    font-size: 0.8rem;
-    line-height: 1.5;
+    font-family: var(--font-para);
+    font-size: clamp(1rem, 2.2vw, 1.4rem);
+    line-height: 1.35;
+    text-align: center;
     color: var(--color-text-alt);
 }
 

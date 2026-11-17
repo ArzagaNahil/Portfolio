@@ -2538,8 +2538,25 @@ Se borraron dos restos vacíos del árbol de trabajo que habían quedado del exp
 - También se descartó el destino `contact@arzagastudio.com`: Cloudflare reenviaba los correos, pero no llegaban a Gmail (posible descarto por SPF/DMARC al reenviar). El destino final es directo a `alexisnahil963@gmail.com`, sin pasar por Cloudflare.
 
 ### Verificación
-- Envío real desde producción: el navegador va a FormSubmit, shows “Check Your Email — This form needs Activation”; tras activar, el envío redirige a `contact.html?enviado=1`, muestra “Mensaje enviado…” y el correo llega a `alexisnahil963@gmail.com`. Confirmado por el usuario: **ya están llegando**.
+- Envío real desde producción: el navegador va a FormSubmit, muestra “Check Your Email — This form needs Activation”; tras activar, el envío redirige a `contact.html?enviado=1`, muestra “Mensaje enviado…” y el correo llega a `alexisnahil963@gmail.com`. Confirmado por el usuario: **ya están llegando**.
 
 ### Notas
 - Gmail está configurado para responder como `contact@arzagastudio.com` (alias verificado desde `alexisnahil963@gmail.com`). La recepción del formulario, en cambio, va directo al Gmail para evitar el reenvío.
 - Si se quiere ocultar la dirección también del código fuente, generar el “random string” en FormSubmit y sustituir `alexisnahil963@gmail.com` en `contact.html`.
+
+## Sesión 63 - Pulido visual del formulario de contacto
+
+### Objetivo
+- Que al escribir en los campos se use la misma tipografía que “Trabajemos juntos”.
+- Que el fondo de los campos sea transparente, no blanco.
+- Que el mensaje de confirmación vaya centrado, con la fuente de “Estoy abierto a nuevos proyectos…” y conservando su color azul.
+
+### Cambios en `css/style.css`
+- `.form-input`: `font-family` de `var(--font-sans)` (Inter) a `var(--font-name)` (Bruno Ace), igual que `.contact__title`. El textarea hereda el cambio porque lleva también la clase `.form-input`. Se añade `-webkit-appearance: none` / `appearance: none`.
+- Regla nueva `.form-input:-webkit-autofill` (con `:hover`, `:focus` y `:active`): Chrome pintaba los campos autocompletados con fondo claro aunque el CSS dijera `background: transparent`. Se congela ese color con `transition: background-color 9999s ease-in-out 0s`, se fija el texto con `-webkit-text-fill-color: var(--color-heading)` y el cursor con `caret-color`.
+- `.form-status`: `font-family` de `var(--font-mono)` (JetBrains Mono) a `var(--font-para)` (Tulpen One), igual que `.contact__sub`; `text-align: center`; tamaño fluido `clamp(1rem, 2.2vw, 1.4rem)` e `line-height: 1.35` para que se lea igual que el párrafo. Se conserva `.form-status[data-state="ok"] { color: var(--color-accent); }`, que da el azul `rgb(0, 147, 165)`.
+
+### Verificación (Chrome headless, servidor local en `127.0.0.1:8100`)
+- Campos: fuente computable `"Bruno Ace", Inter, sans-serif`, fondo `rgba(0, 0, 0, 0)` y regla de autofill presente en la hoja de estilos.
+- `contact.html?enviado=1`: mensaje “Mensaje enviado. Gracias, te responderé lo antes posible.” con fuente `"Tulpen One", cursive, sans-serif`, `text-align: center` y color `rgb(0, 147, 165)`.
+- 0 errores de consola. El envío real del formulario no se tocó.
