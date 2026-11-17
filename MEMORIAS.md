@@ -2524,18 +2524,22 @@ Se borraron dos restos vacíos del árbol de trabajo que habían quedado del exp
 
 ## Sesión 62 - Formulario de contacto envía al correo (FormSubmit)
 
-### Cambio
-- **`contact.html`**: el formulario ahora apunta a `https://formsubmit.co/ajax/contact@arzagastudio.com` (POST AJAX). Campos ocultos `_subject`, `_template=table`, `_captcha=false` y un honeypot `_honey` (`.form-honey`, fuera de pantalla). Se añade `<p class="form-status" role="status" aria-live="polite">` para el resultado.
-- **`js/contactForm.js`** (nuevo): intercepta el envío, valida con `reportValidity()`, ignora envíos en menos de 2,5 s (bot) y el honeypot, hace `fetch` con `FormData`, muestra “Enviando… / Mensaje enviado / No se pudo enviar” (claves `c_status_sending/ok/error`) y reactiva el botón. Si FormSubmit responde “needs Activation”, muestra `c_status_activate` en su lugar.
-- **`css/style.css`**: `.form-honey` (fuera de pantalla) y `.form-status` con colores por estado (ok en acento, error en `--color-accent-alt`).
-- **`js/i18n.js`**: claves `c_status_sending`, `c_status_ok`, `c_status_error` y `c_status_activate` en ES y EN.
-- Se eliminó la línea visible con el correo (`c_email_pre` / `.contact__email`) de la sesión anterior: el correo no se muestra en la página.
-- Servicio elegido: FormSubmit (sin cuenta). Limitación: el primer envío queda pendiente hasta activar el formulario desde el correo de contacto; por eso se lanzó un envío de prueba que ya disparó el correo de activación.
+### Objetivo
+- Que al rellenar el formulario y pulsar “Enviar mensaje” los datos lleguen de verdad al correo, sin mostrar la dirección en la página.
+
+### Estado final
+- **`contact.html`**: formulario **nativo** (sin JavaScript) que hace `POST` a `https://formsubmit.co/alexisnahil963@gmail.com`. Campos ocultos `_subject`, `_template=table` y `_next=https://arzagastudio.com/contact.html?enviado=1`, además de un honeypot `_honey`. Al volver de FormSubmit, un script en línea lee el parámetro `enviado=1` y muestra `<p class="form-status">` con el mensaje de éxito en ES/EN.
+- **`css/style.css`**: `.form-honey` (fuera de pantalla) y `.form-status` con colores por estado (ok en acento, error en `--color-accent-alt`). La dirección de correo **no aparece en la página**.
+- **`js/i18n.js`**: quedan las claves `c_status_sending/ok/error/activate` en ES y EN (las dos últimas usadas; `sending` ya no se usa tras quitar el AJAX). Auditoría: ES 369 = EN 369.
+- Se eliminó `js/contactForm.js` (intentos AJAX previos) y la línea visible con el correo (`c_email_pre` / `.contact__email`).
+
+### Por qué se abandonó el AJAX
+- El `fetch` a `formsubmit.co/ajax/...` no se ejecutaba en el navegador del usuario: ni petición en la pestaña Red ni errores en consola, y el formulario no se limpiaba. Se probó con caché forzada (`?v=2`, `?v=3`), sin resultado.
+- También se descartó el destino `contact@arzagastudio.com`: Cloudflare reenviaba los correos, pero no llegaban a Gmail (posible descarto por SPF/DMARC al reenviar). El destino final es directo a `alexisnahil963@gmail.com`, sin pasar por Cloudflare.
 
 ### Verificación
-- Envío local (ES): respuesta de FormSubmit 200 con `{success:false, message:"needs Activation"}`; el JS muestra el estado de activación, 0 errores de consola.
-- i18n: **ES 369 = EN 369**, 0 claves usadas sin traducir.
+- Envío real desde producción: el navegador va a FormSubmit, shows “Check Your Email — This form needs Activation”; tras activar, el envío redirige a `contact.html?enviado=1`, muestra “Mensaje enviado…” y el correo llega a `alexisnahil963@gmail.com`. Confirmado por el usuario: **ya están llegando**.
 
-### Pendiente del usuario
-- Abrir la bandeja de `contact@arzagastudio.com`, pulsar el enlace “Activate Form” del correo de FormSubmit. A partir de ahí los envíos del formulario llegarán a esa dirección.
-- (Opcional, para ocultar el correo también del código fuente) en el panel de FormSubmit generar el “random string” y sustituir `contact@arzagastudio.com` por ese identificador en `contact.html` y en `contactForm.js`.
+### Notas
+- Gmail está configurado para responder como `contact@arzagastudio.com` (alias verificado desde `alexisnahil963@gmail.com`). La recepción del formulario, en cambio, va directo al Gmail para evitar el reenvío.
+- Si se quiere ocultar la dirección también del código fuente, generar el “random string” en FormSubmit y sustituir `alexisnahil963@gmail.com` en `contact.html`.
