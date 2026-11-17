@@ -131,11 +131,10 @@
                     <h2 class="contact__title" data-i18n="c_title">Trabajemos juntos</h2>
                     <p class="contact__sub" data-i18n="c_sub">Estoy abierto a nuevos proyectos, colaboraciones y
                         oportunidades. Cuéntame de tu idea.</p>
-                    <form class="contact__form" id="contact-form" action="https://formsubmit.co/ajax/alexisnahil963@gmail.com"
-                        method="POST">
+                    <form class="contact__form" action="https://formsubmit.co/alexisnahil963@gmail.com" method="POST">
                         <input type="hidden" name="_subject" value="Nuevo mensaje desde arzagastudio.com" />
                         <input type="hidden" name="_template" value="table" />
-                        <input type="hidden" name="_captcha" value="false" />
+                        <input type="hidden" name="_next" value="https://arzagastudio.com/contact.html?enviado=1" />
                         <input type="text" name="_honey" class="form-honey" tabindex="-1" autocomplete="off" aria-hidden="true" />
                         <div class="form-group">
                             <label class="form-label" for="name" data-i18n="c_label_name">Nombre</label>
@@ -165,8 +164,21 @@
     <script src="js/segment.min.js"></script>
     <script src="js/ease.min.js"></script>
 
-    <script type="module" src="js/index.js?v=3"></script>
-    <script type="module" src="js/contactForm.js?v=3"></script>
+    <script type="module" src="js/index.js?v=4"></script>
+    <script>
+        (function () {
+            if (new URLSearchParams(location.search).get('enviado') !== '1') return;
+            var el = document.querySelector('.form-status');
+            if (!el) return;
+            var lang = 'es';
+            try { if (localStorage.getItem('lang') === 'en') lang = 'en'; } catch (e) {}
+            el.textContent = lang === 'en'
+                ? "Message sent. Thanks, I'll get back to you as soon as possible."
+                : 'Mensaje enviado. Gracias, te responderé lo antes posible.';
+            el.dataset.state = 'ok';
+            el.hidden = false;
+        })();
+    </script>
 </body>
 
 </html>
